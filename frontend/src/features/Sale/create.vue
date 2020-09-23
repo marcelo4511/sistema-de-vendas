@@ -1,0 +1,194 @@
+<template>
+  <div>
+    <h4 cabecalho="product_id">Vendas</h4>
+      <nav aria-label="breadcrumb mb-4">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><router-link to="/">Home</router-link></li>
+           <li class="breadcrumb-item"><router-link to="/sales">Vendas</router-link></li>
+          <li class="breadcrumb-item active" aria-current="page">Criar</li>
+        </ol>
+      </nav>
+      <div class="form-row">
+          <div @submit.prevent="abc" class="form-group col-md-6">
+          <label for="">Clientes</label>
+          <select class="form-control" v-model="client_id" >
+              <option selected disabled value="">selecione</option>
+              <option   v-for="(client,k) in clients" v-show="client.status == 'Ativo'" :key="k"  :value="client.id">{{client.name}}</option>
+          </select>
+          </div>
+          
+          <div class="form-group col-md-6">
+            <label for="">Data da Venda</label>
+          <input type="date" v-model="datavenda"
+          class="form-control">
+          </div>
+      
+      <fieldset class="m-3">
+          <div class="row m-2">
+
+          </div>
+          <table class="table table-sm"> 
+        <thead>
+            <tr>
+                <th scope="col">produtos</th>
+                <th scope="col">Quantidade</th>
+                <th scope="col">Preço</th>
+                <th scope="col">Total R$</th>
+                <th v-show="this.detalhes.length > 1" scope="col">Ação</th>
+            </tr>
+        </thead>
+        <tbody>
+          <tr v-for="detalheVenda of detalhes" :key="detalheVenda.id">
+            
+            <td>
+             <select class="form-control" v-model="detalheVenda.product_id" required>
+               <option v-for="(product) in products" :key="product.id" v-show="product.status == 'Ativo'" :value="product.id">{{product.name}}</option>
+
+             </select>
+              </td>
+            <td><input class="form-control" type="number" v-model="detalheVenda.price" @change="calculateLineTotal(detalheVenda)" required></td>
+            <td><input class="form-control" type="number" v-model="detalheVenda.descount" @change="calculateLineTotal(detalheVenda)" required></td>
+            <td><input class="form-control" type="text" v-model="detalheVenda.subtotal" readonly></td>
+            <td>
+              <button  class="btn btn-danger" @click="remova(detalheVenda)" v-show="detalhes.length > 1"><i class="fa fa-times"></i></button>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <th scope="col">Total</th>
+                <th></th>
+                <th></th>
+                <th scope="">R${{totalizar}}</th>
+            </tr>
+        </tfoot>
+        </table>
+        <button type='button' style="float-right;" class="btn btn-info m-4" @click="adiciona">
+          <i class="fas fa-plus-circle"></i>
+         Adicione
+        </button>
+      </fieldset>
+    <br>
+      </div>
+    <button type="submit" @click="onSubmit" class="btn btn-success">Cadastrar</button>
+     <button class="btn btn-danger" style="float:right;" v-show="this.detalhes.length > 1" @click="exportPdfSale">Baixar relatório da venda<i class="fa fa-print"></i></button>
+  </div>
+</template>
+
+<script>
+import {mapState} from 'vuex'
+import axios from 'axios'
+import jsPDF from 'jspdf'
+import 'jspdf-autotable' 
+export default {
+  data(){
+    return {
+      detalhes:[{
+        product_id:'',
+        price:'',
+        descount:'',
+        subtotal:0,
+        name:''
+
+      }],
+      client_id:'',
+      datavenda:'',
+      total:0
+    }
+  },
+  created(){
+    //this.getProducts(),
+    this.$store.dispatch('Client/getClient')
+    this.$store.dispatch('Product/getProducts')
+    
+  },
+  methods:{
+  
+  onSubmit(){
+    axios.post('http://localhost:8000/api/sales',{
+        client_id:this.client_id,
+        dataVenda:this.datavenda,
+        total:this.total,
+        details_sales:JSON.stringify(this.detalhes)
+        
+    }).then(res => {
+      console.log(res.data)
+      this.$toasted.global.defaultSuccess()
+      this.$router.push('/sales')
+    })
+  },
+    
+    remova(){
+      
+          this.detalhes.splice({
+            product_id:'',
+            price:'',
+            descount:'',
+            subtotal:''
+          },1)
+          this.$toasted.global.defaultSuccess()
+          
+        },
+
+      adiciona(){
+        if (this.detalhes.product_id == '' &&this.detalhes.price == '' && this.detalhes.descount && this.detalhes.subtotal ) {
+                       return  alert('aaaa')
+              }
+              this.detalhes.push({
+                product_id:'',
+                price:'',
+                descount:'',
+                subtotal:'',
+                name:''
+              })
+             
+              
+              this.$toasted.global.defaultSuccess()
+        },
+
+   
+    calculateLineTotal(detalheVenda){
+        var total = parseFloat(detalheVenda.price) * parseFloat(detalheVenda.descount) || 0
+         detalheVenda.subtotal = total.toFixed(2);
+    },
+    exportPdfSale(){
+       
+            axios.get("http://localhost:8000/api/details")
+            .then(function(res){
+            console.log(res.data)
+            })
+
+            let columns = [
+            {title:"Produto",dataKey:"name"},
+            {title:"Preço",dataKey:"price"},
+            {title:"Desconto",dataKey:"descount"},
+            {title:"Total da Venda R$",dataKey: "subtotal"}
+            ];
+            
+            var doc = new jsPDF('p','pt');
+            doc.text('Relatório das vendas realizadas',10,12)
+            doc.autoTable(columns,this.detalhes);
+            doc.save("relatorioVenda.pdf");
+
+        },
+  },
+  computed:{
+     ...mapState('Client',{clients:state => state.clients}),
+     ...mapState('Product',{products:state => state.products}),
+
+     totalizar:function() {
+             return  this.detalhes.reduce((total,detalheVenda) => {
+                return this.total =  parseFloat(total) + parseFloat(detalheVenda.subtotal) || this.total
+                
+            },0)
+        },
+  }  
+}
+</script>
+
+<style>
+ div fieldset {
+     border: black solid 3px;
+     border-radius: 10px;
+ }
+</style>
