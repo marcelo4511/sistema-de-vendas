@@ -1,0 +1,16 @@
+.search{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.search .index{
+    justify-content: flex-end;
+}
+
+p{
+    background-color: #000;
+    width: 200px;
+    height: 20px;
+    color: #fff;
+}

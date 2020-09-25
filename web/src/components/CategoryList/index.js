@@ -4,25 +4,39 @@ import {Link, useHistory} from 'react-router-dom'
 import Noty from 'noty'
 import '../../../node_modules/noty/lib/noty.css'
 import '../../../node_modules/noty/lib/themes/mint.css'
+import './index.css'
 
 const CategoryList = () => {
 
     const history = useHistory()
-
     const [category,setCategory] = useState([])
+    const [search,setSearch] = useState('')
+    const [filtersCategories,setFiltersCategories] = useState([])
+    const [loading,setLoading] = useState(false)
 
     useEffect(() => {
+        setLoading(true)
        const getData = async () => {
            const result = await axios.get('http://localhost:8000/api/categories')
            setCategory(result.data)
+           setLoading(false)
        }
        getData()
     },[])
 
+    useEffect(() => {
+        setFiltersCategories(
+          category.filter((country) =>
+            country.name.toLowerCase().includes(search.toLowerCase())
+          )
+        );
+      }, [search, category]);
+    
+
     function editCategory(id){
         history.push({pathname:'/edit/' + id})
     }
-
+    
     const  deleteCategory = (id) => {
         
         axios.delete(`http://localhost:8000/api/categories/${id}`)
@@ -37,16 +51,23 @@ const CategoryList = () => {
             //history.push('/categories')
         })
     }
-    
+
+    if(loading) {
+        return <p><i class="fa fa-clock-o" aria-hidden="true"></i>Carregando Categorias</p>
+    }
     return (
         <div>
             <h1 className="m-2">Cadastro de categorias</h1>
+            <div className="search">
 
             <Link to="/create">
-                <button className="btn btn-info m-2" renderAs="button">
+                <button className="btn btn-info m-3">
                     <span>Cadastrar</span>
                 </button>
             </Link>
+            <input type="text" className="form-control col-3 m-3 input" value={search} onChange={e => setSearch(e.target.value)} placeholder="pesquisar..."/>
+            </div>
+
 
             <table className="table">
                 <thead>
@@ -58,7 +79,7 @@ const CategoryList = () => {
                 </thead>
                 <tbody>
                     {
-                        category.map((cat,i) => {
+                        filtersCategories.map((cat,i) => {
                                 
                         return    <tr key={i}>
                         <td>{cat.name}</td>
