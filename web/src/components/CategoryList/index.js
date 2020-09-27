@@ -53,7 +53,7 @@ const CategoryList = () => {
     }
 
     if(loading) {
-        return <p><i class="fa fa-clock-o" aria-hidden="true"></i>Carregando Categorias</p>
+        return <p class="times"><i class="fa fa-clock-o" aria-hidden="true"></i>Carregando Categorias</p>
     }
     return (
         <div>

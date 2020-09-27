@@ -11,25 +11,28 @@ const SaleCreate = () => {
     const history = useHistory()
     const inputs = document.querySelectorAll(".input");
     const [datavenda,setDatavenda] = useState('')
-    const [category_id,setCategories] = useState('')
+    const [clients,setClients] = useState('')
     const [Value,setValue] = useState([])
     //const [product_id,setProduct] = useState('')
-    const [Value1,setValue1] = useState('')
+    const [Value1,setValue1] = useState([])
     const [detalhesItems,setDetalhesItems] = useState([
         {
-            week_day:0,from:'',to:''
+            product_id:'',price:'',descount:'',subtotal:0
         }
     ])
+    let [total,setTotal] = useState(detalhesItems.forEach((total,i) => {
+       return total = total + i.subtotal
+    }))
   
     useEffect(() => {
-        const getCategories = async () => {
-            const result =  await axios.get('http://localhost:8000/api/categories')
+        const getClients = async () => {
+            const result =  await axios.get('http://localhost:8000/api/clients')
             setValue(
                 result.data.map(({ name,id }) => ({ label: name, value:id }))
               );
-            console.log(result.data.map(({ name }) => ({ category_id:name })))
+            console.log(result.data.map(({ name }) => ({ client_id:name })))
         }
-        getCategories()
+        getClients()
     },[])
 
     useEffect(() => {
@@ -38,19 +41,20 @@ const SaleCreate = () => {
             setValue1 (
                 resultado.data.map(({name,id}) => ({label:name,value:id}))
             )
+            console.log(resultado.data.map(({name}) => ({product_id:name})))
         }
         getProducts()
     },[])
 
     const onChange = (e) => {
-        setCategories(e.currentTarget.value);
+        setClients(e.currentTarget.value);
     };
 
     const handleAddDetails =(e) =>{
         setDetalhesItems([
             ...detalhesItems,
             {
-                week_day:'',from:'',to:''
+                product_id:'',price:'',descount:'',subtotal:0
             }
         ])
     }
@@ -59,6 +63,10 @@ const SaleCreate = () => {
         const { name, value } = e.target;
         const list = [...detalhesItems];
         list[index][name] = value;
+        list.forEach((i,e) => {
+            i.subtotal = i.price * i.descount
+            console.log(i.subtotal)
+        })
         setDetalhesItems(list);
       };
     
@@ -92,9 +100,10 @@ const SaleCreate = () => {
 
          }else{
 
-          await axios.post('http://localhost:8000/api/products',{
-                datavenda,
-                category_id:category_id,
+          await axios.post('http://localhost:8000/api/sales',{
+                dataVenda:datavenda,
+                total:total,
+                client_id:clients,
             }).then(res => {
                 console.log(res.data)
                 new Noty({
@@ -112,7 +121,7 @@ const SaleCreate = () => {
                 new Noty({
                     type: 'error',
                     layout: 'topRight',
-                    text: "Não foi possível cadastrar a sua Enquete.",
+                    text: "Não foi possível cadastrar a sua Venda.",
                     timeout: 4000
                 }).show();
                 console.log(err);
@@ -121,21 +130,20 @@ const SaleCreate = () => {
     }
     return (
         <div>
-            <h1>Cadastro de Produtos</h1>
+            <h1>Cadastro de Vendas</h1>
             
             <form className="form-group m-3">
 
-                <label htmlFor="">Categorias</label>
-                <select name="category_id" type="number" value={category_id}
+                <label htmlFor="">Clientes</label>
+                <select name="clients" type="number" value={clients}
                 onChange={onChange} className="form-control col-6 input">
-                <option value="" disabled >Selecione uma opcao</option>
+                <option value="" disabled >Selecione uma opção</option>
                 {Value.map(({ label, value }) => (
                 <option key={value} value={value}>{label}</option> ))}
                 </select>
 
                 <label htmlFor="">Descrição</label>
                 <input type="date" value={datavenda} onChange={e => setDatavenda(e.target.value)} className="form-control col-6 input" required/>
-
 
             </form>
 
@@ -149,44 +157,39 @@ const SaleCreate = () => {
 
               
             <select
-              name="firstName"
-              className="form-control col-4 mr-1"
+              name="product_id"
+              className="form-control col-3 mr-1"
               placeholder="Enter First Name"
-              value={x.firstName}
+              value={x.product_id}
               onChange={e => handleInputChange(e, i)}
               >
-                  <option value="">seleione uma produto</option>
-                  {Value.map(({ label, value }) => (
+                  <option value="">selecione uma produto</option>
+                  {Value1.map(({ label, value }) => (
                       <option key={value} value={value}>{label}</option> ))}
               </select>
 
-              
-
-             
-              
             <input
-              className="form-control col-2 mr-1"
-              name="lastName"
+              className="form-control col-3 mr-1"
+              name="price"
               placeholder="preço"
-              value={x.lastName}
-              
+              value={x.price}
               onChange={e => handleInputChange(e, i)}
               />
 
             <input
-              className="form-control col-2 mr-1"
-              name="lastName"
+              className="form-control col-3 mr-1"
+              name="descount"
               placeholder="Desconto"
-              value={x.lastName}
+              value={x.descount}
               onChange={e => handleInputChange(e, i)}
               />
 
             <input
-              className="form-control col-2 mr-1"
-              name="lastName"
+              className="form-control col-2"
+              name="subtotal"
               placeholder="subtotal"
-              value={x.lastName}
-              onChange={e => handleInputChange(e, i)}
+              value={x.subtotal}
+              onChange={e => handleInputChange(e, i)} disabled
               />
 
             </div>
@@ -201,6 +204,10 @@ const SaleCreate = () => {
           </div>
         );
     })}
+     <input value={total} onChange={e => setTotal(detalhesItems.reduce((total,i) => {
+         return total = total+ i.subtotal
+     }))}></input>
+
     </fieldset>
     
     </div>

@@ -1,23 +1,14 @@
 
-import React, { useEffect } from 'react'
+import React from 'react'
 import {Link} from 'react-router-dom'
-import {useDispatch,useSelector} from 'react-redux'
-import {getClients} from '../../store/clients/ClientsReducer'
+//import {useDispatch,useSelector} from 'react-redux'
+//import {getClients} from '../../store/clients/ClientsReducer'
 
 function ClientList(){
 
-    const clients = useSelector((state) => state.clients)
-    const dispatch = useDispatch()
+    
     //const [clients,setClients] = useState([])
-    useEffect(() => {
-       // const getClients = async () => {
-         //   const result = await Axios.get('http://localhost:8000/api/clients')
-           // setClients(result.data)
-            //console.log(result.data)
-        //}
-        //getClients()
-        dispatch(getClients())
-    },[dispatch])
+   
     return (
         <div>
             <h1>Cadastro de Clientes</h1>
@@ -38,7 +29,7 @@ function ClientList(){
                     </tr>
                 </thead>
                 <tbody>
-              //  {
+                {
               //      clients.map((client,i) => {
 //
   //                  return <tr key={i}>

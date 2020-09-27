@@ -1,36 +1,24 @@
 import Axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import {Link} from 'react-router-dom'
-import axios from 'axios'
-import Noty from 'noty'
+
 
 function Sale(){
 
-    const [products,setProducts] = useState([])
+    const [sales,setSales] = useState([])
     useEffect(() => {
-        const getProducts = async () => {
-            const result = await Axios.get('http://localhost:8000/api/products')
-            setProducts(result.data)
+        const getSales = async () => {
+            const result = await Axios.get('http://localhost:8000/api/sales')
+            setSales(result.data)
             console.log(result.data)
         }
-        getProducts()
+        getSales()
     },[])
 
-    function removeProduct(id) {
-        axios.delete(`http://localhost:8000/api/products/${id}`)
-        .then((result) => {
-            new Noty({
-                type: 'success',
-                layout: 'topRight',
-                text: "Deletado com sucesso!",
-                timeout: 3000
-            }).show();
-            //history.push('/categories')
-        })
-    }
+    
     return (
         <div>
-            <h1>Cadastro de produtos</h1>
+            <h1>Cadastro de Vendas</h1>
 
             <Link to="/salescreate">
                 <button className="btn btn-info m-2" renderAs="button">
@@ -41,31 +29,23 @@ function Sale(){
             <table className="table">
                 <thead>
                     <tr>
-                        <th>Nome</th>
-                        <th>Descrição</th>
-                        <th>Preço</th>
-                        <th>Quantidade</th>
-                        <th>Subtotal</th>
-                        <th>Categoria</th>
-                        <th>Status</th>
+                        <th>Clientes</th>
+                        <th>Data da venda</th>
+                        <th>Total</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                     {
-                    products.map((product,i) => {
+                    sales.map((sale,i) => {
 
                     return <tr key={i}>
-                        <td>{product.name}</td>
-                        <td>{product.description}</td>
-                        <td>{product.price}</td>
-                        <td>{product.amount}</td>
-                        <td>{product.subtotal}</td>
-                        <td>{product.categories.name}</td>
-                        <td>{product.status}</td>
+                        <td>{sale.name}</td>
+                        <td>{sale.dataVenda}</td>
+                        <td>{sale.total}</td>
                         <td>
                             <button className="btn btn-warning m-1"><i className="fa fa-pencil"></i></button>
-                            <button className="btn btn-danger" onClick={e => {removeProduct(product.id)}}><i className="fa fa-trash"></i></button>
+                            <button className="btn btn-danger"><i className="fa fa-trash"></i></button>
                         </td>
                     </tr>
                     })
