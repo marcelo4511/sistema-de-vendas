@@ -22,9 +22,9 @@ const ProductCreate = () => {
         const getCategories = async () => {
             const result =  await axios.get('http://localhost:8000/api/categories')
             setValue(
-                result.data.map(({ name,id }) => ({ label: name, value:id }))
+                result.data.map(({ name,id,status }) => ({ label: name, value:id,teste:status }))
               );
-            console.log(result.data.map(({ name }) => ({ category_id:name })))
+            console.log(result.data.map(({ name,status }) => ({ category_id:name,teste:status, })))
         }
         getCategories()
     },[])
@@ -114,8 +114,8 @@ const ProductCreate = () => {
                 <select name="category_id" type="number" value={category_id}
                 onChange={onChange} className="form-control col-6 input">
                 <option value="" disabled >Selecione uma opcao</option>
-                {Value.map(({ label, value }) => (
-                <option key={value} value={value}>{label}</option> ))}
+                {Value.map(({ label, value,teste }) => (
+                <option key={value} value={value} {...teste === 'Inativo' ? 'hidden' : false}>{teste}</option> ))}
                 </select>
 
                 <label htmlFor="">Status</label>

@@ -6,6 +6,7 @@ import '../../../node_modules/noty/lib/themes/mint.css'
 import './index.css'
 import axios from 'axios'
 
+
 const SaleCreate = () => {
 
     const history = useHistory()
@@ -148,12 +149,12 @@ const SaleCreate = () => {
             </form>
 
             <div>
-                <fieldset>
+                <fieldset className="m-3">
 
             {detalhesItems.map((x, i) => {
                 return (
                     <div className="row ml-4" key={i}>
-              <div className="form-row mr-1">
+              <div className="form-row m-2">
 
               
             <select
@@ -197,9 +198,9 @@ const SaleCreate = () => {
                   
              <label htmlFor=""></label><br></br>
               {detalhesItems.length !== 1 && <button
-                className="btn btn-danger"
+                className="btn btn-danger m-2"
                 onClick={() => handleRemoveClick(i)}><i className="fa fa-trash"></i> Remove</button>}
-              {detalhesItems.length - 1 === i && <button className="btn btn-primary" onClick={handleAddDetails}><i className="fa fa-plus">Adicionar</i></button>}
+              {detalhesItems.length - 1 === i && <button className="btn btn-primary m-2" onClick={handleAddDetails}><i className="fa fa-plus">Adicionar</i></button>}
             
           </div>
         );

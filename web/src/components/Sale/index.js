@@ -1,7 +1,8 @@
 import Axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import {Link} from 'react-router-dom'
-
+import jsPDF from 'jspdf'
+import 'jspdf-autotable' 
 
 function Sale(){
 
@@ -15,13 +16,31 @@ function Sale(){
         getSales()
     },[])
 
+    function handlePrint(){
+        Axios.get("http://localhost:8000/api/sales")
+            .then(function(res){
+            console.log(res.data)
+            })
+
+            let columns = [
+            {title:"Clientes",dataKey:"name"},
+            {title:"Data da Venda",dataKey:"dataVenda"},
+            {title:"Total das Vendas R$",dataKey: "total"}
+            ];
+            
+            var doc = new jsPDF('p','pt');
+            doc.text('Relatório das vendas realizadas',10,12)
+            doc.autoTable(columns,sales);
+            doc.save("relatorio.pdf");
+    }
+
     
     return (
         <div>
             <h1>Cadastro de Vendas</h1>
 
             <Link to="/salescreate">
-                <button className="btn btn-info m-2" renderAs="button">
+                <button className="btn btn-info m-2">
                     <span>Cadastrar</span>
                 </button>
             </Link>
@@ -52,6 +71,7 @@ function Sale(){
                     }
                 </tbody>
             </table>
+            <button onClick={handlePrint} className="btn btn-danger m-2"><i className="fa fa-print"></i> Baixar relatório total</button>
         </div>
     )
 }

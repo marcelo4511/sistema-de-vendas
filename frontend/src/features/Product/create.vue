@@ -9,9 +9,9 @@
     <li class="breadcrumb-item active" aria-current="page">Produtos</li>
   </ol>
 </nav>
-<div class="display">
 
-  <form @submit.prevent="salvar">
+
+  <form @submit.prevent="onSubmit">
       <div class="row ">
           <div class="form-group col-md-3">
             <label for="">Nome</label>
@@ -54,7 +54,7 @@
      
       <div class="form-group col-md-3">
         <label for="">Subtotal</label>
-        <input type="text" name="subtotal" required v-money="money" class="form-control col-md-auto" @change="quantificar(product)" v-model="product.subtotal">
+        <input type="text" name="subtotal" required class="form-control col-md-auto" @change="quantificar(product)" v-model="product.subtotal">
       </div> 
 
        <div class="form-group col-md-3">
@@ -71,66 +71,11 @@
       <button v-else-if="isEdit === true" type="button" class="btn btn-sucundary" @click="Atualizar">Atualizar</button>
   </form>
   
-     
-      <div class="row">
-          <div class="col-md-12">
-            <input type="text" class="form-control col-3 mt-5" placeholder="Buscar" style="float:right;" v-model="pesquisa" >
-          </div>
-      </div>
-
-    <table class="table table-sm"> 
-        <thead>
-            <tr>
-                <th scope="col">Imagem</th>
-                <th scope="col">Nome</th>
-                <th scope="col">Descrição</th>
-                <th scope="col">Categorias</th>
-                <th scope="col">Preco</th>
-                <th scope="col">Quantidade</th>
-                <th scope="col">Subtotal</th>
-                <th scope="col">Status</th>
-                <th scope="col">Ação</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="product of pesquisar" :key="product.id">
-                <td><img :src=product.imagem alt=""></td>
-                <td>{{product.name}}</td>
-                <td>{{product.description}}</td>
-                <td>{{product.categories.name}}</td>
-                <td>R$ {{product.price}}</td>
-                <td>{{product.amount}}</td>
-                <td>R$ {{product.subtotal}}</td>
-                <td>{{product.status}}</td>
-                
-                <td>
-                    <button class="btn btn-warning mr-1" @click="editProduct(product)"> <i class="fa fa-pen"></i> </button>
-                    <button class="btn btn-danger" @click="deleteProduct(this.product)"> <i class="fa fa-trash"></i> </button>
-                </td>
-            </tr>
-        </tbody>
-        <hr>
-        <tfoot>
-            <tr>
-                <th scope="col">Total</th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th scope="">R$ {{totalizar}}</th>
-            </tr>
-        </tfoot>
-    </table> 
-</div>
-
+    
     </main>
 </template>
-
 <script>
-
 import {mapState,mapActions} from 'vuex'
-import axios from 'axios'
 import {VMoney} from 'v-money'
 import '../../estilos/styles.css'
 export default {
@@ -167,15 +112,14 @@ export default {
       directives: {money: VMoney},
 
     created(){
-        //this.listar()
-        this.$store.dispatch('Product/getProducts'),
-        this.$store.dispatch('Category/setList')// dispatch loading
+        this.$store.dispatch('Category/setList')
+        this.$store.dispatch('Product/getProducts')
 
     },
     methods:{
-        ...mapActions('Product',['postProducts','getProducts','putProducts','deleteProducts']),
+        ...mapActions('Product',['postProducts']),
 
-        salvar(){
+        onSubmit(){
                 this.$store.dispatch('Product/postProducts',{   
                      name:this.product.name,
                      description:this.product.description,
@@ -187,68 +131,24 @@ export default {
                      status:this.product.status
                 })
                 try {
-                    this.product = this.$store.dispatch('Product/getProducts')
                     this.$toasted.global.defaultSuccess()
-                    this.$store.dispatch('Product/getProducts')
-                    
+                    this.$router.push('/products')
                 } catch{
-                    alert('houve um erro')
+                   this.$toasted.global.defaultError()
                 }
             },
 
-        editProduct(product){   
-                this.isEdit = true
-                this.product = product      
-            },
-
-        Atualizar() {
-             this.$store.dispatch(`Product/putProducts`,
-                    
-                    this.product
-
-                    )
-                    try{ 
-                        this.produtos = this.$store.dispatch('Product/getProducts')
-                        //this.product = {}
-                        this.isEdit = false
-                        this.$toasted.global.defaultSuccess()
-                    }
-                    catch{
-                    this.$toasted.global.defaultError()
-                }
-        },
-        deleteProduct(product){
-            this.$store.dispatch('Product/deleteProducts',product)
-            try {
-                this.$toasted.global.defaultSuccess()
-                this.$store.dispatch('Product/getProducts')
-            }catch(err){
-                console.log(err)
-            }
-        },
-        mostrar(product){
-         const url = `http://localhost:8000/api/products/${product.id}`
-            axios.get(url).then(resposta => {
-                resposta.data
-                console.log(resposta.data)
-            })
-        },
         quantificar(product) {
-            product.subtotal = parseFloat(product.price) * parseInt(product.amount)
+            product.subtotal = parseFloat(product.price) * parseFloat(product.amount) || 0
         },
         
     },
     
     
     computed:{
-        ...mapState('Category',{list:state => state.list}),
         ...mapState('Product',{products:state => state.products}),
+        ...mapState('Category',{list:state => state.list}),
 
-        pesquisar:function() {
-            return this.products.filter(product => {
-                return product.name.includes(this.pesquisa)
-            })
-        },
         totalizar:function() {
              return  this.products.reduce((total,product) => {
                 return (parseFloat(total) + parseFloat(product.subtotal)).toFixed(2).replace('.',',')

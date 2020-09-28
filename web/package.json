@@ -9,6 +9,8 @@
     "axios": "^0.20.0",
     "bootstrap": "^4.5.2",
     "font-awesome": "^4.7.0",
+    "jspdf": "^2.1.1",
+    "jspdf-autotable": "^3.5.13",
     "noty": "^3.2.0-beta",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -19,7 +21,8 @@
     "reactstrap": "^8.5.1",
     "redux": "^4.0.5",
     "redux-form": "^8.3.6",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "styled-components": "^5.2.0"
   },
   "scripts": {
     "start": "react-scripts start",

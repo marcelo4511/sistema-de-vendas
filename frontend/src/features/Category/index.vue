@@ -8,8 +8,8 @@
     <li class="breadcrumb-item active" aria-current="page">Categorias</li>
   </ol>
 </nav>
-    <button class="btn btn-primary"><router-link tag="span" to="categories/create">Cadastrar</router-link></button>
 <div class="form-group">
+    <button class="btn btn-primary"><router-link tag="span" to="categories/create">Cadastrar</router-link></button>
  
   <input class="form-control col-md-3 mb-3" type="search" style="float: right;" name="nome" placeholder="Buscar" v-model="pesquisa">
 

@@ -31,10 +31,10 @@ function ProductList(){
     }
     return (
         <div>
-            <h1>Cadastro de produtos</h1>
+            <h1>Cadastro de Produtos</h1>
 
             <Link to="/productcreate">
-                <button className="btn btn-info m-2" renderAs="button">
+                <button className="btn btn-info m-2">
                     <span>Cadastrar</span>
                 </button>
             </Link>
@@ -44,8 +44,8 @@ function ProductList(){
                     <tr>
                         <th>Nome</th>
                         <th>Descrição</th>
-                        <th>Preço</th>
                         <th>Imagem</th>
+                        <th>Preço</th>
                         <th>Quantidade</th>
                         <th>Subtotal</th>
                         <th>Categoria</th>

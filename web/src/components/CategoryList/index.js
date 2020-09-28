@@ -48,7 +48,7 @@ const CategoryList = () => {
                 timeout: 3000
             }).show();
             
-            //history.push('/categories')
+           
         })
     }
 

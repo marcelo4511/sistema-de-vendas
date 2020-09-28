@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import Product from '../features/Product/Product'
+import Product from '../features/Product/index'
+import ProductCreate from '../features/Product/create'
+import ProductEdit from '../features/Product/edit'
 import Home from '../template/Home'
 import Category from '../features/Category/index'
 import CategoryEdit from '../features/Category/edit'
@@ -21,6 +23,15 @@ const routes = [{
     name: 'product',
     path: '/products',
     component:Product
+},{
+    name:'productCreate',
+    path:'/products/create',                                                                                                                                                                                                                       
+    component:ProductCreate
+},{
+    name:'productEdit',
+    path:'/products/:product/edit',                                                                                                                                                                                                                       
+    component:ProductEdit,
+    params:true
 },{
     name:'client',
     path:'/clients',                                                                                                                                                                                                                       

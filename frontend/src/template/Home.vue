@@ -6,7 +6,7 @@
     <li class="breadcrumb-item"><router-link to="/">Home</router-link></li>
   </ol>
 </nav>
-  <div class="row cartinha">
+  <div class="row painel">
     <div class="card text-white bg-primary ml-3 " style="width:300px;height:250px">
        <div class="card-header">
           <div class="row">
@@ -128,7 +128,7 @@ name: 'LineChartContainer',
     margin-top: 13px;
   }
 
-  div .cartinha{
+  div .painel{
     display: flex;
     flex-direction: column;
     justify-content:flex-start;
