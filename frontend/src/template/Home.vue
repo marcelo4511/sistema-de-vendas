@@ -81,8 +81,8 @@ name: 'LineChartContainer',
     },
 
       async mounted() {
-    this.loaded = false;
-    await axios
+      this.loaded = false;
+     await axios
       .get("http://localhost:8000/api/sales")
       .then(res => {
         this.abc = res.data

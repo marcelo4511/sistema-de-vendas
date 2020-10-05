@@ -18,8 +18,6 @@
               <th scope="col">Nome</th>
               <th scope="col">CPF</th>
               <th scope="col">Email</th>
-              <th scope="col">CEP</th>
-              <th scope="col">Telefone</th>
               <th scope="col">Celular</th>
               <th scope="col">Status</th>
               <th scope="col">Açôes</th>
@@ -31,8 +29,6 @@
               <td>{{client.name}}</td>
               <td>{{client.cpf}}</td>
               <td>{{client.email}}</td>
-              <td>{{client.cep}}</td>
-              <td>{{client.fone}}</td>
               <td>{{client.celular}}</td>
               <td>{{client.status}}</td>
 

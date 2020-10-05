@@ -41,7 +41,7 @@
                 <td>{{product.categories.name}}</td>
                 <td>R$ {{product.price}}</td>
                 <td>{{product.amount}}</td>
-                <td>R$ {{product.subtotal | VMoney({ precision: 2 })}}</td>
+                <td>R$ {{product.subtotal}}</td>
                 <td>{{product.status}}</td>
                 
                 <td>
@@ -73,7 +73,6 @@
 import {mapState,mapActions} from 'vuex'
 import axios from 'axios'
 import swal from 'sweetalert'
-import {VMoney} from 'v-money'
 import '../../estilos/styles.css'
 export default {
     name:'product',
@@ -95,18 +94,9 @@ export default {
             pesquisa:[], 
             total:0,
             count:0,
-
-            money: {
-            decimal: ',',
-            thousands: '.',
-            //prefix: 'R$ ',
-            precision: 2,
-            masked: false 
-        },
       };
       
     },
-      directives: {money: VMoney},
 
     created(){
         //this.listar()

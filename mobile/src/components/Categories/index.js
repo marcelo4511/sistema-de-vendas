@@ -1,64 +1,55 @@
 import React, { useState } from 'react'
-import {View,Text,StyleSheet} from 'react-native'
-import {Button, TextInput} from 'react-native-paper'
+import {View,Text,TextInput,Button, Picker} from 'react-native'
+import axios from 'axios'
+//import {Button} from 'react-native-paper'
 //port {withFormik} from 'formik'
 
 function Categories() {
 
-  const [name,useName] = useState('')
-  const [status,useStatus] = useState('')
-  
+  const [name,setName] = useState('')
+  const [status,setStatus] = useState('')
+
+   function onSubmit(){
+          axios.post('http://127.0.0.1:8000/api/categories',{
+          name,
+          status
+        }).then(res => {
+          console.log(res.data)
+          alert("sucesso")
+        })
+  }
+ 
   return (
-    <View styles={styles.container}>
+    <View style={{display:'flex',justifyContent:'center',alignItens:'center',margin:40}}>
         
-        <View styles={styles.topo}>
+        
 
-        <Text styles={styles.text}>Cadastro de Categorias</Text>
-        </View>
+        <Text style={{color:'blue'}}>Cadastro de Categorias</Text>
+       
 
-        <View styles={styles.aaa}>
+        
 
-        <TextInput styles={styles.teste}
+        <TextInput style={{borderWidth:2,borderColor:'black',marginTop:20}}
         label="Nome"
-        value={name}/>
-        </View>
-
-        <TextInput
-        label="Status"
-        value={status}
+        value={name}
+        placeholder='nome'
+        onChange={e => setName(e.target.value)}
         />
-         <Button 
-         icon="check"
-         mode="contained"
-         onPress={() => console.log('Pressed')}>
-         Cadastrar
-        </Button>
+
+        <Picker style={{borderWidth:2,borderColor:'blck',marginTop:20}}
+        onValueChange={(itemValue, itemIndex) => setStatus(itemValue)}
+        >
+          <option value=""></option>
+        <Picker.Item label="Ativo" value="Ativo" />
+        <Picker.Item label="Inativo" value="Inativo" />
+      </Picker>
+
+         <Button tyle={{marginTop:20}}
+          title="salvar"
+           onPress={onSubmit}/>
       </View>
     );
   }
 
-  const styles = StyleSheet.create({
-    container:{
-      justifyContent: 'center',
-      alignItems:"center",
-      display:'flex',
-    },
-
-    teste:{
-      width:100,
-    },
-
-    topo:{
-      marginTop:200,
-    },
-
-    aaa:{
-      marginTop:400,
-    },
-
-    text:{
-      fontSize:200,
-    },
-  })
-
+  
   export default Categories
