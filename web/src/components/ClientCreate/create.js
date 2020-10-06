@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
 //import {useHistory} from 'react-router-dom'
-//import {useDispatch,useSelector } from 'react-redux'
-
-//import {saveClients} from '../../store/clients/ClientsReducer'
+import {Formik} from 'formik'
 import '../../../node_modules/noty/lib/noty.css'
 import '../../../node_modules/noty/lib/themes/mint.css'
 import './index.css'
@@ -47,8 +45,10 @@ const ClientCreate = () => {
     
     return (
         <div>
-            <h1>Cadastro de Clientes</h1>
             
+            <h1>Cadastro de Clientes</h1>
+            <Formik>
+        
             <form className="form-group m-3">
 
                 <div className="row m-2">
@@ -136,7 +136,7 @@ const ClientCreate = () => {
                 <div className="form-group">
                 <label htmlFor="">Status</label>
                 <select name="" value={status} ied="" onChange={e => setStatus(e.target.value)} className="form-control input" required>
-                <option value="" disabled >Selecione uma opcao</option>
+                    <option value="" disabled >Selecione uma opcao</option>
                     <option value="Ativo">Ativo</option>
                     <option value="Inativo">Inativo</option>
                 </select>
@@ -147,6 +147,7 @@ const ClientCreate = () => {
                 <button className="btn btn-info m-4" type="submit" onClick={e => onSave(e)}>Cadastrar</button>
             </form>
 
+            </Formik>
             
         </div>
     )

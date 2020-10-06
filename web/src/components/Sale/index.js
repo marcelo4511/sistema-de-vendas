@@ -44,6 +44,7 @@ function Sale(){
                     <span>Cadastrar</span>
                 </button>
             </Link>
+            <input type="text" className="form-control col-3 m-3 input"  placeholder="pesquisar..."/>
 
             <table className="table">
                 <thead>

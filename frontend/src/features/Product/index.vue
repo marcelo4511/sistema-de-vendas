@@ -13,7 +13,11 @@
 
       <div class="row">
           <div class="col-md-12">
-            <input type="text" class="form-control col-3" placeholder="Buscar" style="float:right;" v-model="pesquisa" >
+               <select  v-model="searchCategory" style="float:right;"  required class="form-control col-md-3">
+                    <option  disabled selected value="">Buscar por categorias</option>
+                    <option  v-for="(category, key) in list" v-show="category.status == 'Ativo'" :key="key" :value="category.id">{{category.name}}</option>
+            </select>
+            <input type="text" class="form-control col-3 mr-3" placeholder="Buscar por nome do produto" style="float:right;" v-model="pesquisa" >
       <button class="btn btn-primary"><router-link tag="span" to="products/create">Cadastrar</router-link></button>
           </div>
       </div>
@@ -92,6 +96,7 @@ export default {
             update:{},
             isEdit:false,
             pesquisa:[], 
+            searchCategory:[],
             total:0,
             count:0,
       };
@@ -151,6 +156,7 @@ export default {
         pesquisar:function() {
             return this.products.filter(product => {
                 return product.name.includes(this.pesquisa)
+                && product.category_id.match(this.searchCategory)
             })
         },
         totalizar:function() {
@@ -169,4 +175,5 @@ export default {
        width: 100px;
        height: 100px;
    }
+
 </style>
