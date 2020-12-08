@@ -36,8 +36,8 @@ Route::namespace('Api')->group(function(){
 
     Route::resource('clients','ClientController');
 
-    Route::resource('details','DetailController');
-
     Route::resource('sales','SaleController');
-    Route::resource('sales/{total}','SaleController@destroy');
+    Route::delete('detalhes/{$id}','SaleController@deleteDetalhe');
+    Route::get('relatorioexcel','SaleController@relatorioexcel');
+    Route::get('relatoriopdf','SaleController@relatoriopdf');
 });

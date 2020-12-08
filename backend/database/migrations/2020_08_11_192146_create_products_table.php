@@ -14,16 +14,16 @@ class CreateProductsTable extends Migration
     public function up()
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->string('name')->nullable();
             $table->string('description')->nullable();
-            $table->float('price')->nullable();
+            $table->string('price')->nullable();
             $table->float('amount')->nullable();
             $table->float('subtotal')->nullable();
             $table->string('imagem')->nullable();
             $table->enum('status',['Inativo','Ativo'])->default('Inativo');
 
-            $table->integer('category_id')->unsigned();
+            $table->bigInteger('category_id')->unsigned();
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
            
             $table->timestamps();

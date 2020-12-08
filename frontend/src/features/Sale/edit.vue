@@ -5,13 +5,13 @@
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><router-link to="/">Home</router-link></li>
            <li class="breadcrumb-item"><router-link to="/sales">Vendas</router-link></li>
-          <li class="breadcrumb-item active" aria-current="page">Criar</li>
+          <li class="breadcrumb-item active" aria-current="page">Editar</li>
         </ol>
       </nav>
       <div class="form-row">
           <div @submit.prevent="abc" class="form-group col-md-6">
           <label for="">Clientes</label>
-          <select class="form-control" v-model="client_id" >
+          <select class="form-control" v-model="sales.client_id" >
               <option selected disabled value="">selecione</option>
               <option   v-for="(client,k) in clients" v-show="client.status == 'Ativo'" :key="k"  :value="client.id">{{client.name}}</option>
           </select>
@@ -19,7 +19,7 @@
           
           <div class="form-group col-md-6">
             <label for="">Data da Venda</label>
-          <input type="date" v-model="datavenda"
+          <input type="date" v-model="sales.dataVenda"
           class="form-control">
           </div>
       
@@ -34,11 +34,11 @@
                 <th scope="col">Quantidade</th>
                 <th scope="col">Preço</th>
                 <th scope="col">Total R$</th>
-                <th v-show="this.details_sales.length > 1" scope="col">Ação</th>
+                <th v-show="this.sales.details_sales.length > 1" scope="col">Ação</th>
             </tr>
         </thead>
         <tbody>
-          <tr v-for="detalheVenda of details_sales" :key="detalheVenda.id">
+          <tr v-for="detalheVenda of sales.details_sales" :key="detalheVenda.id">
             
             <td>
              <select class="form-control" v-model="detalheVenda.product_id" required>
@@ -50,7 +50,7 @@
             <td><input class="form-control" type="number" v-model="detalheVenda.descount" @change="calculateLineTotal(detalheVenda)" required></td>
             <td><input class="form-control" type="text" v-model="detalheVenda.subtotal" readonly></td>
             <td>
-              <button  class="btn btn-danger" @click="remova(detalheVenda)" ><i class="fa fa-times"></i></button>
+              <button  class="btn btn-danger" @click="remova(detalheVenda.id)" ><i class="fa fa-times"></i></button>
             </td>
           </tr>
         </tbody>
@@ -70,7 +70,7 @@
       </fieldset>
     <br>
 
-        <div class="card col-12 m-2">
+    <div class="card col-12 m-2">
           <div class="card-header">
             Pagamento
           </div>
@@ -79,24 +79,25 @@
             <div class="row">
               <div class="form-group m-2">
                 <label for="">forma de pagamento</label>
-                <input type="text" class="form-control" v-model="formapagamento.tipo_forma_pagamento">
+                <input type="text" class="form-control" v-model="sales.tipo_forma_pagamento">
               </div>
 
               <div class="form-group m-2">
                 <label for="">Parcelas</label>
-                <input type="text" class="form-control" v-model="formapagamento.parcelas">
+                <input type="text" class="form-control" v-model="sales.parcelas">
               </div>
 
               <div class="form-group m-2">
                 <label for="">Entrada</label>
-                <input type="text" class="form-control" v-model="formapagamento.entrada">
+                <input type="text" class="form-control" v-model="sales.entrada">
               </div>
             </div>
           </div>
         </div>
+      
       </div>
     <button type="submit" @click="onSubmit" class="btn btn-success">Cadastrar</button>
-     <button class="btn btn-danger" style="float:right;" v-show="this.details_sales.length > 2" @click="exportPdfSale">Baixar relatório da venda<i class="fa fa-print"></i></button>
+     <button class="btn btn-danger" style="float:right;" v-show="this.sales.details_sales.length > 2" @click="exportPdfSale">Baixar relatório da venda<i class="fa fa-print"></i></button>
   </div>
 </template>
 
@@ -106,67 +107,77 @@ import axios from 'axios'
 import jsPDF from 'jspdf'
 import 'jspdf-autotable' 
 export default {
+     name:'salesedit',
   data(){
     return {
-      details_sales:[{
+      
+      client_id:'',
+      datavenda:'',
+      total:0,
+      sales:{
+        details_sales:[{
         product_id:'',
         price:'',
         descount:'',
         subtotal:0,
         name:''
 
-      }],
-      client_id:'',
-      datavenda:'',
-      total:0,
-      formapagamento:{
+        }],
+        
+      },
+       
         tipo_forma_pagamento:null,
         parcelas:null,
         entrada:null
-      }
+      
     }
   },
   created(){
-    //this.getProducts(),
+    this.getBlogById(this.$route.params.id)
     this.$store.dispatch('Client/getClient')
     this.$store.dispatch('Product/getProducts')
     
   },
   methods:{
-  
+        getBlogById: function (id) {
+            axios.get('http://localhost:8000/api/sales/' + id)
+            .then((response) => {
+              this.sales = response.data
+              console.log(this.sales)
+            })
+            .catch((error) => {
+              console.log(error)
+            })
+        },
   onSubmit(){
-    axios.post('http://localhost:8000/api/sales',{
-        client_id:this.client_id,
-        dataVenda:this.datavenda,
-        total:this.total,
-        details_sales:this.details_sales,
-        formapagamento:this.formapagamento
-    }).then(res => {
-      console.log(this.details_sales);
+    axios.put(`http://localhost:8000/api/sales/${this.$route.params.id}`,this.sales).then(res => {
       console.log(res.data)
       this.$toasted.global.defaultSuccess()
-      this.$router.push('/sales')
+      //this.$router.push('/sales')
     })
   },
     
-    remova(){
-        if(this.details_sales.length > 1) {
-
-          this.details_sales.splice({
-            product_id:'',
+    remova(id){
+      
+        if(this.sales.details_sales.length > 1) {
+           axios.delete('http://localhost:8000/api/detalhes/' + id).then(res => {
+             console.log(res.data)
+             this.sales.details_sales.splice({
+               product_id:'',
             price:'',
             descount:'',
             subtotal:''
           },1)
           this.$toasted.global.defaultSuccess()
+           })
         }
           
       },
-
+      
       adiciona(){
-            if(this.details_sales.length <= 2) {
+            if(this.sales.details_sales.length <= 2) {
 
-              this.details_sales.push({
+              this.sales.details_sales.push({
                 product_id:'',
                 price:'',
                 descount:'',
@@ -174,7 +185,7 @@ export default {
                 name:''
               })
             }else {
-              return this.details_sales
+              return this.sales.details_sales
             }
              
               
@@ -202,7 +213,7 @@ export default {
             
             var doc = new jsPDF('p','pt');
             doc.text('Relatório das vendas realizadas',10,12)
-            doc.autoTable(columns,this.details_sales);
+            doc.autoTable(columns,this.sales.details_sales);
             doc.save("relatorioVenda.pdf");
 
         },
@@ -212,8 +223,8 @@ export default {
      ...mapState('Product',{products:state => state.products}),
 
      totalizar:function() {
-             return  this.details_sales.reduce((total,detalheVenda) => {
-                return this.total =  parseFloat(total) + parseFloat(detalheVenda.subtotal) || this.total
+             return  this.sales.details_sales.reduce((total,detalheVenda) => {
+                return this.sales.total =  parseFloat(total) + parseFloat(detalheVenda.subtotal) || this.sales.total
                 
             },0)
         },

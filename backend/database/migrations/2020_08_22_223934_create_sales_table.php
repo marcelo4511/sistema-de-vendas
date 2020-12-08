@@ -14,11 +14,11 @@ class CreateSalesTable extends Migration
     public function up()
     {
         Schema::create('sales', function (Blueprint $table) {
-            $table->id();
-            $table->date('dataVenda');
+            $table->increments('id');
+            $table->string('dataVenda');
             $table->float('total',8,2);  
 
-            $table->integer('client_id')->unsigned();
+            $table->unsignedInteger('client_id');
             $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
            
             $table->timestamps();

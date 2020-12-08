@@ -184,7 +184,7 @@ export default {
                 }).catch(e => {
                     this.$toasted.global.defaultError()
                 console.log('errrou',e)
-                })
+            })
         }
     }
 

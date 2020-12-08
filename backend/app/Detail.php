@@ -12,6 +12,7 @@ class Detail extends Model
         'descount',
         'subtotal',
         'product_id',
+        'sale_id'
     ];
     protected $table = 'details_sales'; 
 
@@ -23,5 +24,5 @@ class Detail extends Model
 
     public function sale(){
         return $this->belongsTo(Sale::class);
-       }
+    }
 }

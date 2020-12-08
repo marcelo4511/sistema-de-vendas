@@ -4,13 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Detail;
-use Carbon\Carbon;
-use DateTimeInterface;
 
 class Sale extends Model
 {
-    protected $dates = ['created_at','updated_at'];
-
     protected $fillable = [
         'id',
         'dataVenda',
@@ -19,8 +15,9 @@ class Sale extends Model
     ];
 
     protected $table = 'sales';
-
-    public function detailsales(){
+    protected $date = 'dataVenda';
+    public function details_sales()
+    {
         return $this->hasMany(Detail::class);
     }
 
@@ -29,15 +26,8 @@ class Sale extends Model
         return $this->belongsTo(Client::class,'client_id');
     }
 
-    public function getFormattedDateAttribute()
+    public function formapagamento()
     {
-        return date('d/m/Y', strtotime($this->attributes['dataVenda']));
+        return $this->hasOne(FormaPagamento::class);
     }
-
-    public function getTheJsonColumnAttribute($value)
-{
-    return json_decode($value, true);
-}
-
-    protected $appends = ['formattedDate'];
 }

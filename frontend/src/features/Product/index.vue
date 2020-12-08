@@ -92,7 +92,7 @@ export default {
                 status:''
             },
             produtos:[],
-            //categories:[],
+            categories:[],
             update:{},
             isEdit:false,
             pesquisa:[], 
@@ -156,7 +156,7 @@ export default {
         pesquisar:function() {
             return this.products.filter(product => {
                 return product.name.includes(this.pesquisa)
-                && product.category_id.match(this.searchCategory)
+                //&& product.category_id.includes(this.searchCategory)
             })
         },
         totalizar:function() {

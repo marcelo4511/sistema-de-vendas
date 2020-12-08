@@ -29,7 +29,7 @@
                     <td>{{category.status}}</td>
                     <td>
                         
-                        <router-link :to="`/categoryedit/${category.id}/edit`" class="btn btn-warning"><i class="fa fa-pen"></i></router-link>
+                        <router-link :to="`/categoryedit/id/edit`" class="btn btn-warning"><i class="fa fa-pen"></i></router-link>
                         <button @click="removeList(category)" class="btn btn-danger ml-2"><i class="fa fa-trash"></i></button>
                     </td>
                   

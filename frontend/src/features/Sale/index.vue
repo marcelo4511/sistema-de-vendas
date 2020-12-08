@@ -24,18 +24,18 @@
       <tbody>
           <tr v-for="(sale,k) in searching" :key="k" >
               <td>{{sale.name}}</td>
-              <td>{{sale.dataVenda}}</td>
+              <td>{{sale.dataVenda | formatDate}}</td>
               <td>R$ {{formatPrice(sale.total)}}</td>
               <td>  
-                    <button  class="btn btn-warning"><i class="fa fa-pen"></i></button>
-                    <button  class="btn btn-danger ml-2"  @click="removeSale(sale)"><i class="fa fa-trash"></i></button>
-                   
+                    
+                    <router-link :to="`/salesedit/${sale.id}/edit`" class="btn btn-warning"><i class="fa fa-pen"></i></router-link>
+                    <button  class="btn btn-danger ml-2"  @click="removeSale(sale)"><i class="fa fa-trash"></i></button>   
               </td>
           </tr>
       </tbody>
   </table>
-
-  <button class="btn btn-danger" @click="exportPdf">Baixar relatório total<i class="fa fa-print"></i></button>
+ <button class="btn btn-success" @click="relatorioExcel">Baixar relatório total<i class="fa fa-print"></i></button>
+  <button class="btn btn-danger" @click="relatorioPdf">Baixar relatório total<i class="fa fa-print"></i></button>
 </div>
 </template>
 
@@ -105,13 +105,39 @@ export default {
             ];
             
             var doc = new jsPDF('p','pt');
-            doc.text('Relatório das vendas realizadas',10,12)
+            doc.html('<center>Relatório das vendas realizadas</center>',10,12)
             doc.autoTable(columns,this.sales);
             doc.save("relatorio.pdf");
 
         },
 
-        
+        relatorioExcel() {
+            axios.get(`http://localhost:8000/api/relatorioexcel`).then(res => {
+                if (res.status === 200) {
+                    let blob = new Blob([res.data], {
+                        type: "application/vnd.ms-excel"
+                    });
+                    const urlObject = window.URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = urlObject;
+                    a.setAttribute("download", "listavendas.xls");
+                    document.body.appendChild(a);
+                    a.click();
+                }
+            });
+        },
+        relatorioPdf(){
+            axios.get('http://localhost:8000/api/relatoriopdf',{
+            responseType: 'blob'
+            }).then((response) => {
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'file.pdf');
+            document.body.appendChild(link);
+            link.click();
+            });
+        }
     },
     computed:{
         ...mapState('Sale',{sales:state => state.sales}),
