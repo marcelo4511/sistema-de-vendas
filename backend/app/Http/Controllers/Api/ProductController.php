@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Product;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class ProductController extends Controller
@@ -30,6 +31,11 @@ class ProductController extends Controller
     public function save(Request $request)
     {
        
+        //if($request->hasFile('image')) {
+        //    $product = $request->file('imagem');
+        //    $imageName = $request->imagem->getClientOriginalName();
+        //    Storage::disk('public')->put('images/'.$imageName)
+        //}
         $product = new Product();
         $product->name = $request->input('name');
         $product->description = $request->input('description');

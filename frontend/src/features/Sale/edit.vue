@@ -78,23 +78,43 @@
             <h5 class="card-title"></h5>
             <div class="row">
               <div class="form-group m-2">
-                <label for="">forma de pagamento</label>
-                <input type="text" class="form-control" v-model="sales.tipo_forma_pagamento">
+                <label for="">Forma de Pagamento</label>
+                <select type="text" class="form-control" v-model="sales.forma_pagamento.tipo_forma_pagamento">
+                  <option disabled selected value="null">Selecione</option>
+                  <option value="0">Boleto bancário</option>
+                  <option value="1">A vista</option>
+                  <option value="2">Cartao de crédito</option>
+                  <option value="3">Cartao de débito</option>
+                </select>
               </div>
 
               <div class="form-group m-2">
                 <label for="">Parcelas</label>
-                <input type="text" class="form-control" v-model="sales.parcelas">
+                <select type="text" class="form-control" v-model="sales.forma_pagamento.parcelas" v-show="sales.forma_pagamento.tipo_forma_pagamento == '2'">
+                  <option selected value="null">1x</option>
+                  <option value="1">6x</option>
+                  <option value="2">10x</option>
+                  <option value="3">12x</option>
+                  <option value="4">24x</option>
+                </select>
+
+                 <select type="text" class="form-control" v-model="sales.forma_pagamento.parcelas" disabled v-show="sales.forma_pagamento.tipo_forma_pagamento !== '2'">
+                  <option selected value="null">1x</option>
+                  <option value="1">6x</option>
+                  <option value="2">10x</option>
+                  <option value="3">12x</option>
+                  <option value="4">24x</option>
+                </select>
               </div>
 
               <div class="form-group m-2">
                 <label for="">Entrada</label>
-                <input type="text" class="form-control" v-model="sales.entrada">
+                <input type="text" class="form-control" v-show="sales.forma_pagamento.tipo_forma_pagamento == '2'"  v-model="sales.forma_pagamento.entrada" placeholder="0,00">
+                <input type="text" class="form-control" v-show="sales.forma_pagamento.tipo_forma_pagamento !== '2'" disabled  v-model="sales.forma_pagamento.entrada" placeholder="0,00">
               </div>
             </div>
           </div>
         </div>
-      
       </div>
     <button type="submit" @click="onSubmit" class="btn btn-success">Cadastrar</button>
      <button class="btn btn-danger" style="float:right;" v-show="this.sales.details_sales.length > 2" @click="exportPdfSale">Baixar relatório da venda<i class="fa fa-print"></i></button>
@@ -102,6 +122,7 @@
 </template>
 
 <script>
+import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
 import {mapState} from 'vuex'
 import axios from 'axios'
 import jsPDF from 'jspdf'
@@ -123,12 +144,14 @@ export default {
         name:''
 
         }],
-        
-      },
-       
-        tipo_forma_pagamento:null,
+         forma_pagamento:{
+         tipo_forma_pagamento:null,
         parcelas:null,
         entrada:null
+       }
+      },
+      
+        
       
     }
   },
@@ -152,15 +175,15 @@ export default {
   onSubmit(){
     axios.put(`http://localhost:8000/api/sales/${this.$route.params.id}`,this.sales).then(res => {
       console.log(res.data)
-      this.$toasted.global.defaultSuccess()
-      //this.$router.push('/sales')
+     this.$noty.success("Atualizando com sucesso!!") 
+      this.$router.push('/sales')
     })
   },
     
     remova(id){
       
         if(this.sales.details_sales.length > 1) {
-           axios.delete('http://localhost:8000/api/detalhes/' + id).then(res => {
+           axios.delete(`http://localhost:8000/api/detalhesdelete/${id}`).then(res => {
              console.log(res.data)
              this.sales.details_sales.splice({
                product_id:'',

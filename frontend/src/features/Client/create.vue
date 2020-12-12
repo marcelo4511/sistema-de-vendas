@@ -113,6 +113,7 @@
 </template>
 
 <script>
+import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
 import {mapActions,mapState} from 'vuex'
 import {mask} from 'vue-the-mask'
 export default {
@@ -200,12 +201,12 @@ export default {
                 
                 try {
                     console.log()   
-                    this.$toasted.global.defaultSuccess()
+                    this.$noty.success("Atualizado com sucesso!!") 
                         setTimeout(() => {
                             this.$router.push('/clients')
                     },3000)    
                 }catch(e) {
-                    this.$toasted.global.defaultError()
+                    this.$noty.info("Houve um problema com o seu formulério. Por favor, tente novamente.");
                 console.log('errrou',e)
                 }
         },

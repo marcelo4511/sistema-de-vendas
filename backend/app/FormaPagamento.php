@@ -15,4 +15,8 @@ class FormaPagamento extends Model
     ];
     protected $table = 'forma_pagamento'; 
 
+    public function sale()
+    {
+        $this->belongsTo(Sale::class);
+    }
 }

@@ -73,7 +73,7 @@
 </template>
 
 <script>
-
+import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
 import {mapState,mapActions} from 'vuex'
 import axios from 'axios'
 import swal from 'sweetalert'

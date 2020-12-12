@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use app\Sale;
+
 class Detail extends Model
 {
     protected $fillable = [
@@ -22,7 +22,8 @@ class Detail extends Model
         return $this->belongsTo(Product::class,'product_id');
     }
 
-    public function sale(){
-        return $this->belongsTo(Sale::class);
+    public function sale()
+    {
+        return $this->belongsTo(Sale::class,'sale_id');
     }
 }

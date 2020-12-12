@@ -37,7 +37,10 @@ Route::namespace('Api')->group(function(){
     Route::resource('clients','ClientController');
 
     Route::resource('sales','SaleController');
-    Route::delete('detalhes/{$id}','SaleController@deleteDetalhe');
+    Route::delete('/detalhesdelete/{id}','SaleController@deleteDetalhe');
     Route::get('relatorioexcel','SaleController@relatorioexcel');
     Route::get('relatoriopdf','SaleController@relatoriopdf');
+    Route::get('relatoriopdfdetalhes/{id}','SaleController@relatoriopdfDetails');
+    Route::post('aprovar/{id}','SaleController@aprovacao');
+    Route::get('filtrar','SaleController@filter');
 });

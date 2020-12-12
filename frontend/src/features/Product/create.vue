@@ -11,7 +11,7 @@
 </nav>
 
 
-  <form @submit.prevent="onSubmit">
+  <form @submit.prevent="onSubmit" enctype="multipart/form-data">
       <div class="row ">
           <div class="form-group col-md-3">
             <label for="">Nome</label>
@@ -34,7 +34,7 @@
 
         <div class="form-group col-md-3">
          <label for="">Imagem</label>
-         <input type="url" name="imagem" class="form-control col-md-auto" required  v-model="product.imagem">
+         <input type="url" name="imagem" id="imagem" class="form-control col-md-auto" required  v-model="product.imagem">
         </div>  
       </div>
         
@@ -75,6 +75,7 @@
     </main>
 </template>
 <script>
+import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
 import {mapState,mapActions} from 'vuex'
 import {VMoney} from 'v-money'
 import '../../estilos/styles.css'
@@ -102,7 +103,7 @@ export default {
             money: {
             decimal: ',',
             thousands: '.',
-            //prefix: 'R$ ',
+            prefix: 'R$ ',
             precision: 2,
             masked: false 
         },
@@ -119,8 +120,12 @@ export default {
     methods:{
         ...mapActions('Product',['postProducts']),
 
+        onFileChange(event){
+           this.product.imagem = event.target.files[0];
+          },
+          
         onSubmit(){
-                this.$store.dispatch('Product/postProducts',{   
+             this.$store.dispatch('Product/postProducts',{   
                      name:this.product.name,
                      description:this.product.description,
                      imagem:this.product.imagem,
@@ -130,14 +135,20 @@ export default {
                      subtotal:this.product.subtotal,
                      status:this.product.status
                 })
+           //let formData = new FormData()
+            //formData.append('imagem', this.product)
+               // this.$store.dispatch('Product/postProducts',formData,{
+                //   headers: {
+            //  'Content-Type': "multipart/form-data; charset=utf-8; boundary=" + Math.random().toString().substr(2)
+           // }
+             //   })
                 try {
-                    this.$toasted.global.defaultSuccess()
+                    this.$noty.success("Cadastrado com sucesso!!") 
                     this.$router.push('/products')
                 } catch{
-                   this.$toasted.global.defaultError()
+                   this.$noty.info("Houve um problema com o seu formulério. Por favor, tente novamente.");
                 }
             },
-
         quantificar(product) {
             product.subtotal = parseFloat(product.price) * parseFloat(product.amount) || 0
         },

@@ -45,7 +45,7 @@
 </template>
 
 <script>
-
+import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
 import {mapState,mapActions} from 'vuex'
 
 export default {
@@ -69,12 +69,12 @@ export default {
           status:this.category.status
         })
         try{
-          this.$toasted.global.defaultSuccess()
+          this.$noty.success("Cadastrado com sucesso!!") 
        setTimeout(() => {
          this.$router.push('/categories')
        },3000)
          } catch(e) {
-           this.$toasted.global.defaultError()
+            this.$noty.info("Houve um problema com o seu formulério. Por favor, tente novamente.");
            console.log('errrou',e)
          }
         },

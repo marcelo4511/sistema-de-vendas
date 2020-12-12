@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
 import {mapState} from 'vuex'
 import axios from 'axios'
 export default {
@@ -66,12 +67,12 @@ export default {
               this.$store.dispatch('Category/updateList',this.category)
               .then(res => {
                      console.log(res.data)
-                    this.$toasted.global.defaultSuccess()
+                    this.$noty.success("Cadastrado com sucesso!!") 
                     setTimeout(() => {
                         this.$router.push('/categories')
                     },3000)
                 }).catch(e => {
-                    this.$toasted.global.defaultError()
+                   this.$noty.info("Houve um problema com o seu formulério. Por favor, tente novamente.");
                 console.log('errrou',e)
                 })
         },

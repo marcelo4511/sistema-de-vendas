@@ -21,9 +21,22 @@ class SaleController extends Controller
     {
         $sales = DB::table('sales')
             ->join('clients', 'clients.id', '=', 'sales.client_id')
-            ->select('sales.dataVenda','sales.total','sales.client_id', 'clients.name')
+            ->join('situacao', 'situacao.id', '=', 'sales.situacao_id')
+            ->select('sales.id','sales.dataVenda','sales.total','sales.client_id', 'clients.name','situacao.descricao','sales.situacao_id')
             ->get();
         return response()->json($sales);
+    }
+
+    public function filter(){
+        try{
+            $sales = Sale::with('details_sales','clients','details_sales.products')
+            ->whereHas('situacao',function($q) {
+                $q->whereSituacaoId(2);
+            })->get();
+            return response()->json($sales,200);
+        }catch(Exception $e){
+            return response()->json(['err' => $e->getMessage()]);
+        }
     }
 
     public function store(Request $request)
@@ -31,6 +44,8 @@ class SaleController extends Controller
         
         try{
             $data = $request->all();
+            $data['dataVenda'] = Carbon::parse($data['dataVenda'])->format('d/m/Y');
+            $data['situacao_id'] = 1;
             $venda = Sale::create($data);
             
            if(!empty($data['details_sales']) && $data['details_sales'] > 0){
@@ -67,7 +82,7 @@ class SaleController extends Controller
                     response()->json(['errors' => $validate->errors()]);
                 }
                 
-                $this->sendMail($venda->id);
+                //$this->sendMail($venda->id);
                 return response()->json(['success' => 200]);
         }catch(Exception $e){
             return response()->json(['err' => $e->getMessage(), 'status' => true]);
@@ -77,7 +92,7 @@ class SaleController extends Controller
     public function show($id)
     {
         try{
-            $venda = Sale::with('details_sales','formaPagamento')->find($id);
+            $venda = Sale::with('details_sales','formaPagamento','situacao','clients')->find($id);
             return response()->json($venda,200);
 
         }catch(Exception $e){
@@ -91,12 +106,14 @@ class SaleController extends Controller
             
             $data = $request->all();
             $venda = Sale::findOrFail($id);
+            $data['situacao_id'] = 1;
+            $data['dataVenda'] = Carbon::parse($data['dataVenda'])->format('d/m/Y');
             $venda->update($data);
             
             if($data['details_sales'] > 0){
                 foreach($request->details_sales as $detalhes){
-                    $abertaClausulaProposta = Detail::find($detalhes['id']);
-                    $abertaClausulaProposta->update([
+                    $detalhesupdate = Detail::find($detalhes['id']);
+                    $detalhesupdate->update([
                         'sale_id' => $venda->id,
                         'product_id' => $detalhes['product_id'],
                         'subtotal' => $detalhes['subtotal'],
@@ -106,17 +123,17 @@ class SaleController extends Controller
                 }
             }
 
-            //if($data['formapagamento'] == 0) {
-                //$forma = FormaPagamento::find('id');
-             //   FormaPagamento::create([
-             //       'sale_id' => $venda->id,
-             //       'tipo_forma_pagamento' => $data['tipo_forma_pagamento'],
-             //       'parcelas' => $data['parcelas'],
-             //       'entrada' => $data['entrada']
-             //   ]);
-           // }
+            if($data['forma_pagamento']) {
+                $forma = FormaPagamento::find($data['forma_pagamento']['id']);
+                $forma->update([
+                    'sale_id' => $venda->id,
+                    'tipo_forma_pagamento' => $data['forma_pagamento']['tipo_forma_pagamento'],
+                    'parcelas' => $data['forma_pagamento']['parcelas'],
+                    'entrada' => $data['forma_pagamento']['entrada']
+                ]);
+            }
             
-           $this->sendMail($request->id);
+           //$this->sendMail($request->id);
            return response()->json(['success' => 200, 'status' => 'OK']);
         }catch(Exception $e) {
             return response()->json(['err' => $e->getMessage()]);
@@ -126,8 +143,8 @@ class SaleController extends Controller
     public function destroy($id)
     {
         try{
-            Sale::whereId('id', $id)->delete();  
-            return response()->json(['data' => ['msg' => 'Venda removida com sucesso'],'status' => 200]);
+            Sale::find($id)->delete();  
+            return response()->json(['data' => ['msg' => 'delhe da venda removido com sucesso'],'status' => 200]);
         }catch(Exception $e) {
             return response()->json(['error' => $e->getMessage()],400);
         }
@@ -136,7 +153,7 @@ class SaleController extends Controller
     public function deleteDetalhe($id)
     {
         try{
-            Detail::find($id)->delete();  
+            Detail::with('sale')->find($id)->delete();  
             return response()->json(['data' => ['msg' => 'Venda removida com sucesso'],'status' => 200]);
         }catch(Exception $e) {
             return response()->json(['error' => $e->getMessage()],400);
@@ -148,12 +165,14 @@ class SaleController extends Controller
         $assunto = Carbon::parse($venda['dataVenda'])->format('d/m/Y');
         $total = number_format($venda['total'],2,',','.') ;
         $emails = [];
-        array_push($emails,'marcelowert@gmail.com','brunacristinadozzo@hotmail.com');
+        array_push($emails,'marcelowert@gmail.com');
+        $pdf = $this->relatorioexcel();
         try {
-            Mail::send('teste.clientMail', $venda->toArray(),function ($message) use($total,$venda,$assunto,$emails) {
+            Mail::send('teste.clientMail', $venda->toArray(),function ($message) use($total,$assunto,$emails,$pdf) {
                 $message->to($emails)->subject('Compra concluida! ' . ' Data da compra ' .$assunto .' total  R$'.$total);
+                $message->attachData($pdf, $assunto . '.pdf');
             });
-            return response()->json(['status' => 'sucesso']);
+            return response()->download(['status' => 'sucesso']);
         }catch(Exception $e) {
             return response()->json(['error' => $e]);
         }
@@ -178,5 +197,26 @@ class SaleController extends Controller
         $pdf = PDF::loadView('vendas.pdf.orcamento', compact('vendas'));
         $pdf->setPaper('A4', 'portrait');
         return $pdf->stream("venda.pdf");
+    }
+
+    public function relatoriopdfDetails($id)
+    {   
+        $vendas = Sale::with('details_sales','details_sales.products','clients')->find($id);
+        $pdf = PDF::loadView('vendas.pdf.detalhesprodutos', compact('vendas'));
+        $pdf->setPaper('A4', 'portrait');
+        return $pdf->stream("detalhesprodutos.pdf");
+    }
+
+    public function aprovacao($id)
+    {
+        try{
+            $venda = Sale::select('id','situacao_id')->find($id);
+            $venda['situacao_id'] = 2;
+            $venda->update();
+            return response()->json($venda,200);
+        }catch(Exception $e){
+            return response()->json(['err' => $e->getMessage()]);
+        }
+
     }
 }

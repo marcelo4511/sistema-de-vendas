@@ -41,7 +41,7 @@
 </template>
 
 <script>
-
+import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
 import {mapState, mapActions, mapGetters} from 'vuex'
 import swal from 'sweetalert'
 export default {

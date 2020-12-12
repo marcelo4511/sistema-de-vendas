@@ -113,6 +113,7 @@
 </template>
 
 <script>
+import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
 import axios from 'axios'
 export default {
     
@@ -177,12 +178,12 @@ export default {
             axios.put(`http://localhost:8000/api/clients/${this.$route.params.client}`,this.client)
                 .then(res => {
                      console.log(res.data)
-                    this.$toasted.global.defaultSuccess()
+                   this.$noty.success("Atualizado com sucesso!!") 
                     setTimeout(() => {
                         this.$router.push('/clients')
                     },3000)
                 }).catch(e => {
-                    this.$toasted.global.defaultError()
+                    this.$noty.info("Houve um problema com o seu formulério. Por favor, tente novamente.");
                 console.log('errrou',e)
             })
         }

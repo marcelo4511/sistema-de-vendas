@@ -26,7 +26,7 @@
 
         h5{
             color: black;
-            font-size: 10px;
+            font-size: 5px;
             text-align: center;
             width: 400px;
             border: solid 5px black;
@@ -42,8 +42,6 @@
                 <th>Nome do Cliente : </th>
                 <th>Total da venda :</th>
             </tr>
-
-            
         </thead>
         <tbody>
             @foreach($vendas as $venda)
@@ -55,17 +53,8 @@
                      {{ $venda->clients->name }}
                 </td>
                 <td>
-                    {{ $venda->total }}
+                R$ {{  number_format($venda['total'],2,',','.') }}
                 </td>
-               
-               @foreach($venda->details_sales as $detalhes)
-               <tr>{{$detalhes->price}}</tr>
-                    @foreach($detalhes->products as $produto)
-                    <b>{{$produto->name}}</b>
-                    @endforeach
-               <tr>{{$detalhes->amount}}</tr>
-               <tr>{{$detalhes->subtotal}}</tr>
-               @endforeach
             </tr>
             @endforeach
         </tbody>

@@ -9,6 +9,7 @@
     <b>Nome do produto:</b><br>
     @foreach($details_sales as $d)
     {{ $d['products']['name'] ?? null }}<br>
+    {{ $d['products']['imagem'] ?? null}}
     @endforeach
     
     <b>Quantidade:</b><br>

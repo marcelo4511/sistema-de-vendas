@@ -4,6 +4,7 @@ import store from './store'
 import router from './config/routes'
 import ChartKick from 'vue-chartkick'
 import Chart from 'chart.js'
+import VueNoty from 'vuejs-noty-fa';
 
 import './config/filterData'
 import './config/messages'
@@ -18,6 +19,16 @@ import 'font-awesome/css/font-awesome.css'
 
 Vue.use(ChartKick.use(Chart))
 Vue.config.productionTip = false
+
+Vue.use(VueNoty, {
+  timeout: 4000,
+  progressBar: true,
+  layout: 'topRight',
+  icon: {
+    success: ['fa','check-circle'], 
+    info: ['fa', 'times-circle'],
+  }
+});
 
 new Vue({
   render: h => h(App),

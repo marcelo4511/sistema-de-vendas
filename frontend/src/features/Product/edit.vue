@@ -77,7 +77,7 @@
 import {mapState,mapActions} from 'vuex'
 import axios from 'axios'
 import {VMoney} from 'v-money'
-
+import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
 import '../../estilos/styles.css'
 export default {
     name:'product',
@@ -130,12 +130,12 @@ export default {
             axios.put(`http://localhost:8000/api/products/${this.$route.params.product}`,this.product)
                 .then(res => {
                      console.log(res.data)
-                    this.$toasted.global.defaultSuccess()
+                    this.$noty.success("Atualizado com sucesso!!") 
                     setTimeout(() => {
                         this.$router.push('/products')
                     },3000)
                 }).catch(e => {
-                    this.$toasted.global.defaultError()
+                   this.$noty.info("Houve um problema com o seu formulério. Por favor, tente novamente.");
                 console.log('errrou',e)
                 })
         },

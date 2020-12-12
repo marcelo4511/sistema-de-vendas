@@ -18,6 +18,7 @@
               <th scope="col">Nome do Cliente</th>
               <th scope="col">Data da venda</th>
               <th scope="col">Total da venda</th>
+              <th scope="col">Situação</th>
               <th scope="col">Ações</th>
           </tr>
       </thead>
@@ -26,20 +27,32 @@
               <td>{{sale.name}}</td>
               <td>{{sale.dataVenda | formatDate}}</td>
               <td>R$ {{formatPrice(sale.total)}}</td>
+              <td>{{sale.descricao}}</td>
               <td>  
-                    
-                    <router-link :to="`/salesedit/${sale.id}/edit`" class="btn btn-warning"><i class="fa fa-pen"></i></router-link>
-                    <button  class="btn btn-danger ml-2"  @click="removeSale(sale)"><i class="fa fa-trash"></i></button>   
+                    <div v-show="sale.situacao_id == 1">
+                        <button  class="btn btn-success ml-2" @click="aprovar(sale)"><i class="fa fa-check "></i></button>
+                        <router-link :to="`/salesedit/${sale.id}/edit`" class="btn btn-warning ml-2"><i class="fa fa-pen"></i></router-link>
+                        <button  class="btn btn-danger ml-2"  @click="removeSale(sale)"><i class="fa fa-trash"></i></button>  
+                    </div>
+
+                    <div v-show="sale.situacao_id == 2">
+                        <router-link :to="`/salesshow/${sale.id}/show`" class="btn btn-info ml-2"><i class="fa fa-eye"></i></router-link>  
+                        <button  class="btn btn-dark ml-2"  @click="relatorioVenda(sale)"><i class="fa fa-file-pdf"></i></button>
+                    </div>
               </td>
           </tr>
       </tbody>
   </table>
- <button class="btn btn-success" @click="relatorioExcel">Baixar relatório total<i class="fa fa-print"></i></button>
-  <button class="btn btn-danger" @click="relatorioPdf">Baixar relatório total<i class="fa fa-print"></i></button>
+  
+  <div v-show="sale">
+    <button class="btn btn-success mr-2" @click="relatorioExcel">Baixar relatório total <i class="fa fa-file-excel"></i></button>
+    <button class="btn btn-danger" @click="relatorioPdf">Baixar relatório total <i class="fa fa-print"></i></button>
+  </div>
 </div>
 </template>
 
 <script>
+import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
 import axios from 'axios'
 import {mapState} from 'vuex'
 import jsPDF from 'jspdf'
@@ -62,7 +75,7 @@ export default {
     },
     created(){
         this.$store.dispatch('Sale/getSales')
-    },
+        },
     methods:{
           removeSale(sale){
             swal({
@@ -74,9 +87,9 @@ export default {
             })
             .then((willDelete) => {
             if (willDelete) {
-                axios.delete(`http://localhost:8000/api/sales/${sale.total}`)
+                axios.delete(`http://localhost:8000/api/sales/${sale.id}`)
             .then(res => {
-                this.sales.splice(res.data.id,1)
+                this.sales.pop(res.data.id,1)
                 swal("Venda deletada com sucesso!", {
                 icon: "success",
                 });
@@ -137,7 +150,43 @@ export default {
             document.body.appendChild(link);
             link.click();
             });
-        }
+        },
+        relatorioVenda(sale){
+            axios.get(`http://localhost:8000/api/relatoriopdfdetalhes/${sale.id}`,{
+            responseType: 'blob'
+            }).then((response) => {
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'file.pdf');
+            document.body.appendChild(link);
+            link.click();
+            });
+        },
+        aprovar(sale){
+            swal({
+            title: "Tela de venda para aprovação",
+            text: "Depois de aprovado, você não será capaz de modificar essa venda!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+            })
+            .then((willDelete) => {
+            if (willDelete) {
+                axios.post(`http://localhost:8000/api/aprovar/${sale.id}`)
+            .then(res => {
+                console.log(res.data)
+                swal("Venda aprovada!", {
+                icon: "success",
+                });
+            })
+            } else {
+                swal("Venda continua a esperar o pagamento");
+            }
+            this.$router.push('/sales')
+            });
+               
+        },
     },
     computed:{
         ...mapState('Sale',{sales:state => state.sales}),

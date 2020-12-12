@@ -78,18 +78,39 @@
             <h5 class="card-title"></h5>
             <div class="row">
               <div class="form-group m-2">
-                <label for="">forma de pagamento</label>
-                <input type="text" class="form-control" v-model="formapagamento.tipo_forma_pagamento">
+                <label for="">Forma de Pagamento</label>
+                <select type="text" class="form-control" v-model="formapagamento.tipo_forma_pagamento">
+                  <option disabled selected value="null">Selecione</option>
+                  <option value="0">Boleto bancário</option>
+                  <option value="1">A vista</option>
+                  <option value="2">Cartao de crédito</option>
+                  <option value="3">Cartao de débito</option>
+                </select>
               </div>
 
               <div class="form-group m-2">
                 <label for="">Parcelas</label>
-                <input type="text" class="form-control" v-model="formapagamento.parcelas">
+                <select type="text" class="form-control" v-model="formapagamento.parcelas" v-show="formapagamento.tipo_forma_pagamento == '2'">
+                  <option selected value="null">1x</option>
+                  <option value="1">6x</option>
+                  <option value="2">10x</option>
+                  <option value="3">12x</option>
+                  <option value="4">24x</option>
+                </select>
+
+                 <select type="text" class="form-control" v-model="formapagamento.parcelas" disabled v-show="formapagamento.tipo_forma_pagamento !== '2'">
+                  <option selected value="null">1x</option>
+                  <option value="1">6x</option>
+                  <option value="2">10x</option>
+                  <option value="3">12x</option>
+                  <option value="4">24x</option>
+                </select>
               </div>
 
               <div class="form-group m-2">
                 <label for="">Entrada</label>
-                <input type="text" class="form-control" v-model="formapagamento.entrada">
+                <input type="text" class="form-control" v-show="formapagamento.tipo_forma_pagamento == '2'"  v-model="formapagamento.entrada" placeholder="0,00">
+                <input type="text" class="form-control" v-show="formapagamento.tipo_forma_pagamento !== '2'" disabled  v-model="formapagamento.entrada" placeholder="0,00">
               </div>
             </div>
           </div>
@@ -101,6 +122,7 @@
 </template>
 
 <script>
+import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
 import {mapState} from 'vuex'
 import axios from 'axios'
 import jsPDF from 'jspdf'

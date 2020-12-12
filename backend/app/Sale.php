@@ -8,14 +8,15 @@ use App\Detail;
 class Sale extends Model
 {
     protected $fillable = [
-        'id',
         'dataVenda',
         'total',
         'client_id',
+        'situacao_id'
     ];
 
     protected $table = 'sales';
     protected $date = 'dataVenda';
+    
     public function details_sales()
     {
         return $this->hasMany(Detail::class);
@@ -29,5 +30,10 @@ class Sale extends Model
     public function formapagamento()
     {
         return $this->hasOne(FormaPagamento::class);
+    }
+
+    public function situacao()
+    {
+        return $this->belongsTo(Situacao::class,'situacao_id');
     }
 }
