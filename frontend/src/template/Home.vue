@@ -52,6 +52,7 @@ import { mapGetters} from 'vuex'
 import LineChart from './chart'
 //import axios from 'axios'
 import '../config/filterData'
+import moment from 'moment'
 export default {
     
 name: 'LineChartContainer',
@@ -93,14 +94,16 @@ name: 'LineChartContainer',
         this.chartdata = {
          // labels: [`total da venda dia ${res.data[0].dataVenda}`, `Female${res.data[1].dataVenda}`,'dsf'],
           labels: this.abc.map(element => {
-            return element.dataVenda
+            return moment(element.dataVenda).format('DD/MM/YYYY')
           }),
           datasets: [
             {
-              label: "Vendas",
+              label: "Vendas R$",
               data: this.abc.map(element => {
-                return element.total
+                return element.total 
               }),
+
+               
 
             
               borderWidth: 2

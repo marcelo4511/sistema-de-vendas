@@ -46,9 +46,10 @@
 
              </select>
               </td>
+            <td><money v-model="detalheVenda.descount" :value="detalheVenda.descount" v-money="money" name="valorSinistrado" class="form-control" @change="calculateLineTotal(detalheVenda)"></money></td>
             <td><input class="form-control" type="number" v-model="detalheVenda.price" @change="calculateLineTotal(detalheVenda)" required></td>
-            <td><input class="form-control" type="number" v-model="detalheVenda.descount" @change="calculateLineTotal(detalheVenda)" required></td>
-            <td><input class="form-control" type="text" v-model="detalheVenda.subtotal" readonly></td>
+            <td><money readonly disabled :value="detalheVenda.subtotal" v-money="money" name="totalPrejuizo" class="form-control"></money></td>
+            <td>
             <td>
               <button  class="btn btn-danger" @click="remova(detalheVenda.id)" ><i class="fa fa-times"></i></button>
             </td>
@@ -59,7 +60,7 @@
                 <th scope="col">Total</th>
                 <th></th>
                 <th></th>
-                <th scope="">R${{totalizar}}</th>
+                <th scope="col"><money readonly disabled :value="totalizar" v-money="money" name="totalPrejuizo" class="form-control form-control-sm" style="background-color:#993399;color:#fff;"></money></th>
             </tr>
         </tfoot>
         </table>
@@ -126,9 +127,12 @@ import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
 import {mapState} from 'vuex'
 import axios from 'axios'
 import jsPDF from 'jspdf'
+import {VMoney} from 'v-money'
 import 'jspdf-autotable' 
+
 export default {
      name:'salesedit',
+     directives: {money: VMoney},
   data(){
     return {
       
@@ -145,12 +149,20 @@ export default {
 
         }],
          forma_pagamento:{
-         tipo_forma_pagamento:null,
-        parcelas:null,
-        entrada:null
+          tipo_forma_pagamento:null,
+          parcelas:null,
+          entrada:null
        }
       },
-      
+       money: {
+                decimal: ',',
+                thousands: '.',
+                prefix: 'R$ ',
+                suffix: '',
+               
+                precision: 2,
+                masked: false
+            }
         
       
     }

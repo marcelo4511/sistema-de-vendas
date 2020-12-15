@@ -31,8 +31,8 @@
         <thead>
             <tr>
                 <th scope="col">produtos</th>
-                <th scope="col">Quantidade</th>
                 <th scope="col">Preço</th>
+                <th scope="col">Quantidade</th>
                 <th scope="col">Total R$</th>
                 <th v-show="this.details_sales.length > 1" scope="col">Ação</th>
             </tr>
@@ -46,9 +46,9 @@
 
              </select>
               </td>
+            <td><money v-model="detalheVenda.descount" :value="detalheVenda.descount" v-bind="money" name="valorSinistrado" class="form-control" @change="calculateLineTotal(detalheVenda)"></money></td>
             <td><input class="form-control" type="number" v-model="detalheVenda.price" @change="calculateLineTotal(detalheVenda)" required></td>
-            <td><input class="form-control" type="number" v-model="detalheVenda.descount" @change="calculateLineTotal(detalheVenda)" required></td>
-            <td><input class="form-control" type="text" v-model="detalheVenda.subtotal" readonly></td>
+            <td><money readonly disabled :value="detalheVenda.subtotal" v-bind="money" name="totalPrejuizo" class="form-control"></money></td>
             <td>
               <button  class="btn btn-danger" @click="remova(detalheVenda)" ><i class="fa fa-times"></i></button>
             </td>
@@ -59,7 +59,7 @@
                 <th scope="col">Total</th>
                 <th></th>
                 <th></th>
-                <th scope="">R${{totalizar}}</th>
+                <th scope="col"><money readonly disabled :value="totalizar" v-bind="money" name="totalPrejuizo" class="form-control form-control-sm" style="background-color:#993399;color:#fff;"></money></th>
             </tr>
         </tfoot>
         </table>
@@ -126,8 +126,12 @@ import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
 import {mapState} from 'vuex'
 import axios from 'axios'
 import jsPDF from 'jspdf'
+import {VMoney} from 'v-money'
 import 'jspdf-autotable' 
+
 export default {
+   directives: {money: VMoney},
+
   data(){
     return {
       details_sales:[{
@@ -145,7 +149,16 @@ export default {
         tipo_forma_pagamento:null,
         parcelas:null,
         entrada:null
-      }
+      },
+       money: {
+                decimal: ',',
+                thousands: '.',
+                prefix: 'R$ ',
+                suffix: '',
+               
+                precision: 2,
+                masked: false
+            }
     }
   },
   created(){
@@ -239,6 +252,7 @@ export default {
                 
             },0)
         },
+      
   }  
 }
 </script>

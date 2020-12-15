@@ -29,10 +29,18 @@ class SaleController extends Controller
 
     public function filter(){
         try{
+            
             $sales = Sale::with('details_sales','clients','details_sales.products')
             ->whereHas('situacao',function($q) {
                 $q->whereSituacaoId(2);
-            })->get();
+            })
+            //->selectRaw('SUM(total) as total,monthname (dataVenda) as mes')->groupBy('mes')->get();
+            ->whereMonth('dataVenda', Carbon::now()->month)
+            ->with(['details_sales'],function($q) {
+                $q->orderBy('products.name','asc');
+            })
+            ->orderBy('created_at','desc')
+            ->get();
             return response()->json($sales,200);
         }catch(Exception $e){
             return response()->json(['err' => $e->getMessage()]);
@@ -107,7 +115,7 @@ class SaleController extends Controller
             $data = $request->all();
             $venda = Sale::findOrFail($id);
             $data['situacao_id'] = 1;
-            $data['dataVenda'] = Carbon::parse($data['dataVenda'])->format('d/m/Y');
+           // $data['dataVenda'] = Carbon::parse($data['dataVenda'])->format('d/m/Y');
             $venda->update($data);
             
             if($data['details_sales'] > 0){
