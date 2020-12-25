@@ -1,8 +1,20 @@
 <template>
   <header>
-     <a class="toggle" @click="toggleMenu" v-if="!hideToggle">
-            <i class="fa fa-lg" :class="icon"></i>
-        </a>
+    <div>
+      
+      <div class="dropdown" >
+        <button class="drops btn btn-write dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <span v-for="(u,k) in user" :key="k">{{u.name}}</span>
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <router-link to="/home" class="d-flex justify-content-beetween dropdown-item" v-if="isLogged">Home</router-link> 
+          <router-link to="/" class="dropdown-item" v-else-if="!isLogged">Login</router-link>
+          <span class="dropdown-item" @click="sair()">Sair
+          </span>
+        </div>
+      </div>
+    </div>
+     
   </header>
 
   
@@ -10,21 +22,23 @@
 
 <script>
 
-
+import {mapGetters,mapState} from 'vuex'
 export default {
-  props:{
-    hideToggle:Boolean
-  },
+ 
   computed:{
-    icon() {
-      return "fa-angle-left"
-    }
-  },
+   
+     ...mapState('User',{user:state => state.user}),
+    ...mapGetters('User',[
+      'isLogged'
+    ])
+  
+ },
   methods: {
-        toggleMenu() {
-            this.$store.commit('toggleMenu')
-        }
+    sair () {
+      this.$noty.success('Até logo!')
+      this.$store.dispatch('User/logout')
     }
+  }
 }
 </script>
 
@@ -41,25 +55,33 @@ export default {
         
         font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     }
-
+      .drops{
+          background-color: linear-gradient(to right, #1e469a, #49a7c1);
+          font-style: inherit;
+      }
     p{
       height: 70px;
     }
-
-      header > a.toggle {
-        width: 60px;
-        height: 100%;
-        color: #fff;
-        justify-self: flex-start;
-        text-decoration: none;
-
-        display: flex;
-        justify-content: center;
-        align-items: center;
+    header div{
+      display: flex;
+      align-items: center;
+      text-align: center;
+      justify-content: flex-end;
+      margin-right: 30px;
+      margin-top: 5px;
     }
 
-    header > a.toggle:hover {
-        color: #fff;
-        background-color: rgba(0, 0, 0, 0.2);
-    }
+/**.drops axios.post('http://localhost:8000/api/logout',this.form).then(res => {
+         console.log(res.data)
+         localStorage.removeItem('token');
+         this.$router.push('/')
+        }).catch(errors => {
+          console.log(errors.res.data)
+        }) */
 </style>
+
+
+
+
+
+

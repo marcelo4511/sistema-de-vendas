@@ -3,7 +3,7 @@
     <h4 cabecalho="product_id">Vendas</h4>
       <nav aria-label="breadcrumb mb-4">
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><router-link to="/">Home</router-link></li>
+          <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
            <li class="breadcrumb-item"><router-link to="/sales">Vendas</router-link></li>
           <li class="breadcrumb-item active" aria-current="page">Criar</li>
         </ol>
@@ -11,7 +11,7 @@
       <div class="form-row">
           <div @submit.prevent="abc" class="form-group col-md-6">
           <label for="">Clientes</label>
-          <select class="form-control" v-model="client_id" >
+          <select class="form-control" v-model="client_id" required>
               <option selected disabled value="">selecione</option>
               <option   v-for="(client,k) in clients" v-show="client.status == 'Ativo'" :key="k"  :value="client.id">{{client.name}}</option>
           </select>
@@ -19,8 +19,7 @@
           
           <div class="form-group col-md-6">
             <label for="">Data da Venda</label>
-          <input type="date" v-model="datavenda"
-          class="form-control">
+            <input type="date" v-model="datavenda" required class="form-control">
           </div>
       
       <fieldset class="m-3">
@@ -79,7 +78,7 @@
             <div class="row">
               <div class="form-group m-2">
                 <label for="">Forma de Pagamento</label>
-                <select type="text" class="form-control" v-model="formapagamento.tipo_forma_pagamento">
+                <select type="text" class="form-control" v-model="formapagamento.tipo_forma_pagamento" required>
                   <option disabled selected value="null">Selecione</option>
                   <option value="0">Boleto bancário</option>
                   <option value="1">A vista</option>
@@ -179,7 +178,7 @@ export default {
     }).then(res => {
       console.log(this.details_sales);
       console.log(res.data)
-      this.$toasted.global.defaultSuccess()
+      this.$noty.success("Cadastrado com sucesso!!") 
       this.$router.push('/sales')
     })
   },

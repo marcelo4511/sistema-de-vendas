@@ -3,7 +3,7 @@
     <h4 cabecalho="product_id">Vendas</h4>
       <nav aria-label="breadcrumb mb-4">
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><router-link to="/">Home</router-link></li>
+          <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
            <li class="breadcrumb-item"><router-link to="/sales">Vendas</router-link></li>
           <li class="breadcrumb-item active" aria-current="page">Editar</li>
         </ol>
@@ -187,7 +187,7 @@ export default {
   onSubmit(){
     axios.put(`http://localhost:8000/api/sales/${this.$route.params.id}`,this.sales).then(res => {
       console.log(res.data)
-     this.$noty.success("Atualizando com sucesso!!") 
+     this.$noty.success("Atualizado com sucesso!!") 
       this.$router.push('/sales')
     })
   },
@@ -199,9 +199,9 @@ export default {
              console.log(res.data)
              this.sales.details_sales.splice({
                product_id:'',
-            price:'',
-            descount:'',
-            subtotal:''
+              price:'',
+              descount:'',
+              subtotal:''
           },1)
           this.$toasted.global.defaultSuccess()
            })

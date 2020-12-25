@@ -16,7 +16,7 @@ return [
     */
 
 
-    'paths' => ['api/*'],
+    'paths' => ['api/*', 'login', 'logout'],
 
     'allowed_methods' => ['*'],
 
@@ -29,8 +29,6 @@ return [
     'exposed_headers' => [],
 
     'max_age' => 0,
-
-    'supports_credentials' => true,
 
     'Access-Control-Allow-Headers'=>['application/json'],
 ];

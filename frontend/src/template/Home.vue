@@ -3,7 +3,7 @@
 <h4 cabecalho="Produto">Home</h4>
 <nav aria-label="breadcrumb mb-4">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><router-link to="/">Home</router-link></li>
+    <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
   </ol>
 </nav>
   <div class="row painel">
@@ -33,15 +33,38 @@
       </div>
     </div>
 
-  <div class="abc">
-    <p>Desempenho  R$</p>
+  <div class="abc"><br>
+
    
      <line-chart
-      v-if="loaded"
-      :chartdata="chartdata"
+        v-if="loaded"
+        :chartdata="chartdata"
+      />
+
+       <pie-chart
+        v-if="loaded"
+        :chartdata="teste"
        />
-      
+       
   </div>
+        <h4>Faturamento anual</h4>
+        <table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Ano</th>
+      <th scope="col">Total das vendas</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr v-for="(f,i) in faturamento" :key="i">
+  
+      <td>{{f.ano}}</td>
+      <td>R$ {{f.total}},00</td>
+    
+    </tr>
+  </tbody>
+</table>
+      
 </div>
 
 </template>
@@ -49,24 +72,25 @@
 <script>
 import axios from 'axios'
 import { mapGetters} from 'vuex'
-import LineChart from './chart'
-//import axios from 'axios'
+import LineChart from './Linechart'
+import PieChart from './PieChart'
 import '../config/filterData'
 import moment from 'moment'
 export default {
     
 name: 'LineChartContainer',
-  components: { LineChart },
+  components: { LineChart,PieChart },
     data() {
       return{
 
         loaded: false,
-    chartdata: null
+        chartdata: null,
+        teste:null,
+        faturamento:null
       }
   },
     
    created(){
-    this.$store.dispatch('Category/setList'),
     this.$store.dispatch('Client/getClient'),
     this.$store.dispatch('Sale/getSales'),
     this.$store.dispatch('Product/getProducts')
@@ -75,7 +99,6 @@ name: 'LineChartContainer',
     computed:{
         ...mapGetters({
             Client:'Client/Client',
-            totalCategory:'Category/totalCategory',
             Product:'Product/Product',
             Sale:'Sale/Sale'
         }),
@@ -83,7 +106,7 @@ name: 'LineChartContainer',
 
       async mounted() {
       this.loaded = false;
-     await axios
+     /*await axios
       .get("http://localhost:8000/api/sales")
       .then(res => {
         this.abc = res.data
@@ -96,6 +119,7 @@ name: 'LineChartContainer',
           labels: this.abc.map(element => {
             return moment(element.dataVenda).format('DD/MM/YYYY')
           }),
+             backgroundColor: ['#C28535', '#8AAE56', '#B66C46'],
           datasets: [
             {
               label: "Vendas R$",
@@ -104,9 +128,8 @@ name: 'LineChartContainer',
               }),
 
                
-
-            
-              borderWidth: 2
+          backgroundColor: ['#C28535','#939', '#8AAE56', '#B66C46'],
+          //data: [this.one, this.two, this.three]
             }
           ]
         };
@@ -114,10 +137,82 @@ name: 'LineChartContainer',
       })
       .catch(err => {
         console.log(err);
-      });
-      
-  },
+      });*/
 
+    await axios
+      .get("http://localhost:8000/api/graficomensal")
+      .then(res => {
+        this.abc = res.data
+        console.log(this.abc.map((element) => {
+         return element.total
+        }))
+        this.loaded = true;
+        this.teste = {
+         // labels: [`total da venda dia ${res.data[0].dataVenda}`, `Female${res.data[1].dataVenda}`,'dsf'],
+          labels: this.abc.map(element => {
+            return element.mes
+          }),
+             backgroundColor: ['#939'],
+          datasets: [
+            {
+              label: "Vendas R$",
+              data: this.abc.map(element => {
+                return element.total 
+              }),
+
+               
+          backgroundColor: ['#C28535','#939', '#8AAE56', '#B66C46'],
+          //data: [this.one, this.two, this.three]
+            }
+          ]
+        };
+       
+      })
+
+     this.f()
+      this.relatorioAnual()
+  },
+  methods:{
+    relatorioAnual(){
+       axios.get("http://localhost:8000/api/graficoanual").then(res => {
+         this.faturamento = res.data
+         console.log(res.data)
+       })
+    },
+
+    async f(){
+        this.loaded = false;
+       await axios
+      .get("http://localhost:8000/api/sales")
+      .then(res => {
+        this.abc = res.data
+        console.log(this.abc.map((element) => {
+         return element.total
+        }))
+        this.loaded = true;
+        this.chartdata = {
+         // labels: [`total da venda dia ${res.data[0].dataVenda}`, `Female${res.data[1].dataVenda}`,'dsf'],
+          labels: this.abc.map(element => {
+           return moment(element.dataVenda).format('DD/MM/YYYY')
+          }),
+             backgroundColor: ['#939'],
+          datasets: [
+            {
+              label: "Vendas R$",
+              data: this.abc.map(element => {
+                return element.total 
+              }),
+
+               
+          backgroundColor: ['#C28535','#939', '#8AAE56', '#B66C46'],
+          //data: [this.one, this.two, this.three]
+            }
+          ]
+        };
+       
+      })
+    }
+  },
 }
 </script>
 
@@ -129,6 +224,7 @@ name: 'LineChartContainer',
     justify-content:center;
     align-items: center;
     margin-top: 13px;
+    margin-left: 100px;
   }
 
   div .painel{
@@ -137,5 +233,9 @@ name: 'LineChartContainer',
     justify-content:flex-start;
     align-items: center;
     height: 100px;
+  }
+
+  div.abc h4{
+    color: black;
   }
 </style>

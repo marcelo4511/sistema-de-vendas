@@ -1,9 +1,8 @@
 <template>
-  <aside v-if="!isMenuVisible">
-   
+  <aside >
      <ul class="title">
 
-       <router-link tag="span" to="/">
+       <router-link tag="span" to="/home">
         <li><i class="fa fa-home"></i> Home</li>
        </router-link>
 
@@ -22,18 +21,34 @@
        <router-link tag="span" to="/sales">
          <li><i class="fa fa-shopping-cart"></i>Vendas</li>
        </router-link>
-  <router-link to="/login"></router-link>
+  
+        <router-link tag="span" to="/users">
+          <li><i class="fa fa-user-friends" aria-hidden="true"></i> Usuários</li>
+        </router-link>
      </ul>
   </aside>
 </template>
 
 <script>
-import {mapState} from 'vuex'
+
+  import {mapGetters} from 'vuex'
 export default {
+  props:{
+    hideToggle:Boolean
+  },
+  computed:{
+   
+    
+    ...mapGetters('User',[
+      'isLogged'
+    ])
   
- computed:{
-   ...mapState(['isMenuVisible'])
- }
+ },
+  methods: {
+    logout () {
+       this.$store.dispatch('User/logout')
+    }
+  }
 }
 </script>
 <style>
@@ -51,7 +66,7 @@ export default {
       font-family: Arial, Helvetica, sans-serif;
       justify-content: flex-start;
       align-items: center;
-      text-align: center;
+      text-align: end;
       font-size: 25px;
       height: 80px;
       padding: 10px;

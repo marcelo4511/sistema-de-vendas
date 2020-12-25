@@ -1,22 +1,35 @@
 <template>
-  <div id="app" :class="{'hide-menu': isMenuVisible}">
+  <div id="app">
        
-     <Nav/>
-     <Header />
+    
+     <Nav v-show="isLogged"/>
+     <Header v-show="isLogged"/>
      <Main/>
-     <Footer/>
+     <Footer v-show="isLogged"/>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
  import Nav from './template/Nav'
  import Main from './template/Main'
  import Header from './template/Header'
  import Footer from './template/Footer'
- import {mapState} from 'vuex'
+
 export default {
   components: { Main,Nav,Header,Footer},
-  computed: mapState(['isMenuVisible']),
+  
+   computed: {
+    ...mapGetters('User',[
+      'isLogged'
+    ])
+  },
+  
+  methods: {
+    logout () {
+       this.$store.dispatch('User/logout')
+    }
+  }
 }
 </script>
 

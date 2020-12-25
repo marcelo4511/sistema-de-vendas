@@ -16,6 +16,9 @@ class Sale extends Model
 
     protected $table = 'sales';
     protected $date = 'dataVenda';
+    protected $casts = [
+        'dataVenda' => 'datetime:d-m-Y',
+    ];
     
     public function details_sales()
     {
@@ -35,5 +38,12 @@ class Sale extends Model
     public function situacao()
     {
         return $this->belongsTo(Situacao::class,'situacao_id');
+    }
+
+    public function setFirstNameAttribute($value)
+    {
+        $this->attributes['dataVenda'] = setLocale(LC_TIME,'pt_br','BRA');
+
+        strftime("%d %B %Y");
     }
 }

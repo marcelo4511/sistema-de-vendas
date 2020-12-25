@@ -3,7 +3,7 @@
   <h4 cabecalho="Produto">Categorias</h4>
 <nav aria-label="breadcrumb mb-4">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><router-link to="/">Home</router-link></li>
+    <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
   
     <li class="breadcrumb-item active" aria-current="page">Categorias</li>
   </ol>
@@ -29,7 +29,7 @@
                     <td>{{category.status}}</td>
                     <td>
                         
-                        <router-link :to="`/categoryedit/id/edit`" class="btn btn-warning"><i class="fa fa-pen"></i></router-link>
+                        <router-link :to="`/categoryedit/${category.id}/edit`" class="btn btn-warning"><i class="fa fa-pen"></i></router-link>
                         <button @click="removeList(category)" class="btn btn-danger ml-2"><i class="fa fa-trash"></i></button>
                     </td>
                   
@@ -42,7 +42,7 @@
 
 <script>
 import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
-import {mapState, mapActions, mapGetters} from 'vuex'
+import {mapState, mapActions} from 'vuex'
 import swal from 'sweetalert'
 export default {
  data(){
@@ -91,7 +91,6 @@ export default {
  
   computed: {
     ...mapState('Category',{list:state => state.list}),
-    ...mapGetters('Category',['total']),
         pesquisar:function() {
             return this.list.filter(l => {
                 return l.name.includes(this.pesquisa)

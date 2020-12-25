@@ -29,22 +29,47 @@ class SaleController extends Controller
 
     public function filter(){
         try{
-            
             $sales = Sale::with('details_sales','clients','details_sales.products')
-            ->whereHas('situacao',function($q) {
-                $q->whereSituacaoId(2);
+            ->whereHas('situacao',function($query) {
+                $query->whereSituacaoId(2);
             })
-            //->selectRaw('SUM(total) as total,monthname (dataVenda) as mes')->groupBy('mes')->get();
             ->whereMonth('dataVenda', Carbon::now()->month)
-            ->with(['details_sales'],function($q) {
-                $q->orderBy('products.name','asc');
+            ->whereHas('details_sales',function($query) {
+                $query->where('subtotal','>=',100);
+            })
+            ->with(['details_sales'],function($query) {
+                $query->orderBy('subtotal','desc');
             })
             ->orderBy('created_at','desc')
             ->get();
             return response()->json($sales,200);
         }catch(Exception $e){
-            return response()->json(['err' => $e->getMessage()]);
+            return response()->json(['err' => $e->getMessage()],400);
         }
+    }
+
+    public function graficoMensal()
+    {
+        DB::statement("SET lc_time_names = 'pt_PT'");
+        
+        $sales = Sale::whereHas('situacao',function($query) {
+                            $query->whereSituacaoId(2);
+                        })
+                        ->selectRaw('SUM(total) as total,monthname (dataVenda) as mes')
+                        ->groupBy('mes')
+                        ->get();
+        return response()->json($sales,200);
+    }
+
+    public function graficoAnual()
+    {
+        $sales = Sale::whereHas('situacao',function($query) {
+                            $query->whereSituacaoId(2);
+                        })
+                        ->selectRaw('SUM(total) as total,year (dataVenda) as ano')
+                        ->groupBy('ano')
+                        ->get();
+        return response()->json($sales,200);
     }
 
     public function store(Request $request)
@@ -52,7 +77,7 @@ class SaleController extends Controller
         
         try{
             $data = $request->all();
-            $data['dataVenda'] = Carbon::parse($data['dataVenda'])->format('d/m/Y');
+            //$data['dataVenda'] = Carbon::parse($data['dataVenda'])->format('d/m/Y');
             $data['situacao_id'] = 1;
             $venda = Sale::create($data);
             
@@ -225,6 +250,5 @@ class SaleController extends Controller
         }catch(Exception $e){
             return response()->json(['err' => $e->getMessage()]);
         }
-
     }
 }

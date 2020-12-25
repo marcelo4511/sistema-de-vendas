@@ -3,7 +3,7 @@
   <h4 cabecalho="Produto">Categorias</h4>
 <nav aria-label="breadcrumb mb-4">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><router-link to="/">Home</router-link></li>
+    <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
     
     <li class="breadcrumb-item active" aria-current="page">Categorias</li>
      <li class="breadcrumb-item"><router-link to="/categories/create">Criar</router-link></li>

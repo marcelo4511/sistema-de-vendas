@@ -1,4 +1,5 @@
 import Vue from 'vue'
+//import App from './App'
 import App from './App'
 import store from './store'
 import router from './config/routes'
@@ -6,6 +7,9 @@ import ChartKick from 'vue-chartkick'
 import Chart from 'chart.js'
 import VueNoty from 'vuejs-noty-fa';
 import money from 'v-money'
+import auth from './config/auth'
+import axios from 'axios'
+import './config/Api'
 
 import './config/filterData'
 import './config/messages'
@@ -35,5 +39,22 @@ Vue.use(VueNoty, {
 new Vue({
   render: h => h(App),
   store,
+  auth,
   router,
+  created () {
+    const userInfo = localStorage.getItem('user')
+    if (userInfo) {
+      const userData = JSON.parse(userInfo)
+      this.$store.commit('User/setUserData', userData)
+    }
+    axios.interceptors.response.use(
+      response => response,
+      error => {
+        if (error.response.status === 401) {
+          this.$store.dispatch('User/logout')
+        }
+        return Promise.reject(error)
+      }
+    )
+  },
 }).$mount('#app')

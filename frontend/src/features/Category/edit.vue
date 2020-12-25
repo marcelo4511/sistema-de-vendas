@@ -3,7 +3,7 @@
     <h4 cabecalho="Produto">Categorias</h4>
     <nav aria-label="breadcrumb mb-4">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><router-link to="/">Home</router-link></li>
+        <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
         <li class="breadcrumb-item"><router-link to="/categories">categorias</router-link></li>
       
         <li class="breadcrumb-item active" aria-current="page">Edit</li>
@@ -65,8 +65,7 @@ export default {
     methods:{
          onSubmit(){
               this.$store.dispatch('Category/updateList',this.category)
-              .then(res => {
-                     console.log(res.data)
+              .then(() => {
                     this.$noty.success("Cadastrado com sucesso!!") 
                     setTimeout(() => {
                         this.$router.push('/categories')

@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\User;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -14,7 +18,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        return response()->json(['message' => __METHOD__]);
+        $users = User::all();
+
+        return response()->json($users,200);
 
     }
 
@@ -24,10 +30,54 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function register(Request $request)
     {
-        return response()->json(['message' => __METHOD__]);
+        try{
+            $validate = Validator::make($request->all(),[
+                'name' => ['required'],
+                'email' => ['required','email','unique:users'],
+                'password' => ['required','min:6','confirmed'],
+                'password_conformation' => ['required']
+            ]);
+            if($validate->fails()){
+                response()->json(['errors' => $validate->errors()]);
+            }
+                
+                User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password)
+                ]);
+                return response()->json(['success' => 'OK'],200);
+        }catch(Exception $e) {
+            return response()->json(['err' => $e->getMessage()],400);
+        }
+    }
 
+    public function login(Request $request)
+    {
+        
+        $data = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+    
+        $user = User::where('email', $request->email)->first();
+    
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response([
+                'message' => ['These credentials do not match our records.']
+            ], 404);
+        }
+    
+        $token = $user->createToken('my-app-token')->plainTextToken;
+    
+        $response = [
+            'user' => $user,
+            'token' => $token
+        ];
+    
+        return response($response, 201);
     }
 
     /**
@@ -38,7 +88,8 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        return response()->json(['message' => __METHOD__]);
+        $user = User::find($id);
+        return response()->json(['status' => 'success','user' => $user->toArray()],200);
 
     }
 

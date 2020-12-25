@@ -3,7 +3,7 @@
     <h4 cabecalho="Produto">Vendas</h4>
         <nav aria-label="breadcrumb mb-4">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><router-link to="/">Home</router-link></li>
+                <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
                 
                 <li class="breadcrumb-item active" aria-current="page">Vendas</li>
             </ol>

@@ -7,14 +7,14 @@ const POST_SALES = (state, sale) => {
 }
 
 
-const REMOVE_LIST = (state, category) => {
-    var naoaguento = state.list.find(l => l.id == category)
-    state.list.splice(naoaguento,1)
+const REMOVE_LIST = (state, sale) => {
+    var remove = state.list.find(l => l.id == sale)
+    state.list.splice(remove,1)
 
 }
 
-const UPDATE_LIST = (state,category) => {
-     state.list.forEach(l => l.id === category.id)
+const UPDATE_LIST = (state,sale) => {
+     state.list.forEach(l => l.id === sale.id)
            
 }
 export default{

@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\User;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -14,40 +14,39 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('auth')->group(function () {
-    Route::post('register', 'AuthController@register');
-    Route::post('login', 'AuthController@login');
-    Route::get('refresh', 'AuthController@refresh');
-    
-    Route::group(['middleware' => 'auth:api'], function(){
-        Route::get('user', 'AuthController@user');
-        Route::post('logout', 'AuthController@logout');
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
+    Route::namespace('Api')->group(function(){
+        Route::post('/login', 'UserController@login');
+        Route::post('/register', 'UserController@register');
     });
-});
 
-//Products Route
-Route::namespace('Api')->group(function(){
-    Route::get('/products','ProductController@index');
-    Route::get('/products/{id}','ProductController@show');
-    Route::post('/products','ProductController@save');
-    Route::put('/products/{id}','ProductController@update');
-    Route::delete('/products/{id}','ProductController@delete');
-
-    Route::get('/categories','CategoryController@index');
-    Route::get('/categories/{id}','CategoryController@show');
-    Route::post('/categories','CategoryController@save');
-    Route::put('/categories/{id}','CategoryController@update');
-    Route::delete('/categories/{id}','CategoryController@delete');
-
-    Route::resource('users','UserController');
-
-    Route::resource('clients','ClientController');
-
-    Route::resource('sales','SaleController');
-    Route::delete('/detalhesdelete/{id}','SaleController@deleteDetalhe');
-    Route::get('relatorioexcel','SaleController@relatorioexcel');
-    Route::get('relatoriopdf','SaleController@relatoriopdf');
-    Route::get('relatoriopdfdetalhes/{id}','SaleController@relatoriopdfDetails');
-    Route::post('aprovar/{id}','SaleController@aprovacao');
-    Route::get('filtrar','SaleController@filter');
-});
+    Route::namespace('Api')->middleware('auth:sanctum')->group(function(){
+        Route::get('/products','ProductController@index');
+        Route::get('/products/{id}','ProductController@show');
+        Route::post('/products','ProductController@save');
+        Route::put('/products/{id}','ProductController@update');
+        Route::delete('/products/{id}','ProductController@delete');
+        
+        Route::get('/categories','CategoryController@index');
+        Route::get('/categories/{id}','CategoryController@show');
+        Route::post('/categories','CategoryController@save');
+        Route::put('/categories/{id}','CategoryController@update');
+        Route::delete('/categories/{id}','CategoryController@delete');
+        
+        Route::resource('clients','ClientController');
+        Route::get('/users','UserController@index');
+        
+        Route::resource('sales','SaleController');
+        Route::delete('/detalhesdelete/{id}','SaleController@deleteDetalhe');
+        Route::get('relatorioexcel','SaleController@relatorioexcel');
+        Route::get('relatoriopdf','SaleController@relatoriopdf');
+        Route::get('relatoriopdfdetalhes/{id}','SaleController@relatoriopdfDetails');
+        Route::post('aprovar/{id}','SaleController@aprovacao');
+        Route::get('filtrar','SaleController@filter');
+        Route::get('graficomensal','SaleController@graficoMensal');
+        Route::get('graficoanual','SaleController@graficoAnual');
+    });

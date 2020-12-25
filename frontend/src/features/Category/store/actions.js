@@ -1,7 +1,8 @@
 import axios from 'axios'
+import { API_BASE_URL } from '../../../config/Api'
 
  const setList = ({commit}) => {
-   axios.get('http://127.0.0.1:8000/api/categories')
+   axios.get(`${API_BASE_URL}/categories`)
    .then(resposta => {
        console.log(resposta.data)
        commit('SET_LIST',resposta.data)
@@ -9,7 +10,7 @@ import axios from 'axios'
 }
 
 const showList = async( { commit }, category) => {
-    await axios.get(`http://127.0.0.1:8000/api/categories/${category.id}`,category)
+    await axios.get(`${API_BASE_URL}/categories/${category.id}`,category)
     .then(resposta =>{
         console.log(resposta.data)
     })
@@ -17,7 +18,7 @@ const showList = async( { commit }, category) => {
 }
 
 const postList = ({commit},category) => {
-    axios.post('http://127.0.0.1:8000/api/categories',category)
+    axios.post(`${API_BASE_URL}/categories`,category)
   
         .then(() => { 
             commit('POST_LIST',category)
@@ -25,13 +26,13 @@ const postList = ({commit},category) => {
 }
 
 const removeList = ({commit}, category) => {
-    axios.delete(`http://127.0.0.1:8000/api/categories/${category.id}`)
+    axios.delete(`${API_BASE_URL}/categories/${category.id}`)
        .then((response) =>{
            commit('REMOVE_LIST', response.data)
        })
 }
 const updateList = async( { commit }, category) => {
-     await axios.put(`http://127.0.0.1:8000/api/categories/${category.id}`,category)
+     await axios.put(`${API_BASE_URL}/categories/${category.id}`,category)
      .then(resposta =>{
          console.log(resposta.data)
      })
