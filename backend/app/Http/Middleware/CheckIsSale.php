@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 
-class CheckisAdmin
+class CheckIsSale
 {
     /**
      * Handle an incoming request.
@@ -16,7 +16,7 @@ class CheckisAdmin
      */
     public function handle($request, Closure $next)
     {
-        if(Auth::check() && Auth::user()->type_user_id === 1) {
+        if(Auth::check() && Auth::user()->type_user_id === 3 || Auth::check() && Auth::user()->type_user_id == 1 || Auth::check() && Auth::user()->type_user_id == 2) {
             return $next($request);
         } else {
             return response()->json(['error' => 'Unauthorized'],403);

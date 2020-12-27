@@ -20,7 +20,10 @@ import Sales from '../features/Sale/index'
 import SalesCreate from '../features/Sale/create'
 import SalesEdit from '../features/Sale/edit'
 import SalesShow from '../features/Sale/show'
+import Vendas from '../features/Sale/vendas'
+import Aprovadas from '../features/Sale/aprovadas'
 import Users from '../features/User/index'
+import Perfil from '../template/Perfil'
 // 
 Vue.use(VueRouter)
 const routes = [
@@ -29,7 +32,7 @@ const routes = [
     path: '/products',
     component:Product,
     meta: {
-        auth: true
+        auth: true, role:2
     },
 },{
     name:'productCreate',
@@ -105,6 +108,20 @@ const routes = [
         auth: true
     },
 },{
+    name:'vendas',
+    path:'/vendas',
+    component:Vendas,
+    meta: {
+        auth: true
+    },
+},{
+    name:'aprovadas',
+    path:'/aprovadas',
+    component:Aprovadas,
+    meta: {
+        auth: true
+    },
+},{
     name:'salescreate',
     path:'/sales/create',
     component:SalesCreate,
@@ -134,6 +151,13 @@ const routes = [
     meta: {
         auth: true
     },                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+},{
+    name:'perfil',
+    path:'/perfil',                                                                                                                                                                                                                       
+    component:Perfil,
+    meta: {
+        auth: true
+    },
 }
 //rotas nao autenticadas 
 

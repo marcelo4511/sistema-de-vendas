@@ -17,13 +17,13 @@ class UsersTableSeeder extends Seeder
             'name' => 'Admin',
             'email' => 'admin@test.com',
             'password' => Hash::make('admin'),
-            'role' => 2
+            'type_user_id' => 1
         ]);
         DB::table('users')->insert([
             'name' => 'User',
             'email' => 'user@test.com',
             'password' => Hash::make('secret'),
-            'role' => 1
+            'type_user_id' => 2
         ]);
     }
 }

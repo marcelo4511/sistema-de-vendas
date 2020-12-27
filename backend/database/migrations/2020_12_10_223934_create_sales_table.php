@@ -24,6 +24,9 @@ class CreateSalesTable extends Migration
             $table->unsignedInteger('situacao_id');
             $table->foreign('situacao_id')->references('id')->on('situacao')->onDelete('cascade');
 
+           // $table->unsignedBigInteger('user_id');
+            //$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->nullable();
+
             $table->timestamps();
         });
     }

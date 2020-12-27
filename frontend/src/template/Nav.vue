@@ -1,6 +1,9 @@
 <template>
   <aside >
      <ul class="title">
+       <div v-for="(u,k) in user" :key="k">
+
+         <div v-if="u.type_user_id == 1">
 
        <router-link tag="span" to="/home">
         <li><i class="fa fa-home"></i> Home</li>
@@ -25,13 +28,30 @@
         <router-link tag="span" to="/users">
           <li><i class="fa fa-user-friends" aria-hidden="true"></i> Usuários</li>
         </router-link>
+         </div>
+
+          <div v-if="u.type_user_id == 2">
+            <router-link tag="span" to="/aprovadas">
+              <li><i class="fa fa-shopping-cart"></i>Vendas</li>
+            </router-link>
+            </div>
+
+            <div v-if="u.type_user_id == 3">
+            <router-link tag="span" to="/products">
+          <li><i class="fa fa-shopping-bag" aria-hidden="true"></i> Produtos</li>
+        </router-link>
+
+         <router-link tag="span" to="/vendas">
+         <li><i class="fa fa-shopping-cart"></i>Vendas</li>
+       </router-link>
+            </div>
+       </div>
      </ul>
   </aside>
 </template>
 
 <script>
-
-  import {mapGetters} from 'vuex'
+  import {mapGetters, mapState} from 'vuex'
 export default {
   props:{
     hideToggle:Boolean
@@ -41,14 +61,18 @@ export default {
     
     ...mapGetters('User',[
       'isLogged'
-    ])
+    ]),
+   ...mapState('User',{user:state => state.user}),
+
   
  },
   methods: {
     logout () {
        this.$store.dispatch('User/logout')
-    }
-  }
+    },
+   
+  },
+  
 }
 </script>
 <style>

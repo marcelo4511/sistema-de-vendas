@@ -1,5 +1,5 @@
 import Vue from 'vue'
-//import App from './App'
+
 import App from './App'
 import store from './store'
 import router from './config/routes'
@@ -25,7 +25,7 @@ import 'font-awesome/css/font-awesome.css'
 Vue.use(money, {precision: 2})
 Vue.use(ChartKick.use(Chart))
 Vue.config.productionTip = false
-
+//Vue.use(VueAuth, auth)
 Vue.use(VueNoty, {
   timeout: 4000,
   progressBar: true,
@@ -50,8 +50,8 @@ new Vue({
     axios.interceptors.response.use(
       response => response,
       error => {
-        if (error.response.status === 401) {
-          this.$store.dispatch('User/logout')
+        if (error.response.status === 403) {
+         // this.$store.dispatch('User/logout')
         }
         return Promise.reject(error)
       }

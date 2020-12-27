@@ -13,7 +13,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password','type_user_id'
     ];
     /**
      * The attributes that should be hidden for arrays.
@@ -32,5 +32,10 @@ class User extends Authenticatable
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function tipo_usuario()
+    {
+        return $this->belongsTo(TypeUser::class,'type_user_id');
     }
 }

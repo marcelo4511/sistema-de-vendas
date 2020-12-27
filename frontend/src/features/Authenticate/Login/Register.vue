@@ -11,6 +11,12 @@
         <input type="text" name="name" v-model="form.name" required class="form-control"><br>
         <label>Email</label>
         <input type="email" name="email" v-model="form.email" required class="form-control"><br>
+
+         <label for="">TIpo de usuário</label>
+                <select class="form-control col-12" v-model="form.type_user_id">
+                    <option selected disabled value=null>Selecione</option>
+                    <option  v-for="(category, key) in typeuser" :key="key" :value="category.id">{{category.descricao}}</option>
+                </select><br>
          <label>Confirmação senha</label>
         <input type="password" name="password_conformation" v-model="form.password_conformation" required class="form-control"><br>
         <label>Senha</label>
@@ -30,13 +36,16 @@ export default {
       form:{
         name:'',
         email: '',
-
+        type_user_id:'',
       password: '',
       password_confirmation:''
-      }
+      },
+      typeuser:[],
     }
   },
-
+  created(){
+    this.getTypeuser()
+  },
   methods: {
     register () {
         axios.post('http://localhost:8000/api/register',this.form).then(res => {
@@ -44,6 +53,11 @@ export default {
           this.$router.push('/')
           this.$noty.success("Usuário cadastrado com sucesso!.");
         })
+    },
+    getTypeuser(){
+      axios.get('http://localhost:8000/api/typeuser').then(res => {
+        this.typeuser = res.data
+      })
     }
   }
 }

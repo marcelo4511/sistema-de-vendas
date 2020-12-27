@@ -184,6 +184,7 @@ export default {
                 swal("Venda continua a esperar o pagamento");
             }
             this.$router.push('/sales')
+            //return(window.location.href=`${this.baseURL}/proposta/listar`);
             });
                
         },

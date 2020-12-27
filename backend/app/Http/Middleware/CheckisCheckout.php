@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 
-class CheckisAdminOrSelf
+class CheckisCheckout
 {
     /**
      * Handle an incoming request.
@@ -18,7 +18,7 @@ class CheckisAdminOrSelf
     {
        
 
-        if(Auth::user()->role === 1) {
+        if(Auth::check() && Auth::user()->type_user_id === 2 || Auth::check() && Auth::user()->type_user_id == 1 || Auth::check() && Auth::user()->type_user_id == 3) {
             return $next($request);
         } else {
             return response()->json(['error' => 'Unauthorized'],403);

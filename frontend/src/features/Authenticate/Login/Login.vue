@@ -32,17 +32,19 @@ export default {
   methods: {
     login () {
       this.loading = true
-      this.$noty.success('Bem vindo ao sistema!')
+      
       this.$store
         .dispatch('User/login', {
           email: this.email,
           password: this.password
         })
        .then(()=>{
-           this.$router.push('/home')
+         this.$noty.success('Bem vindo ao sistema!')
+           this.$router.push('/perfil')
        }).catch(err => {
          console.log(err)
          this.$noty.info('houve um problema na altenticação')
+         this.loading = false
        })
     },
   },

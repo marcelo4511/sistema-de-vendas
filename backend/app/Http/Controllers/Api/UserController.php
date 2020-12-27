@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\TypeUser;
 use App\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -18,7 +20,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        $users = User::with('tipo_usuario')->get();
 
         return response()->json($users,200);
 
@@ -36,6 +38,7 @@ class UserController extends Controller
             $validate = Validator::make($request->all(),[
                 'name' => ['required'],
                 'email' => ['required','email','unique:users'],
+                'type_user_id' => ['required'],
                 'password' => ['required','min:6','confirmed'],
                 'password_conformation' => ['required']
             ]);
@@ -46,6 +49,7 @@ class UserController extends Controller
                 User::create([
                 'name' => $request->name,
                 'email' => $request->email,
+                'type_user_id' => $request->type_user_id,
                 'password' => Hash::make($request->password)
                 ]);
                 return response()->json(['success' => 'OK'],200);
@@ -86,10 +90,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show()
     {
-        $user = User::find($id);
-        return response()->json(['status' => 'success','user' => $user->toArray()],200);
+        $user = Auth::user();
+        return response()->json(['status' => 'success','user' => $user],200);
 
     }
 
@@ -102,7 +106,27 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return response()->json(['message' => __METHOD__]);
+        try{
+            $validate = Validator::make($request->all(),[
+                'name' => ['required'],
+                'email' => ['required','email','unique:users'],
+                'password' => ['required','min:6','confirmed'],
+                'password_conformation' => ['required']
+            ]);
+            if($validate->fails()){
+                response()->json(['errors' => $validate->errors()]);
+            }
+                //$data = $request->all();
+                $user = User::findOrFail($id);
+                $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password)
+                ]);
+                return response()->json(['success' => 'OK'],200);
+        }catch(Exception $e) {
+            return response()->json(['err' => $e->getMessage()],400);
+        }
 
     }
 
@@ -115,5 +139,11 @@ class UserController extends Controller
     public function destroy($id)
     {
         return response()->json(['message' => __METHOD__]);
+    }
+
+    public function listar()
+    {
+        $typeuser = TypeUser::select('id','descricao')->whereNotIn('id',[1])->get();
+        return response()->json($typeuser,200);
     }
 }

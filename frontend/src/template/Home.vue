@@ -59,7 +59,7 @@
     <tr v-for="(f,i) in faturamento" :key="i">
   
       <td>{{f.ano}}</td>
-      <td>R$ {{f.total}},00</td>
+      <td>{{f.total}}</td>
     
     </tr>
   </tbody>
@@ -148,7 +148,6 @@ name: 'LineChartContainer',
         }))
         this.loaded = true;
         this.teste = {
-         // labels: [`total da venda dia ${res.data[0].dataVenda}`, `Female${res.data[1].dataVenda}`,'dsf'],
           labels: this.abc.map(element => {
             return element.mes
           }),
@@ -157,12 +156,11 @@ name: 'LineChartContainer',
             {
               label: "Vendas R$",
               data: this.abc.map(element => {
-                return element.total 
+                return element.teste 
               }),
 
                
           backgroundColor: ['#C28535','#939', '#8AAE56', '#B66C46'],
-          //data: [this.one, this.two, this.three]
             }
           ]
         };

@@ -10,8 +10,10 @@ use App\FormaPagamento;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
+use App\User;
 use PDF;
 
 class SaleController extends Controller
@@ -22,7 +24,7 @@ class SaleController extends Controller
         $sales = DB::table('sales')
             ->join('clients', 'clients.id', '=', 'sales.client_id')
             ->join('situacao', 'situacao.id', '=', 'sales.situacao_id')
-            ->select('sales.id','sales.dataVenda','sales.total','sales.client_id', 'clients.name','situacao.descricao','sales.situacao_id')
+            ->select('sales.id','sales.dataVenda','sales.total','sales.client_id','clients.name','situacao.descricao','sales.situacao_id')
             ->get();
         return response()->json($sales);
     }
@@ -55,7 +57,7 @@ class SaleController extends Controller
         $sales = Sale::whereHas('situacao',function($query) {
                             $query->whereSituacaoId(2);
                         })
-                        ->selectRaw('SUM(total) as total,monthname (dataVenda) as mes')
+                        ->selectRaw('SUM(total) as teste,monthname (dataVenda) as mes')
                         ->groupBy('mes')
                         ->get();
         return response()->json($sales,200);
@@ -69,7 +71,7 @@ class SaleController extends Controller
                         ->selectRaw('SUM(total) as total,year (dataVenda) as ano')
                         ->groupBy('ano')
                         ->get();
-        return response()->json($sales,200);
+        return response()->json( $sales,200);
     }
 
     public function store(Request $request)
@@ -79,6 +81,7 @@ class SaleController extends Controller
             $data = $request->all();
             //$data['dataVenda'] = Carbon::parse($data['dataVenda'])->format('d/m/Y');
             $data['situacao_id'] = 1;
+            //$data['user_id'] = Auth::check() && Auth::user()->id;
             $venda = Sale::create($data);
             
            if(!empty($data['details_sales']) && $data['details_sales'] > 0){
@@ -246,6 +249,20 @@ class SaleController extends Controller
             $venda = Sale::select('id','situacao_id')->find($id);
             $venda['situacao_id'] = 2;
             $venda->update();
+            return response()->json($venda,200);
+        }catch(Exception $e){
+            return response()->json(['err' => $e->getMessage()]);
+        }
+    }
+
+    public function aprovadas()
+    {
+        try{
+            $venda = Sale::with('clients','details_sales')->get()
+                            ->whereHas('situacao',function($query) {
+                                $query->whereSituacaoId(2);
+                            })
+                            ->get();
             return response()->json($venda,200);
         }catch(Exception $e){
             return response()->json(['err' => $e->getMessage()]);

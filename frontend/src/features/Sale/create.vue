@@ -180,6 +180,7 @@ export default {
       console.log(res.data)
       this.$noty.success("Cadastrado com sucesso!!") 
       this.$router.push('/sales')
+    
     })
   },
     

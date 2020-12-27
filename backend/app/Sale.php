@@ -11,14 +11,11 @@ class Sale extends Model
         'dataVenda',
         'total',
         'client_id',
-        'situacao_id'
+        'situacao_id',
     ];
 
     protected $table = 'sales';
     protected $date = 'dataVenda';
-    protected $casts = [
-        'dataVenda' => 'datetime:d-m-Y',
-    ];
     
     public function details_sales()
     {
@@ -40,10 +37,13 @@ class Sale extends Model
         return $this->belongsTo(Situacao::class,'situacao_id');
     }
 
-    public function setFirstNameAttribute($value)
+    public function getTotalAttribute($total)
     {
-        $this->attributes['dataVenda'] = setLocale(LC_TIME,'pt_br','BRA');
-
-        strftime("%d %B %Y");
+        return $this->attributes['total'] = sprintf('R$ %s', number_format($this->attributes['total'], 2,",","."));
     }
+
+    //public function user()
+    //{
+   //     return $this->belongsTo(User::class,'user_id');
+   // }
 }
