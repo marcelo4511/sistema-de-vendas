@@ -11,7 +11,7 @@
       <div class="form-row">
           <div @submit.prevent="abc" class="form-group col-md-6">
           <label for="">Clientes</label>
-          <select class="form-control" v-model="client_id" required>
+          <select class="form-control" required v-model="client_id" >
               <option selected disabled value="">selecione</option>
               <option   v-for="(client,k) in clients" v-show="client.status == 'Ativo'" :key="k"  :value="client.id">{{client.name}}</option>
           </select>
@@ -19,7 +19,7 @@
           
           <div class="form-group col-md-6">
             <label for="">Data da Venda</label>
-            <input type="date" v-model="datavenda" required class="form-control">
+            <input type="date" required v-model="datavenda" class="form-control">
           </div>
       
       <fieldset class="m-3">
@@ -40,7 +40,7 @@
           <tr v-for="detalheVenda of details_sales" :key="detalheVenda.id">
             
             <td>
-             <select class="form-control" v-model="detalheVenda.product_id" required>
+             <select class="form-control" required v-model="detalheVenda.product_id" >
                <option v-for="(product) in products" :key="product.id" v-show="product.status == 'Ativo'" :value="product.id">{{product.name}}</option>
 
              </select>
@@ -78,7 +78,7 @@
             <div class="row">
               <div class="form-group m-2">
                 <label for="">Forma de Pagamento</label>
-                <select type="text" class="form-control" v-model="formapagamento.tipo_forma_pagamento" required>
+                <select type="text" class="form-control" required v-model="formapagamento.tipo_forma_pagamento" >
                   <option disabled selected value="null">Selecione</option>
                   <option value="0">Boleto bancário</option>
                   <option value="1">A vista</option>
@@ -110,6 +110,10 @@
                 <label for="">Entrada</label>
                 <input type="text" class="form-control" v-show="formapagamento.tipo_forma_pagamento == '2'"  v-model="formapagamento.entrada" placeholder="0,00">
                 <input type="text" class="form-control" v-show="formapagamento.tipo_forma_pagamento !== '2'" disabled  v-model="formapagamento.entrada" placeholder="0,00">
+              </div>
+
+              <div v-show="formapagamento.tipo_forma_pagamento == '2'">
+                <p>teste de exibicao</p>
               </div>
             </div>
           </div>
@@ -161,13 +165,17 @@ export default {
     }
   },
   created(){
-    //this.getProducts(),
+    this.getProducts(),
     this.$store.dispatch('Client/getClient')
     this.$store.dispatch('Product/getProducts')
     
   },
   methods:{
-  
+  getProducts(){
+    axios.get("http://localhost:8000/api/products").then(res => {
+          this.details_sales.price = res.data.price
+        })
+  },
   onSubmit(){
     axios.post('http://localhost:8000/api/sales',{
         client_id:this.client_id,
@@ -176,10 +184,15 @@ export default {
         details_sales:this.details_sales,
         formapagamento:this.formapagamento
     }).then(res => {
-      console.log(this.details_sales);
-      console.log(res.data)
-      this.$noty.success("Cadastrado com sucesso!!") 
-      this.$router.push('/sales')
+      let usuario = res.data.resultado.user_id
+      console.log(usuario)
+      this.$noty.success("Cadastrado com sucesso!!")
+      if(usuario === 1) {
+        return this.$router.push('/sales')
+
+      }else {
+      return  this.$router.push('/vendas')
+      }
     
     })
   },
@@ -224,8 +237,7 @@ export default {
     exportPdfSale(){
        
             axios.get("http://localhost:8000/api/details")
-            .then(function(res){
-            console.log(res.data)
+            .then(function(){
             })
 
             let columns = [

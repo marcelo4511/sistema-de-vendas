@@ -17,8 +17,12 @@
                     <option  disabled selected value="">Buscar por categorias</option>
                     <option  v-for="(category, key) in list" v-show="category.status == 'Ativo'" :key="key" :value="category.id">{{category.name}}</option>
             </select>
-            <input type="text" class="form-control col-3 mr-3" placeholder="Buscar por nome do produto" style="float:right;" v-model="pesquisa" >
-      <button class="btn btn-primary"><router-link tag="span" to="products/create">Cadastrar</router-link></button>
+           
+                <input type="text" class="form-control col-3 mr-3" placeholder="Buscar por nome do produto" style="float:right;" v-model="pesquisa" >
+           
+            <div v-for="(u,k) in user" :key="k">
+                <button class="btn btn-primary" v-show="u.type_user_id  == 1"><router-link tag="span" to="products/create">Cadastrar</router-link></button>
+            </div>
           </div>
       </div>
 
@@ -31,41 +35,27 @@
                 <th scope="col">Descrição</th>
                 <th scope="col">Categorias</th>
                 <th scope="col">Preco</th>
-                <th scope="col">Quantidade</th>
-                <th scope="col">Subtotal</th>
                 <th scope="col">Status</th>
-                <th scope="col">Ação</th>
             </tr>
         </thead>
         <tbody>
             <tr v-for="product of pesquisar" :key="product.id">
-                <td><img :src=product.imagem alt=""></td>
+                <td><img :src=product.name alt="imagem"></td>
                 <td>{{product.name}}</td>
                 <td>{{product.description}}</td>
                 <td>{{product.categories.name}}</td>
-                <td>R$ {{product.price}}</td>
-                <td>{{product.amount}}</td>
-                <td>R$ {{product.subtotal}}</td>
+                <td>{{product.price}}</td>
                 <td>{{product.status}}</td>
                 
-                <td>
-                    <router-link :to="`/products/${product.id}/edit`" class="btn btn-warning m-1"><i class="fa fa-pen"></i></router-link>
-                    <button class="btn btn-danger" @click="removeClient(product)"> <i class="fa fa-trash"></i> </button>
+                <td v-for="(u,k) in user" :key="k">
+                    <div v-show="u.type_user_id === 1">
+                        <router-link :to="`/products/${product.id}/edit`" class="btn btn-warning m-1"><i class="fa fa-pen"></i></router-link>
+                        <button class="btn btn-danger" @click="removeClient(product)"> <i class="fa fa-trash"></i> </button>
+                    </div>
                 </td>
             </tr>
         </tbody>
         <hr>
-        <tfoot>
-            <tr>
-                <th scope="col">Total</th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th scope="">R$ {{totalizar}}</th>
-            </tr>
-        </tfoot>
     </table> 
 
 
@@ -74,7 +64,7 @@
 
 <script>
 import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
-import {mapState,mapActions} from 'vuex'
+import {mapState,mapActions,mapGetters} from 'vuex'
 import axios from 'axios'
 import swal from 'sweetalert'
 import '../../estilos/styles.css'
@@ -97,8 +87,6 @@ export default {
             isEdit:false,
             pesquisa:[], 
             searchCategory:[],
-            total:0,
-            count:0,
       };
       
     },
@@ -142,9 +130,6 @@ export default {
                 console.log(resposta.data)
             })
         },
-        quantificar(product) {
-            product.subtotal = parseFloat(product.price) * parseInt(product.amount)
-        },
         
     },
     
@@ -153,16 +138,14 @@ export default {
         ...mapState('Category',{list:state => state.list}),
         ...mapState('Product',{products:state => state.products}),
 
+        ...mapState('User',{user:state => state.user}),
+        ...mapGetters('User',['isLogged']),
+
         pesquisar:function() {
             return this.products.filter(product => {
                 return product.name.includes(this.pesquisa)
-                //&& product.category_id.includes(this.searchCategory)
+                || product.category_id.includes(this.searchCategory)
             })
-        },
-        totalizar:function() {
-             return  this.products.reduce((total,product) => {
-                return (parseFloat(total) + parseFloat(product.subtotal)).toFixed(2).replace('.',',')
-            },0)
         },
     },
     

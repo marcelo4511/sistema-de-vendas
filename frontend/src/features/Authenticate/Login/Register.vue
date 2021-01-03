@@ -2,27 +2,77 @@
 
 <template>
 
-   <div class="plano-de-fundo">
-    <fieldset class="form-group col-md-6">
+   <div >
+    <fieldset class="form-group">
       <h4 class="titulo"><i class="fa fa-user">  </i> Sistema de vendas </h4>
     <form @submit.prevent="register">
-      <div class="form-group">
-        <label>Nome</label>
-        <input type="text" name="name" v-model="form.name" required class="form-control"><br>
-        <label>Email</label>
-        <input type="email" name="email" v-model="form.email" required class="form-control"><br>
 
-         <label for="">TIpo de usuário</label>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label>Nome</label>
+          <input type="text" name="name" v-model="form.name" required class="form-control col-md-auto ">
+        </div>
+
+        <div class="form-group col-md-6">
+
+          <label>Email</label>
+          <input type="email" name="email" v-model="form.email" required class="form-control col-md-auto ">
+        </div>
+      </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-6">
+
+              <label for="">TIpo de usuário</label>
                 <select class="form-control col-12" v-model="form.type_user_id">
                     <option selected disabled value=null>Selecione</option>
                     <option  v-for="(category, key) in typeuser" :key="key" :value="category.id">{{category.descricao}}</option>
-                </select><br>
-         <label>Confirmação senha</label>
-        <input type="password" name="password_conformation" v-model="form.password_conformation" required class="form-control"><br>
-        <label>Senha</label>
-        <input type="password" name="password" v-model="form.password" required class="form-control"><br>
-        <button class="btn btn-primary">Entrar</button><br><br>
+                </select>
+            </div>
+
+            <div class="form-group col-md-6">
+
+              <label>Confirmação senha</label>
+                <input type="password" name="password_conformation" v-model="form.password_conformation" required class="form-control">
+            </div>
+          </div>
+
+            <div class="form-group col-md-6">
+
+              <label>Senha</label>
+              <input type="password" name="password" v-model="form.password" required class="form-control">
+            </div>
+
+            <div class="form-row">
+        <div class="form-group col-md-6"> 
+          <label>Data de nascimento</label>
+          <input type="date" name="date" v-model="form.data_nasc" required class="form-control col-md-auto ">
+        </div>
+
+        <div class="form-group col-md-6">
+
+          <label>Gênero</label>
+          <select class="form-control col-12" v-model="form.gender">
+              <option selected disabled value=null>Selecione</option>
+              <option value="Masculino">Masculino</option>
+              <option value="Feminino">Feminino</option>
+          </select>
+        </div>
       </div>
+
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label>Sobre</label>
+          <input type="text" name="name" v-model="form.about" required class="form-control col-md-auto ">
+        </div>
+
+        <div class="form-group col-md-6">
+
+          <label>Telefone</label>
+          <input type="text" name="email" v-model="form.phone" required class="form-control col-md-auto ">
+        </div>
+      </div>
+        <button class="btn btn-primary">Entrar</button><br><br>
     </form>
       </fieldset>
   </div>
@@ -37,8 +87,13 @@ export default {
         name:'',
         email: '',
         type_user_id:'',
-      password: '',
-      password_confirmation:''
+        password: '',
+        password_confirmation:'',
+
+        data_nasc:'',
+        gender:'',
+        about:'',
+        phone:''
       },
       typeuser:[],
     }

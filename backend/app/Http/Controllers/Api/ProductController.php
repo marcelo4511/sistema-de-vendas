@@ -30,23 +30,12 @@ class ProductController extends Controller
 
     public function save(Request $request)
     {
-       
-        //if($request->hasFile('image')) {
-        //    $product = $request->file('imagem');
-        //    $imageName = $request->imagem->getClientOriginalName();
-        //    Storage::disk('public')->put('images/'.$imageName)
-        //}
-        $product = new Product();
-        $product->name = $request->input('name');
-        $product->description = $request->input('description');
-        $product->price = $request->input('price');
-        $product->amount = $request->input('amount');
-        $product->subtotal = $request->input('subtotal');
-        $product->imagem = $request->input('imagem');
-        $product->category_id = $request->input('category_id');
-        $product->status = $request->input('status');
-        $product->save();
-        return response()->json($product);
+        $product = $request->all();
+        $teste = $request->file('imagem')->getClientOriginalName();
+        $request->file('imagem')->move(public_path("/"),$teste);
+        $photo = url('/'.$teste);
+        Product::create($product);
+        return response()->json(['sucess'=>$product,'url'=> $photo],200);
     }
 
     public function update(Request $request,$id) 

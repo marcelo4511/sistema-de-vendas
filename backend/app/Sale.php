@@ -12,6 +12,7 @@ class Sale extends Model
         'total',
         'client_id',
         'situacao_id',
+        'user_id'
     ];
 
     protected $table = 'sales';
@@ -37,13 +38,14 @@ class Sale extends Model
         return $this->belongsTo(Situacao::class,'situacao_id');
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class,'user_id');
+    }
+
     public function getTotalAttribute($total)
     {
         return $this->attributes['total'] = sprintf('R$ %s', number_format($this->attributes['total'], 2,",","."));
     }
 
-    //public function user()
-    //{
-   //     return $this->belongsTo(User::class,'user_id');
-   // }
 }

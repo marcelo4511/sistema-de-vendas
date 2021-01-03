@@ -43,19 +43,8 @@
             
         <div class="form-group col-md-3">
          <label for="">Preço</label>
-         <input type="text" name="price" v-money="money" class="form-control col-md-auto" required @change="quantificar(product)" v-model="product.price">
+         <input type="text" name="price" v-money="money" class="form-control col-md-auto" required v-model="product.price">
         </div>  
-        
-
-       <div class="form-group col-md-3">
-        <label for="">Quantidade</label>
-        <input type="decimal" name="amount" required  class="form-control col-md-auto" @change="quantificar(product)" v-model="product.amount">
-       </div>   
-     
-      <div class="form-group col-md-3">
-        <label for="">Subtotal</label>
-        <input type="text" name="subtotal" required  class="form-control col-md-auto" @change="quantificar(product)" v-model="product.subtotal">
-      </div> 
 
        <div class="form-group col-md-3">
                 <label for="">Status</label>
@@ -88,8 +77,7 @@ export default {
                 name:'',
                 description:'',
                 image:'',
-                subtotal:'',
-                amount:'',
+                price:'',
                 status:''
             },
             produtos:[],
@@ -139,10 +127,6 @@ export default {
                 console.log('errrou',e)
                 })
         },
-    
-        quantificar(product) {
-            product.subtotal = parseFloat(product.price) * parseInt(product.amount) || 0
-        },
         
     },
     
@@ -150,12 +134,6 @@ export default {
     computed:{
         ...mapState('Product',{products:state => state.products}),
         ...mapState('Category',{list:state => state.list}),
-
-        totalizar:function() {
-             return  this.products.reduce((total,product) => {
-                return (parseFloat(total) + parseFloat(product.subtotal)).toFixed(2).replace('.',',')
-            },0)
-        },
     },
     
 }

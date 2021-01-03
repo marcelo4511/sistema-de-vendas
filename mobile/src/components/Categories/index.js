@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import {View,Text,TextInput,Button, Picker} from 'react-native'
 import axios from 'axios'
-//import {Button} from 'react-native-paper'
-//port {withFormik} from 'formik'
+
 
 function Categories() {
 
@@ -16,6 +15,8 @@ function Categories() {
         }).then(res => {
           console.log(res.data)
           alert("sucesso")
+        }).catch(e => {
+          alert(e)
         })
   }
  
@@ -36,10 +37,8 @@ function Categories() {
         onChange={e => setName(e.target.value)}
         />
 
-        <Picker style={{borderWidth:2,borderColor:'blck',marginTop:20}}
-        onValueChange={(itemValue, itemIndex) => setStatus(itemValue)}
-        >
-          <option value=""></option>
+        <Picker style={{borderWidth:2,borderColor:'black',marginTop:20}}
+        onValueChange={(itemValue, itemIndex) => setStatus(itemValue)}>
         <Picker.Item label="Ativo" value="Ativo" />
         <Picker.Item label="Inativo" value="Inativo" />
       </Picker>
@@ -51,5 +50,6 @@ function Categories() {
     );
   }
 
+  
   
   export default Categories

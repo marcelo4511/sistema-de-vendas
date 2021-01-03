@@ -9,7 +9,6 @@
             </ol>
         </nav>
         <router-link to="/sales/create" tag="span"><button class="btn btn-primary">Cadastrar</button></router-link>
-
      <input class="form-control col-md-3 mb-3" type="search" style="float: right;" name="nome" placeholder="Buscar" v-model="search">
   
   <table class="table table-sm">
@@ -19,15 +18,17 @@
               <th scope="col">Data da venda</th>
               <th scope="col">Total da venda</th>
               <th scope="col">Situação</th>
+              <th scope="col">Tipo Usuario</th>
               <th scope="col">Ações</th>
           </tr>
       </thead>
       <tbody>
-          <tr v-for="(sale,k) in searching" :key="k" >
-              <td>{{sale.name}}</td>
+          <tr v-for="(sale,k) in sales" :key="k" >
+              <td>{{sale.clients.name}}</td>
               <td>{{sale.dataVenda | formatDate}}</td>
-              <td>R$ {{formatPrice(sale.total)}}</td>
-              <td>{{sale.descricao}}</td>
+              <td>{{sale.total}}</td>
+              <td>{{sale.situacao.descricao}}</td>
+              <td>{{sale.user.tipo_usuario.descricao}}</td>
               <td>  
                     <div v-show="sale.situacao_id == 1">
                         <button  class="btn btn-success ml-2" @click="aprovar(sale)"><i class="fa fa-check "></i></button>
@@ -66,7 +67,7 @@ export default {
                 id:'',
                 dataVenda:'',
                 client_id:'',
-                name:'',
+                //name:'',
                 total:''
             },
             search:[]
@@ -89,7 +90,7 @@ export default {
             if (willDelete) {
                 axios.delete(`http://localhost:8000/api/sales/${sale.id}`)
             .then(res => {
-                this.sales.pop(res.data.id,1)
+                this.sales.splice(res.data.id,1)
                 swal("Venda deletada com sucesso!", {
                 icon: "success",
                 });
@@ -195,11 +196,11 @@ export default {
         reais:function(){
             return this.total.toFixed(2).replace('.',',')
         },
-        searching:function(){
-            return this.sales.filter(sale => {
-                return sale.name.includes(this.search)
-            })
-        }
+       // searching:function(){
+//return this.sales.filter(sale => {
+//return sale.name.includes(this.search)
+//})
+//}
     }    
 }
 

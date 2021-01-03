@@ -2,17 +2,6 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\User;
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
 
 
     Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -23,6 +12,7 @@ use App\User;
         Route::post('/login', 'UserController@login');
         Route::post('/register', 'UserController@register');
         Route::get('/typeuser','UserController@listar');
+        Route::resource('sales','SaleController');
     });
 
     Route::namespace('Api')->middleware('auth:sanctum')->group(function(){
@@ -67,16 +57,15 @@ use App\User;
         });
 
         Route::middleware(['isSale'])->group(function() {
+            Route::get('/user/{id}','UserController@show');
             Route::get('/products','ProductController@index');
-            
             Route::get('/categories','CategoryController@index');
-
             Route::resource('clients','ClientController');
             Route::resource('sales','SaleController');
+            Route::get('salesemandamento','SaleController@statusOne');
             Route::delete('/detalhesdelete/{id}','SaleController@deleteDetalhe');
             Route::get('relatorioexcel','SaleController@relatorioexcel');
             Route::get('relatoriopdf','SaleController@relatoriopdf');
             Route::get('relatoriopdfdetalhes/{id}','SaleController@relatoriopdfDetails');
-           
         });
     });

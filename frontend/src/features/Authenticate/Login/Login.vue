@@ -25,7 +25,7 @@ export default {
     return {
       email: '',
       password: '',
-    loading:null
+      loading:null
     }
   },
 

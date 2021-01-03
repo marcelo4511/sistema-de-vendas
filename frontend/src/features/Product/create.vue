@@ -11,20 +11,20 @@
 </nav>
 
 
-  <form @submit.prevent="onSubmit" enctype="multipart/form-data">
+  <form @submit.prevent="onSubmit">
       <div class="row ">
-          <div class="form-group col-md-3">
+          <div class="form-group col-md-4">
             <label for="">Nome</label>
             <input class="form-control col-md-auto " type="text" name="name " required v-model="product.name" @input="product.name = $event.target.value.toUpperCase()">
           </div>
           
       
-          <div class="form-group col-md-3">
+          <div class="form-group col-md-4">
             <label for="">Descrição</label>
             <input type="text" name="description" class="form-control col-md-auto" required v-model="product.description">
           </div>     
 
-          <div class="form-group col-md-3">
+          <div class="form-group col-md-4">
             <label for="">Categorias</label>
             <select  v-model="product.category_id" required class="form-control col-md-auto">
                     <option  disabled selected value="">selecione</option>
@@ -32,32 +32,22 @@
             </select>
           </div> 
 
-        <div class="form-group col-md-3">
-         <label for="">Imagem</label>
-         <input type="url" name="imagem" id="imagem" class="form-control col-md-auto" required  v-model="product.imagem">
-        </div>  
       </div>
         
           
       <div class="row">
-            
-        <div class="form-group col-md-3">
-         <label for="">Preço</label>
-         <input type="text" name="price" v-money="money" class="form-control col-md-auto" required @change="quantificar(product)" v-model="product.price">
+
+        <div class="form-group col-md-4">
+          <strong>Imagem</strong>
+            <input type="file" name="imagem" class="form-control col-md-auto form-control-file" id="imagem" v-on:change="onFileChange">
         </div>  
-        
+            
+        <div class="form-group col-md-4">
+         <label for="">Preço</label>
+         <input type="text" name="price" v-money="money" class="form-control col-md-auto" required  v-model="product.price">
+        </div>  
 
-       <div class="form-group col-md-3">
-        <label for="">Quantidade</label>
-        <input type="decimal" name="amount" required  class="form-control col-md-auto" @change="quantificar(product)" v-model="product.amount">
-       </div>   
-     
-      <div class="form-group col-md-3">
-        <label for="">Subtotal</label>
-        <input type="text" name="subtotal" required class="form-control col-md-auto" @change="quantificar(product)" v-model="product.subtotal">
-      </div> 
-
-       <div class="form-group col-md-3">
+       <div class="form-group col-md-4">
                 <label for="">Status</label>
                 <select class="form-control col-12" v-model="product.status">
                     <option selected disabled value=null>Selecione</option>
@@ -87,9 +77,8 @@ export default {
                 category_id:'',
                 name:'',
                 description:'',
-                image:'',
-                subtotal:'',
-                amount:'',
+                imagem:'',
+                price:'',
                 status:''
             },
             produtos:[],
@@ -122,36 +111,44 @@ export default {
 
         onFileChange(event){
            this.product.imagem = event.target.files[0];
+           console.log(this.product.imagem)
           },
           
         onSubmit(){
-             this.$store.dispatch('Product/postProducts',{   
+             /*this.$store.dispatch('Product/postProducts',{   
                      name:this.product.name,
                      description:this.product.description,
                      imagem:this.product.imagem,
                      category_id:this.product.category_id,
                      amount:this.product.amount,
                      price:this.product.price,
-                     subtotal:this.product.subtotal,
-                     status:this.product.status
-                })
-           //let formData = new FormData()
-            //formData.append('imagem', this.product)
-               // this.$store.dispatch('Product/postProducts',formData,{
-                //   headers: {
-            //  'Content-Type': "multipart/form-data; charset=utf-8; boundary=" + Math.random().toString().substr(2)
-           // }
-             //   })
+               
+                })*/
+           let formData = new FormData()
+            formData.append('imagem', this.product.imagem)
+            formData.append('name', this.product.name)
+
+            formData.append('description', this.product.description)
+
+            formData.append('category_id', this.product.category_id)
+           
+            formData.append('status', this.product.status)
+            formData.append('price', this.product.price)
+
+               this.$store.dispatch('Product/postProducts',formData,
+                      
+               {
+                headers: {
+             'Content-Type': "multipart/form-data"
+           },
+             })
                 try {
                     this.$noty.success("Cadastrado com sucesso!!") 
                     this.$router.push('/products')
                 } catch{
                    this.$noty.info("Houve um problema com o seu formulério. Por favor, tente novamente.");
                 }
-            },
-        quantificar(product) {
-            product.subtotal = parseFloat(product.price) * parseFloat(product.amount) || 0
-        },
+            }
         
     },
     
@@ -159,12 +156,6 @@ export default {
     computed:{
         ...mapState('Product',{products:state => state.products}),
         ...mapState('Category',{list:state => state.list}),
-
-        totalizar:function() {
-             return  this.products.reduce((total,product) => {
-                return (parseFloat(total) + parseFloat(product.subtotal)).toFixed(2).replace('.',',')
-            },0)
-        },
     },
     
 }

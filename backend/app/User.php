@@ -38,4 +38,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(TypeUser::class,'type_user_id');
     }
+
+    public function profile() 
+    {
+        return $this->hasMany(UserProfile::class);
+    }
 }

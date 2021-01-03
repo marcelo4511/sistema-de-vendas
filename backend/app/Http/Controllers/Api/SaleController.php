@@ -21,17 +21,31 @@ class SaleController extends Controller
     
     public function index()
     {
-        $sales = DB::table('sales')
+        /*$sales = DB::table('sales')
             ->join('clients', 'clients.id', '=', 'sales.client_id')
             ->join('situacao', 'situacao.id', '=', 'sales.situacao_id')
-            ->select('sales.id','sales.dataVenda','sales.total','sales.client_id','clients.name','situacao.descricao','sales.situacao_id')
+            ->join('users', 'users.id', '=', 'sales.user_id')
+            ->select('sales.id','sales.dataVenda','sales.total','sales.client_id','sales.user_id','clients.name','situacao.descricao','sales.situacao_id')
+            ->orderBy('sales.user_id','asc')
+            ->orderBy('sales.situacao_id','desc')
             ->get();
-        return response()->json($sales);
+        return response()->json($sales);*/
+
+        $sales = Sale::select('id','dataVenda','total','user_id','client_id','situacao_id')
+                        ->with('clients','details_sales','situacao','user.tipo_usuario','user')
+                        ->with(['user'=> function($query) {
+                            $query->orderBy('id','asc');
+                        }])
+                        ->with(['situacao'=> function($query) {
+                            $query->orderBy('id','desc');
+                        }])
+                    ->get();
+        return response()->json($sales,200);
     }
 
     public function filter(){
         try{
-            $sales = Sale::with('details_sales','clients','details_sales.products')
+            $sales = Sale::with('details_sales','clients','details_sales.products','user')
             ->whereHas('situacao',function($query) {
                 $query->whereSituacaoId(2);
             })
@@ -52,16 +66,22 @@ class SaleController extends Controller
 
     public function graficoMensal()
     {
-        DB::statement("SET lc_time_names = 'pt_PT'");
-        
-        $sales = Sale::whereHas('situacao',function($query) {
-                            $query->whereSituacaoId(2);
-                        })
-                        ->selectRaw('SUM(total) as teste,monthname (dataVenda) as mes')
-                        ->groupBy('mes')
-                        ->get();
-        return response()->json($sales,200);
-    }
+        try{
+
+            DB::statement("SET lc_time_names = 'pt_PT'");
+            
+            $sales = Sale::whereHas('situacao',function($query) {
+                $query->whereSituacaoId(2);
+            })
+            //->with('user')
+            ->selectRaw('SUM(total) as teste,monthname (dataVenda) as mes')
+            ->groupBy('mes')
+            ->get();
+            return response()->json($sales,200);
+        }catch(Exception $e) {
+            return response()->json($sales,400);
+        }
+        }
 
     public function graficoAnual()
     {
@@ -81,7 +101,7 @@ class SaleController extends Controller
             $data = $request->all();
             //$data['dataVenda'] = Carbon::parse($data['dataVenda'])->format('d/m/Y');
             $data['situacao_id'] = 1;
-            //$data['user_id'] = Auth::check() && Auth::user()->id;
+            $data['user_id'] = Auth::user()->id;
             $venda = Sale::create($data);
             
            if(!empty($data['details_sales']) && $data['details_sales'] > 0){
@@ -119,7 +139,7 @@ class SaleController extends Controller
                 }
                 
                 //$this->sendMail($venda->id);
-                return response()->json(['success' => 200]);
+                return response()->json(['success' => 'OK','resultado' => $data],200);
         }catch(Exception $e){
             return response()->json(['err' => $e->getMessage(), 'status' => true]);
         }           
@@ -143,7 +163,7 @@ class SaleController extends Controller
             $data = $request->all();
             $venda = Sale::findOrFail($id);
             $data['situacao_id'] = 1;
-           // $data['dataVenda'] = Carbon::parse($data['dataVenda'])->format('d/m/Y');
+            $data['user_id'] = Auth::user()->id;
             $venda->update($data);
             
             if($data['details_sales'] > 0){
@@ -170,7 +190,7 @@ class SaleController extends Controller
             }
             
            //$this->sendMail($request->id);
-           return response()->json(['success' => 200, 'status' => 'OK']);
+           return response()->json(['success' => 200, 'status' => 'OK','resultado' => $data]);
         }catch(Exception $e) {
             return response()->json(['err' => $e->getMessage()]);
         }
@@ -258,9 +278,27 @@ class SaleController extends Controller
     public function aprovadas()
     {
         try{
-            $venda = Sale::with('clients','details_sales')->get()
+            $venda = Sale::with('clients','details_sales','situacao')
                             ->whereHas('situacao',function($query) {
                                 $query->whereSituacaoId(2);
+                            })
+                            ->get();
+            return response()->json($venda,200);
+        }catch(Exception $e){
+            return response()->json(['err' => $e->getMessage()]);
+        }
+    }
+
+    public function statusOne(){
+        try{
+            $venda = Sale::with('clients','details_sales','situacao','user.tipo_usuario:id,descricao')
+                            ->whereHas('situacao',function($query) {
+                                $query->whereSituacaoId(1);
+                            })
+                            ->when(Auth::user()->type_user_id != 1,function($user) {
+                                $user->whereHas('user',function($query) {
+                                $query->whereUserId(Auth::user()->id);
+                                });
                             })
                             ->get();
             return response()->json($venda,200);

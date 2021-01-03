@@ -46,11 +46,18 @@ class UserController extends Controller
                 response()->json(['errors' => $validate->errors()]);
             }
                 
-                User::create([
+                $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'type_user_id' => $request->type_user_id,
                 'password' => Hash::make($request->password)
+                ]);
+
+                $user->profile()->create([
+                    'data_nasc' => $request->data_nasc,
+                    'gender' => $request->gender,
+                    'about' => $request->about,
+                    'phone' => $request->phone,
                 ]);
                 return response()->json(['success' => 'OK'],200);
         }catch(Exception $e) {
@@ -90,9 +97,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show()
+    public function show($id)
     {
-        $user = Auth::user();
+        //$user = Auth::user();
+        $user = User::with('profile')->find($id);
         return response()->json(['status' => 'success','user' => $user],200);
 
     }
@@ -117,8 +125,9 @@ class UserController extends Controller
                 response()->json(['errors' => $validate->errors()]);
             }
                 //$data = $request->all();
+                
                 $user = User::findOrFail($id);
-                $user->update([
+                $user->profile()->update([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password)

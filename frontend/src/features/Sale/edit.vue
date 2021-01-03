@@ -185,10 +185,14 @@ export default {
             })
         },
   onSubmit(){
-    axios.put(`http://localhost:8000/api/sales/${this.$route.params.id}`,this.sales).then(res => {
-      console.log(res.data)
-     this.$noty.success("Atualizado com sucesso!!") 
-      this.$router.push('/sales')
+    axios.put(`http://localhost:8000/api/sales/${this.$route.params.id}`,this.sales).then((res) => {
+      this.$noty.success("Atualizado com sucesso!!") 
+      let usuario = res.data.resultado.user_id
+        if(usuario === 1) {
+          return this.$router.push('/sales')
+        }else{
+          return this.$router.push('/vendas')
+        }
     })
   },
     
