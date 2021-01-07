@@ -214,7 +214,12 @@ export default {
     computed:{
         ...mapState('Client',{clients:state => state.clients}),
   
-    }
+    },
+    watch:{
+        'client.name': function(name){
+            return this.client.name = name[0].toUpperCase() + name.substr(1);
+        }
+    },
 }
 </script>
 

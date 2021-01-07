@@ -7,9 +7,15 @@
           <span v-for="(u,k) in user" :key="k">{{u.name}}</span>
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <router-link to="/home" class="d-flex justify-content-beetween dropdown-item" v-if="isLogged">Home</router-link> 
-          <router-link to="/" class="dropdown-item" v-else-if="!isLogged">Login</router-link>
-          <span class="dropdown-item" @click="sair()">Sair
+          <div v-for="(u,k) in user" :key="k">
+            <div v-show="u.type_user_id === 1">
+
+              <router-link to="/home" class="d-flex justify-content-beetween dropdown-item">Home</router-link> 
+            </div>
+
+          </div>
+          <router-link to="/" class="d-flex justify-content-beetween dropdown-item" v-if="!isLogged">Login</router-link>
+          <span class="d-flex justify-content-beetween dropdown-item" @click="sair()">Sair
           </span>
         </div>
       </div>

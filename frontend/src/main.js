@@ -57,6 +57,10 @@ new Vue({
         if(error.response.status === 404) {
           this.$store.dispatch('User/logout')
         }
+
+        //if(this.$router.push('/')){
+//this.$store.dispatch('User/logout')
+//}
         return Promise.reject(error)
       }
     )

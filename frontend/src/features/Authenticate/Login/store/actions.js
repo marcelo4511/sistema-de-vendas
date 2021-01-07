@@ -8,12 +8,20 @@ const login =  ({ commit }, credentials) => {
       })
   },
 
+  
+
    logout = ({ commit }) => {
     commit('clearUserData')
   }
 
+  const usuario = ({commit}) => {
+    axios.get(`${API_BASE_URL}/usuario`).then(res => {
+      commit('USUARIO',res.data)
+    })
+  }
   
 export default {
     login,
     logout,
+    usuario
 }

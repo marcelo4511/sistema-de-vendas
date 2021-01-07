@@ -8,7 +8,10 @@
                 <li class="breadcrumb-item active" aria-current="page">Vendas</li>
             </ol>
         </nav>
-        <router-link to="/sales/create" tag="span"><button class="btn btn-primary">Cadastrar</button></router-link>
+
+        <div v-for="(u,k) in user" :key="k">
+            <router-link to="/sales/create" v-show="u.type_user_id === 1" tag="span"><button class="btn btn-primary">Cadastrar</button></router-link>
+        </div>
 
      <input class="form-control col-md-3 mb-3" type="search" style="float: right;" name="nome" placeholder="Buscar">
   
@@ -46,7 +49,7 @@
 <script>
 import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
 import axios from 'axios'
-//import {mapState} from 'vuex'
+import {mapState,mapGetters} from 'vuex'
 import jsPDF from 'jspdf'
 import swal from 'sweetalert'
 import 'jspdf-autotable' 
@@ -165,7 +168,10 @@ export default {
                
         },
     },
-    
+    computed:{
+       ...mapState('User',{user:state => state.user}),
+       ...mapGetters('User',['isLogged']),
+    }    
 }
 
 </script>

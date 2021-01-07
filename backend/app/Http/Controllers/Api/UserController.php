@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\TypeUser;
 use App\User;
+use App\UserProfile;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +21,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::with('tipo_usuario')->get();
+        $users = User::with('tipo_usuario','profile')->get();
 
         return response()->json($users,200);
 
@@ -73,7 +74,7 @@ class UserController extends Controller
             'password' => 'required'
         ]);
     
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $request->email)->with('profile')->first();
     
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response([
@@ -97,11 +98,16 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show()
     {
-        //$user = Auth::user();
-        $user = User::with('profile')->find($id);
-        return response()->json(['status' => 'success','user' => $user],200);
+        $perfil = UserProfile::with('user','user.tipo_usuario')
+        ->when(Auth::user()->id,function($use){
+            $use->whereHas('user',function($query) {
+                $query->whereUserId(Auth::id());
+            });
+        })
+        ->get();
+        return response()->json($perfil,200);
 
     }
 
@@ -127,7 +133,7 @@ class UserController extends Controller
                 //$data = $request->all();
                 
                 $user = User::findOrFail($id);
-                $user->profile()->update([
+                $user->update([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password)

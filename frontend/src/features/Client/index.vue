@@ -69,6 +69,7 @@ export default {
     created(){
         this.$store.dispatch('Client/getClient')
     },
+    
     methods:{
         ...mapActions('Client',['getClient']),
 
