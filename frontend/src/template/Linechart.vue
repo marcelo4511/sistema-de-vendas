@@ -1,9 +1,10 @@
 
 <script>
-import { Pie } from 'vue-chartjs'
+import { Doughnut } from "vue-chartjs";
+import ChartDataLabels  from "chartjs-plugin-datalabels";
 
 export default {
-  extends: Pie,
+  extends: Doughnut,
   props: {
     chartdata: {
       type: Object,
@@ -11,10 +12,23 @@ export default {
     },
     options: {
       type: Object,
-      default: null
+      default: null,
+      title: {
+            display: true,
+            text: 'Total Sales by Country - Top 5',
+            fontSize: 15,
+            fontStyle: 'bold'
+        },
+        legend: {
+            display: true,
+            position: 'bottom',
+        },
+  
+    
     }
   },
   mounted () {
+    this.addPlugin(ChartDataLabels);
     this.renderChart(this.chartdata, this.options)
   }
 }

@@ -217,7 +217,7 @@ export default {
     },
     watch:{
         'client.name': function(name){
-            return this.client.name = name[0].toUpperCase() + name.substr(1);
+            return this.client.name = name[0].toUpperCase() + name.substr(1)
         }
     },
 }

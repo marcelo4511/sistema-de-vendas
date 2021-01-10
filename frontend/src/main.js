@@ -23,6 +23,7 @@ import '@fortawesome/fontawesome-free/js/all.js'
 import 'font-awesome/css/font-awesome.css'
 
 Vue.use(money, {precision: 2})
+
 Vue.use(ChartKick.use(Chart))
 Vue.config.productionTip = false
 //Vue.use(VueAuth, auth)

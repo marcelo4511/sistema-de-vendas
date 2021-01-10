@@ -1,10 +1,9 @@
 
 <script>
-import { Bar } from 'vue-chartjs'
-import ChartDataLabels  from "chartjs-plugin-datalabels";
-
+import { HorizontalBar } from 'vue-chartjs'
+import {} from "chartjs-plugin-datalabels";
 export default {
-  extends: Bar,
+  extends: HorizontalBar,
   props: {
     chartdata: {
       type: Object,
@@ -16,7 +15,6 @@ export default {
     }
   },
   mounted () {
-    this.addPlugin(ChartDataLabels);
     this.renderChart(this.chartdata, this.options)
   }
 }

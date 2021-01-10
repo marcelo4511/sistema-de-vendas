@@ -10,11 +10,11 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
- import Nav from './template/Nav'
- import Main from './template/Main'
- import Header from './template/Header'
- import Footer from './template/Footer'
+  import { mapGetters } from 'vuex'
+  import Nav from './template/Nav'
+  import Main from './template/Main'
+  import Header from './template/Header'
+  import Footer from './template/Footer'
 
 export default {
   components: { Main,Nav,Header,Footer},
@@ -83,30 +83,30 @@ footer .footer {
     1fr;
 
     grid-template-columns:  1fr;
-
-
     grid-template-areas: 
      "header"
      "lado "
      "main "
+     "footer"
     ;
   }
 }
 
-@media(max-width:576px){
+@media(max-width:640px){
   #app {
     grid-auto-rows: 100;
     grid-template-rows:
    
-    320px
+    50px,
+    10px,
     1fr;
 
     grid-template-columns:  1fr;
 
     grid-template-areas: 
     "header"
-    "lado "
-     "main"
+    "main"
+    "footer"
   }
 }
 

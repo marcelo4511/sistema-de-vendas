@@ -35,35 +35,58 @@
 
   <div class="abc"><br>
 
-   
-     <line-chart
-        v-if="loaded"
-        :chartdata="chartdata"
-      />
+    <div class="card border-0">
+      <div class="card-body">
+        <p class="card-title">Comissão dos vendedores </p>
+          <line-chart v-if="loaded" :chartdata="chartdata"/>
+      </div>
+    </div>
 
-       <pie-chart
-        v-if="loaded"
-        :chartdata="teste"
-       />
-       
+    <div class="card .bg-info border-0">
+      <div class="card-body">
+        <p class="card-title">Vendas por mês</p>
+          <pie-chart v-if="loaded" :chartdata="teste"/>
+      </div>
+    </div>
+
   </div>
+
+<div class="abc"><br>
+    
+    <div class="card border-0">
+      <div class="card-body">
+        <p class="card-title">Desempenho de venda por produto </p>
+      
+        <bar-chart v-if="loaded" :chartdata="fff"/> 
+      </div>
+    </div>
+
+    <div class="card border-0">
+      <div class="card-body">
+        <p class="card-title">Desempenho de venda por Vendedor</p>
+       <teste-chart v-if="loaded" :chartdata="testando1"/> 
+      </div>
+    </div>
+  </div>
+
+        
         <h4>Faturamento anual</h4>
         <table class="table">
-  <thead class="thead-dark">
-    <tr>
-      <th scope="col">Ano</th>
-      <th scope="col">Total das vendas</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr v-for="(f,i) in faturamento" :key="i">
-  
-      <td>{{f.ano}}</td>
-      <td>{{f.total}}</td>
-    
-    </tr>
-  </tbody>
-</table>
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Ano</th>
+              <th scope="col">Total das vendas</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(f,i) in faturamento" :key="i">
+          
+              <td>{{f.ano}}</td>
+              <td>{{f.total}}</td>
+            
+            </tr>
+          </tbody>
+        </table>
       
 </div>
 
@@ -74,18 +97,21 @@ import axios from 'axios'
 import { mapGetters} from 'vuex'
 import LineChart from './Linechart'
 import PieChart from './PieChart'
+import BarChart from './BarChart'
+import TesteChart from './TesteChart'
 import '../config/filterData'
-import moment from 'moment'
+import { } from "chartjs-plugin-datalabels";
 export default {
     
 name: 'LineChartContainer',
-  components: { LineChart,PieChart },
+  components: { LineChart,PieChart,TesteChart,BarChart },
     data() {
       return{
-
+        testando1:null,
         loaded: false,
         chartdata: null,
         teste:null,
+        fff:null,
         faturamento:null
       }
   },
@@ -106,52 +132,16 @@ name: 'LineChartContainer',
 
       async mounted() {
       this.loaded = false;
-     /*await axios
-      .get("http://localhost:8000/api/sales")
-      .then(res => {
+     
+    await axios.get("http://localhost:8000/api/graficomensal").then(res => {
         this.abc = res.data
-        console.log(this.abc.map((element) => {
-         return element.total
-        }))
-        this.loaded = true;
-        this.chartdata = {
-         // labels: [`total da venda dia ${res.data[0].dataVenda}`, `Female${res.data[1].dataVenda}`,'dsf'],
-          labels: this.abc.map(element => {
-            return moment(element.dataVenda).format('DD/MM/YYYY')
-          }),
-             backgroundColor: ['#C28535', '#8AAE56', '#B66C46'],
-          datasets: [
-            {
-              label: "Vendas R$",
-              data: this.abc.map(element => {
-                return element.total 
-              }),
-
-               
-          backgroundColor: ['#C28535','#939', '#8AAE56', '#B66C46'],
-          //data: [this.one, this.two, this.three]
-            }
-          ]
-        };
-       
-      })
-      .catch(err => {
-        console.log(err);
-      });*/
-
-    await axios
-      .get("http://localhost:8000/api/graficomensal")
-      .then(res => {
-        this.abc = res.data
-        console.log(this.abc.map((element) => {
-         return element.total
-        }))
-        this.loaded = true;
+        
         this.teste = {
           labels: this.abc.map(element => {
             return element.mes
           }),
-             backgroundColor: ['#939'],
+         
+          backgroundColor: ['#939'],
           datasets: [
             {
               label: "Vendas R$",
@@ -160,15 +150,35 @@ name: 'LineChartContainer',
               }),
 
                
-          backgroundColor: ['#C28535','#939', '#8AAE56', '#B66C46'],
+          backgroundColor: [ '#ADD8E6','#00BFFF',   '#00FF7F', '#ADFF2F'],
             }
-          ]
+          ],options: {
+            plugins: {
+              datalabels: {
+                color: "white",
+                textAlign: "center",
+                font: {
+                  weight: "bold",
+                  size: 20
+                }, labels: [
+        {
+          render: 'percentage',
+          fontColor: ['green', 'white', 'red'],
+          precision: 2,
+        }
+      ],
+              }
+            }
+          }
         };
        
       })
 
-     this.f()
+      this.graficoComissao()
       this.relatorioAnual()
+      this.testeteste()
+      this.testando()
+       //this.addPlugin(ChartDataLabels);
   },
   methods:{
     relatorioAnual(){
@@ -178,34 +188,112 @@ name: 'LineChartContainer',
        })
     },
 
-    async f(){
+    async graficoComissao(){
         this.loaded = false;
-       await axios
-      .get("http://localhost:8000/api/sales")
-      .then(res => {
-        this.abc = res.data
-        console.log(this.abc.map((element) => {
-         return element.total
-        }))
+       await axios.get("http://localhost:8000/api/grafico").then(res => {
+        this.grafico = res.data
+       
         this.loaded = true;
         this.chartdata = {
-         // labels: [`total da venda dia ${res.data[0].dataVenda}`, `Female${res.data[1].dataVenda}`,'dsf'],
-          labels: this.abc.map(element => {
-           return moment(element.dataVenda).format('DD/MM/YYYY')
+         
+          labels: this.grafico.map(element => {
+           return element.name
           }),
              backgroundColor: ['#939'],
           datasets: [
             {
               label: "Vendas R$",
-              data: this.abc.map(element => {
-                return element.total 
+              data: this.grafico.map(element => {
+                return element.comissao 
               }),
 
                
-          backgroundColor: ['#C28535','#939', '#8AAE56', '#B66C46'],
-          //data: [this.one, this.two, this.three]
+         backgroundColor: [   '#ADD8E6','#00BFFF',   '#00FF7F', '#ADFF2F'],
+         
+            }
+          ],
+          options: {
+            plugins: {
+              datalabels: {
+                color: "black",
+                textAlign: "center",
+                font: {
+                  weight: "bold",
+                  size: 16
+                }, labels: [
+        {
+          render: 'percentage',
+          fontColor: ['green', 'white', 'red'],
+          precision: 2,
+        }
+      ],
+              }
+            }
+          }
+        };
+       
+      })
+    },
+    async testeteste(){
+        this.loaded = false;
+       await axios.get("http://localhost:8000/api/teste2").then(res => {
+        this.grafico = res.data
+        
+        this.loaded = false;
+        this.fff = {
+
+          labels: this.grafico.map(element => {
+           return element.name
+          }),
+             backgroundColor: ['#939'],
+          datasets: [
+            {
+              label: "Vendas R$",
+              data: this.grafico.map(element => {
+                return element.venda
+              }),
+
+               
+          backgroundColor: [ '#ADD8E6','#00BFFF',   '#00FF7F', '#ADFF2F'],
+        
             }
           ]
+        };
+       
+      })
+    },
+
+
+    async testando(){
+        this.loaded = false;
+       await axios.get("http://localhost:8000/api/teste").then(res => {
+        this.abc = res.data
+        
+        
+        this.loaded = true;
+        this.testando1 = {
+         
+          labels: this.abc.map(element => {
+           return element.name
+          }),
+              backgroundColor: [ '#ADD8E6','#00BFFF',   '#00FF7F', '#ADFF2F'],
+          datasets: [
+            {
+              label: "Quantidade de vendas",
+              data: this.abc.map(element => {
+                return element.qtd
+              }),
+            
+               
+          backgroundColor: [ '#ADD8E6','#00BFFF',   '#00FF7F', '#ADFF2F'],
+            },{
+            label: "Valor total das vendas R$",
+              data: this.abc.map(element => {
+                return element.total
+              }),
+             backgroundColor: [ '#ADD8E6','#00BFFF','#00FF7F', '#ADFF2F'],
+            }
+          ],
         };
        
       })
@@ -216,7 +304,7 @@ name: 'LineChartContainer',
 
 <style>
   div.abc{
-    width: 599px;
+    width: 640px;
     display: flex;
     flex-direction: row;
     justify-content:center;
@@ -225,6 +313,15 @@ name: 'LineChartContainer',
     margin-left: 100px;
   }
 
+div.teste{
+  width: 599px;
+    display: flex;
+    flex-direction: row;
+    justify-content:center;
+    align-items: center;
+    margin-top: 200px;
+    margin-left: 100px;
+}
   div .painel{
     display: flex;
     flex-direction: column;
@@ -235,5 +332,19 @@ name: 'LineChartContainer',
 
   div.abc h4{
     color: black;
+  }
+
+  div .card{
+    
+    width: 600px;
+    height: 360px;
+    margin: 10px;
+  }
+
+  div .card p{
+    color:gray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 </style>

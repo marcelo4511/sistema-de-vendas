@@ -79,37 +79,35 @@ class SaleController extends Controller
             ->get();
             return response()->json($sales,200);
         }catch(Exception $e) {
-            return response()->json($sales,400);
+            return response()->json($e->getMessage(),400);
         }
     }
 
     public function grafico()
     {
-        
         $sales = Sale::join('users', 'users.id', '=', 'sales.user_id')
-        ->selectRaw('Sum(total) * 0.05 as comissao,users.name as name')
-        ->groupBy('name')
-        ->get();
-        return response()->json(['venda'=> $sales]);
+                        ->selectRaw('Sum(round(total * 5/100)) as comissao,users.name as name')
+                        ->groupBy('name')
+                        ->get();
+        return response()->json( $sales,200);
     }
 
     public function teste(){
         $sales = Sale::join('users', 'users.id', '=', 'sales.user_id')
-        //->join('sales as s','s.id','=','users.id')
-        ->selectRaw('Sum(total)  as  vendas, count(total) as qtd ,users.name as name')
-        ->groupBy('name')
-        ->get();
-        return response()->json(['venda'=> $sales]);
+                        ->selectRaw('count(total) as qtd ,SUM(total) as total,users.name as name')
+                        ->groupBy('name')
+                        ->get();
+        return response()->json( $sales,200);
     }
 
     public function teste2() {
         $sales = Sale::join('details_sales', 'details_sales.id', '=', 'details_sales.sale_id')
                         ->join('details_sales as detalhe', 'detalhe.product_id', '=', 'detalhe.product_id')
                         ->join('products','products.id','=','detalhe.product_id')
-                        ->selectRaw('Sum(total) as venda,products.name as name')
+                        ->selectRaw('SUM(round(details_sales.descount)) as venda,products.name as name')
                         ->groupBy('name')
                         ->get();
-        return response()->json(['venda'=> $sales]);
+        return response()->json($sales,200);
     }
     public function graficoAnual()
     {
