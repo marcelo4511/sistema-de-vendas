@@ -46,6 +46,11 @@
          <input type="text" name="price" v-money="money" class="form-control col-md-auto" required v-model="product.price">
         </div>  
 
+        <div class="form-group col-md-4">
+         <label for="">Estoque</label>
+         <input type="number" name="estoque"  class="form-control col-md-auto" required  v-model="product.estoque">
+        </div>  
+
        <div class="form-group col-md-3">
                 <label for="">Status</label>
                 <select class="form-control col-12" v-model="product.status">
@@ -78,6 +83,7 @@ export default {
                 description:'',
                 image:'',
                 price:'',
+                estoque:'',
                 status:''
             },
             produtos:[],

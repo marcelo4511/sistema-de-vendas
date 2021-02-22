@@ -17,7 +17,7 @@ class CreateDetailsSalesTable extends Migration
 
             $table->increments('id');
             $table->float('price');
-            $table->float('descount');
+            $table->float('quantidade');
             $table->float('subtotal');
 
             $table->unsignedInteger('product_id');

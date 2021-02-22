@@ -27,41 +27,36 @@
 
           </div>
           <table class="table table-sm"> 
-        <thead>
-            <tr>
-                <th scope="col">produtos</th>
-                <th scope="col">Preço</th>
-                <th scope="col">Quantidade</th>
-                <th scope="col">Total R$</th>
-                <th v-show="this.details_sales.length > 1" scope="col">Ação</th>
-            </tr>
-        </thead>
         <tbody>
-          <tr v-for="detalheVenda of details_sales" :key="detalheVenda.id">
-            
-            <td>
-             <select class="form-control" required v-model="detalheVenda.product_id" >
-               <option v-for="(product) in products" :key="product.id" v-show="product.status == 'Ativo'" :value="product.id">{{product.name}}</option>
+          <tr v-for="(detalheVenda,key) of details_sales" :key="key">
+               <td><label><strong>Produto</strong>
+                 </label>
+             <select class="form-control" required v-model="detalheVenda.product_id" @blur="getProducts(detalheVenda.product_id,key)">
+               <option v-for="(product) in products" :key="product.id"  v-show="product.status == 'Ativo'" :value="product.id">{{product.name}}</option>
 
              </select>
               </td>
-            <td><money v-model="detalheVenda.descount" :value="detalheVenda.descount" v-bind="money" name="valorSinistrado" class="form-control" @change="calculateLineTotal(detalheVenda)"></money></td>
-            <td><input class="form-control" type="number" v-model="detalheVenda.price" @change="calculateLineTotal(detalheVenda)" required></td>
-            <td><money readonly disabled :value="detalheVenda.subtotal" v-bind="money" name="totalPrejuizo" class="form-control"></money></td>
-            <td>
-              <button  class="btn btn-danger" @click="remova(detalheVenda)" ><i class="fa fa-times"></i></button>
-            </td>
+           <!-- <td><label><strong>Produto</strong></label><input type="text" class="form-control" @blur="getProducts(detalheVenda.name,key)"  v-model="detalheVenda.name"></td>-->
+
+            <td><label><strong>Preço</strong></label><money v-model="detalheVenda.price" :value="detalheVenda.price" @blur="getProducts(detalheVenda.price, indice,key)"  v-bind="money" name="valorSinistrado" class="form-control" @change="calculateLineTotal(detalheVenda)" readonly></money></td>
+            <td><label><strong>Estoque</strong></label><input class="form-control" type="number" @blur="getProducts(detalheVenda.estoque, indice)" v-model="detalheVenda.estoque" required readonly></td>
+    
+            <td><label><strong>Quantidade</strong></label><input class="form-control" type="number" v-model="detalheVenda.quantidade" @change="calculateLineTotal(detalheVenda)" @keyup="calculateEstoque(detalheVenda)" required></td>
+            <td><label><strong>Subtotal</strong></label><money readonly disabled :value="detalheVenda.subtotal" v-bind="money" name="totalPrejuizo" class="form-control"></money></td>
+            <td><label><strong>Ação</strong></label>
+            <button  class="btn btn-danger" @click="remova(detalheVenda)" ><i class="fa fa-times"></i></button></td>
+    
           </tr>
         </tbody>
-        <tfoot>
-            <tr>
-                <th scope="col">Total</th>
-                <th></th>
-                <th></th>
-                <th scope="col"><money readonly disabled :value="totalizar" v-bind="money" name="totalPrejuizo" class="form-control form-control-sm" style="background-color:#993399;color:#fff;"></money></th>
-            </tr>
-        </tfoot>
+       
         </table>
+
+         <table>
+              <tr>
+                <td scope="col" style="margin-left:200px;">Total</td>
+                <td scope="col"><money readonly disabled :value="totalizar" v-bind="money" name="totalPrejuizo" class="form-control form-control-sm" style="background-color:#993399;color:#fff;"></money></td>
+              </tr> 
+         </table>
         <button type='button' style="float-right;" class="btn btn-info m-4" @click="adiciona">
           <i class="fas fa-plus-circle"></i>
          Adicione
@@ -120,7 +115,7 @@
         </div>
       </div>
     <button type="submit" @click="onSubmit" class="btn btn-success">Cadastrar</button>
-     <button class="btn btn-danger" style="float:right;" v-show="this.details_sales.length > 2" @click="exportPdfSale">Baixar relatório da venda<i class="fa fa-print"></i></button>
+     <button class="btn btn-danger" style="float:right;" v-show="this.details_sales.length > 2" >Baixar relatório da venda<i class="fa fa-print"></i></button>
   </div>
 </template>
 
@@ -128,7 +123,7 @@
 import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
 import {mapState} from 'vuex'
 import axios from 'axios'
-import jsPDF from 'jspdf'
+//import jsPDF from 'jspdf'
 import {VMoney} from 'v-money'
 import 'jspdf-autotable' 
 
@@ -139,11 +134,14 @@ export default {
     return {
       details_sales:[{
         product_id:'',
-        price:'',
-        descount:'',
+        quantidade:'',
         subtotal:0,
-        name:''
-
+      
+       
+          price:'',
+          name:'',
+          estoque:''
+        
       }],
       client_id:'',
       datavenda:'',
@@ -154,14 +152,14 @@ export default {
         entrada:null
       },
        money: {
-                decimal: ',',
-                thousands: '.',
-                prefix: 'R$ ',
-                suffix: '',
-               
-                precision: 2,
-                masked: false
-            }
+        decimal: ',',
+        thousands: '.',
+        prefix: 'R$ ',
+        suffix: '',
+        
+        precision: 2,
+        masked: false
+      }
     }
   },
   created(){
@@ -171,10 +169,22 @@ export default {
     
   },
   methods:{
-  getProducts(){
-    axios.get("http://localhost:8000/api/products").then(res => {
-          this.details_sales.price = res.data.price
+  getProducts(product,key){
+    if(product) {
+      axios.get(`http://localhost:8000/api/product/${product}`).then(res => {
+          this.details_sales[key].product_id = res.data[0].id
+          this.details_sales[key].name = res.data[0].name
+          this.details_sales[key].id = res.data[0].id
+          this.details_sales[key].price = res.data[0].price
+          this.details_sales[key].estoque = res.data[0].estoque   
+          console.log(res.data[0].id)   
+          let consulta = res.data
+          console.log(consulta.map(i => {
+            return i.name
+          }))   
         })
+    }
+    
   },
   onSubmit(){
     axios.post('http://localhost:8000/api/sales',{
@@ -183,8 +193,9 @@ export default {
         total:this.total,
         details_sales:this.details_sales,
         formapagamento:this.formapagamento
-    }).then(res => {
-      let usuario = res.data.resultado.user_id
+    }).then((res) => {
+      console.log(res.data)
+       let usuario = res.data.resultado.user_id
       console.log(usuario)
       this.$noty.success("Cadastrado com sucesso!!")
       if(usuario === 1) {
@@ -200,12 +211,12 @@ export default {
     remova(){
         if(this.details_sales.length > 1) {
 
-          this.details_sales.splice({
+          this.details_sales.pop({
             product_id:'',
             price:'',
-            descount:'',
+            quantidade:'',
             subtotal:''
-          },1)
+          })
           this.$toasted.global.defaultSuccess()
         }
           
@@ -216,43 +227,61 @@ export default {
 
               this.details_sales.push({
                 product_id:'',
-                price:'',
-                descount:'',
+                quantidade:'',
                 subtotal:'',
-                name:''
+                name:'',
+                price:'',
+                estoque:''
+                
               })
             }else {
               return this.details_sales
             }
-             
-              
-              this.$toasted.global.defaultSuccess()
+            this.$toasted.global.defaultSuccess()
         },
 
    
     calculateLineTotal(detalheVenda){
-        var total = parseFloat(detalheVenda.price) * parseFloat(detalheVenda.descount) || 0
-         detalheVenda.subtotal = total.toFixed(2);
+      let total = parseFloat(detalheVenda.price) * parseFloat(detalheVenda.quantidade) || 0
+      detalheVenda.subtotal = total.toFixed(2);
     },
-    exportPdfSale(){
+    calculateEstoque(detalheVenda) {
+    // let total =  0
+     let teste = detalheVenda.quantidade ++
+    let r = detalheVenda.quantidade--
+    if(detalheVenda.quantidade++){
+       var estoque =  parseInt(detalheVenda.estoque) + parseInt(r)
+
+    }else if(detalheVenda.quantidade--){
+        estoque =  parseInt(detalheVenda.estoque) - parseInt(teste)
+    }
+      detalheVenda.estoque = estoque
+    },
+    /*exportPdfSale(){
        
-            axios.get("http://localhost:8000/api/details")
-            .then(function(){
-            })
+      axios.get("http://localhost:8000/api/details")
+      .then(function(){
+      })
 
-            let columns = [
-            {title:"Produto",dataKey:"name"},
-            {title:"Preço",dataKey:"price"},
-            {title:"Desconto",dataKey:"descount"},
-            {title:"Total da Venda R$",dataKey: "subtotal"}
-            ];
-            
-            var doc = new jsPDF('p','pt');
-            doc.text('Relatório das vendas realizadas',10,12)
-            doc.autoTable(columns,this.details_sales);
-            doc.save("relatorioVenda.pdf");
+      let columns = [
+      {title:"Produto",dataKey:"name"},
+      {title:"Preço",dataKey:"price"},
+      {title:"Desconto",dataKey:"quantidade"},
+      {title:"Total da Venda R$",dataKey: "subtotal"}
+      ];
+      
+      var doc = new jsPDF('p','pt');
+      doc.text('Relatório das vendas realizadas',10,12)
+      doc.autoTable(columns,this.details_sales);
+      doc.save("relatorioVenda.pdf");
 
-        },
+    },*/
+  },
+  watch:{
+    'details_sales.estoque' :function(value){
+       this['details_sales.estoque'] = value - this['details_sales.quantidade'] || this.details_sales.estoque
+      console.log(this.details_sales.estoque)
+    }
   },
   computed:{
      ...mapState('Client',{clients:state => state.clients}),

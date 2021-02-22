@@ -35,6 +35,7 @@
                 <th scope="col">Descrição</th>
                 <th scope="col">Categorias</th>
                 <th scope="col">Preco</th>
+                <th scope="col">Estoque</th>
                 <th scope="col">Status</th>
             </tr>
         </thead>
@@ -45,6 +46,7 @@
                 <td>{{product.description}}</td>
                 <td>{{product.categories.name}}</td>
                 <td>{{product.price}}</td>
+                <td>{{product.estoque}}</td>
                 <td>{{product.status}}</td>
                 
                 <td v-for="(u,k) in user" :key="k">

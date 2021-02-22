@@ -18,8 +18,7 @@ class CreateProductsTable extends Migration
             $table->string('name')->nullable();
             $table->string('description')->nullable();
             $table->string('price')->nullable();
-            $table->float('amount')->nullable();
-            $table->float('subtotal')->nullable();
+            $table->string('estoque');
             $table->string('imagem')->nullable();
             $table->enum('status',['Inativo','Ativo'])->default('Inativo');
 

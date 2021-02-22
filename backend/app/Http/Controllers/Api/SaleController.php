@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Sale;
 use App\Detail;
 use App\FormaPagamento;
+use App\Product;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Exception;
@@ -104,7 +105,7 @@ class SaleController extends Controller
         $sales = Sale::join('details_sales', 'details_sales.id', '=', 'details_sales.sale_id')
                         ->join('details_sales as detalhe', 'detalhe.product_id', '=', 'detalhe.product_id')
                         ->join('products','products.id','=','detalhe.product_id')
-                        ->selectRaw('SUM(round(details_sales.descount)) as venda,products.name as name')
+                        ->selectRaw('SUM(round(details_sales.quantidade)) as venda,products.name as name')
                         ->groupBy('name')
                         ->get();
         return response()->json($sales,200);
@@ -130,17 +131,24 @@ class SaleController extends Controller
             $data['user_id'] = Auth::user()->id;
             $venda = Sale::create($data);
             
-           if(!empty($data['details_sales']) && $data['details_sales'] > 0){
+           if(!empty($data['details_sales'])){
 
                foreach($data['details_sales'] as $detalhes) {
                     Detail::create([
                        'sale_id' => $venda->id,
                        'product_id' => $detalhes['product_id'],
                        'subtotal' => $detalhes['subtotal'],
-                       'descount' => $detalhes['descount'],
                        'price' => $detalhes['price'],
+                       'estoque' => $detalhes['estoque'],
+                       'quantidade' => $detalhes['quantidade'],
                     ]);
-                }
+                    if(!empty($detalhes['estoque'])){
+                        $produto = Product::select('id','estoque')->find($detalhes['product_id']);
+                        $produto->update([
+                            'estoque' => $detalhes['estoque'],
+                        ]);
+                    }
+                } 
             }
 
             if($data['formapagamento']) {
@@ -156,7 +164,7 @@ class SaleController extends Controller
                 'details_sales.*.sale_id' => 'required',
                 'details_sales.*.product_id' => 'required',
                 'details_sales.*.subtotal' => 'required',
-                'details_sales.*.descount' => 'required',
+                'details_sales.*.quantidade' => 'required',
                 'details_sales.*.price' => 'required',
                 ]);
     
@@ -192,18 +200,28 @@ class SaleController extends Controller
             $data['user_id'] = Auth::user()->id;
             $venda->update($data);
             
-            if($data['details_sales'] > 0){
+            if(!empty($data['details_sales'])){
                 foreach($request->details_sales as $detalhes){
-                    $detalhesupdate = Detail::find($detalhes['id']);
-                    $detalhesupdate->update([
+                    //$detalhesupdate = Detail::find($detalhes['id']);
+                    Detail::updateOrCreate(
+                        ['id' => $detalhes['id']],
+                        [
                         'sale_id' => $venda->id,
                         'product_id' => $detalhes['product_id'],
                         'subtotal' => $detalhes['subtotal'],
-                        'descount' => $detalhes['descount'],
+                        'quantidade' => $detalhes['quantidade'],
                         'price' => $detalhes['price'],
+                      //  'estoque' => $detalhes['estoque'],
                     ]);
+
+                    if(!empty($detalhes['estoque'])){
+                        $produto = Product::select('id','estoque')->find($detalhes['product_id']);
+                        $produto->update([
+                            'estoque' => $detalhes['estoque'],
+                        ]);
+                    }
                 }
-            }
+            } 
 
             if($data['forma_pagamento']) {
                 $forma = FormaPagamento::find($data['forma_pagamento']['id']);
@@ -227,16 +245,6 @@ class SaleController extends Controller
         try{
             Sale::find($id)->delete();  
             return response()->json(['data' => ['msg' => 'delhe da venda removido com sucesso'],'status' => 200]);
-        }catch(Exception $e) {
-            return response()->json(['error' => $e->getMessage()],400);
-        }
-    }
-
-    public function deleteDetalhe($id)
-    {
-        try{
-            Detail::with('sale')->find($id)->delete();  
-            return response()->json(['data' => ['msg' => 'Venda removida com sucesso'],'status' => 200]);
         }catch(Exception $e) {
             return response()->json(['error' => $e->getMessage()],400);
         }
@@ -363,6 +371,23 @@ class SaleController extends Controller
             return response()->json($venda,200);
         }catch(Exception $e) {
             return response()->json($e->getMessage(),400);
+        }
+    }
+
+    public function product($id)
+    {
+        return Product::select('id', 'name','description','price','estoque','status','category_id')
+                    ->whereId($id)->with('categories')->get();
+    }
+
+    public function deleteDetalhe($id)
+    {
+        try{
+            $teste = Detail::find($id); 
+           $teste->delete();
+            return response()->json(['data' => ['msg' => 'Venda removida com sucesso'],'status' => 200]);
+        }catch(Exception $e) {
+            return response()->json(['error' => $e->getMessage()],400);
         }
     }
 }

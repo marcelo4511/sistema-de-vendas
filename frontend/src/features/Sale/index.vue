@@ -26,7 +26,7 @@
           <tr v-for="(sale,k) in sales" :key="k" >
               <td>{{sale.clients.name}}</td>
               <td>{{sale.dataVenda | formatDate}}</td>
-              <td>{{sale.total}}</td>
+              <td>{{sale.total | formatPrice}}</td>
               <td>{{sale.situacao.descricao}}</td>
               <td>{{sale.user.tipo_usuario.descricao}}</td>
               <td>  
@@ -90,7 +90,7 @@ export default {
             if (willDelete) {
                 axios.delete(`http://localhost:8000/api/sales/${sale.id}`)
             .then(res => {
-                this.sales.splice(res.data.id,1)
+                this.sales.splice(res.data.id,-1)
                 swal("Venda deletada com sucesso!", {
                 icon: "success",
                 });
@@ -101,10 +101,7 @@ export default {
             });
                
         },
-        formatPrice(value) {
-        let val = (value/1).toFixed(2).replace('.', ',')
-        return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-        },
+        
         exportPdf(){
        
             axios.get("http://localhost:8000/api/sales")

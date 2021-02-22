@@ -3,7 +3,6 @@ import axios from 'axios'
   const getProducts = ({commit}) => {
    axios.get('http://127.0.0.1:8000/api/products')
    .then(resposta => {
-       console.log(resposta.data)
        commit('GET_PRODUCTS',resposta.data)
    })
 }

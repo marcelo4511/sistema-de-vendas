@@ -6,27 +6,27 @@
          <div v-if="u.type_user_id == 1">
 
        <router-link tag="span" to="/home">
-        <li><i class="fa fa-home"></i> Home</li>
+        <li><i class="fa fa-home m-3"></i> Home</li>
        </router-link>
 
        <router-link tag="span" to="/clients">
-          <li><i class="fa fa-user-friends" aria-hidden="true"></i> Clientes</li>
+          <li><i class="fa fa-user-friends m-3" aria-hidden="true"></i> Clientes</li>
         </router-link>
 
         <router-link tag="span" to="/products">
-          <li><i class="fa fa-shopping-bag" aria-hidden="true"></i> Produtos</li>
+          <li><i class="fa fa-shopping-bag m-3" aria-hidden="true"></i> Produtos</li>
         </router-link>
 
        <router-link tag="span" to="/categories">
-       <li><i class="fas fa-box"></i> Categorias</li>
+       <li><i class="fas fa-box m-3"></i> Categorias</li>
        </router-link>
 
        <router-link tag="span" to="/sales">
-         <li><i class="fa fa-shopping-cart"></i>Vendas</li>
+         <li><i class="fa fa-shopping-cart m-3"></i>Vendas</li>
        </router-link>
   
         <router-link tag="span" to="/users">
-          <li><i class="fa fa-user-friends" aria-hidden="true"></i> Usuários</li>
+          <li><i class="fa fa-user-friends m-3" aria-hidden="true"></i> Usuários</li>
         </router-link>
          </div>
 
@@ -84,13 +84,15 @@ export default {
    
     aside ul{
       margin-top: 100px;
+     
     }
     aside ul li {
       display: flex;
       font-family: Arial, Helvetica, sans-serif;
       justify-content: flex-start;
       align-items: center;
-      text-align: end;
+      justify-content: flex-start;
+      text-align: center;
       font-size: 25px;
       height: 80px;
       padding: 10px;

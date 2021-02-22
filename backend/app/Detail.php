@@ -9,7 +9,7 @@ class Detail extends Model
     protected $fillable = [
         'id',
         'price',
-        'descount',
+        'quantidade',
         'subtotal',
         'product_id',
         'sale_id'

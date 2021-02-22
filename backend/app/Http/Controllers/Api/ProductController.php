@@ -31,6 +31,14 @@ class ProductController extends Controller
     public function save(Request $request)
     {
         $product = $request->all();
+        if(empty($product['estoque'])) {
+            $product['estoque'] = $product['estoque'];
+        }
+        if(isset($product['price'])) {
+
+            $product['price'] = str_replace(',', '.',$product['price']);
+            $product['price'] = preg_replace('/[^\d\.]/', '', $product['price']);
+        }
         $teste = $request->file('imagem')->getClientOriginalName();
         $request->file('imagem')->move(public_path("/"),$teste);
         $photo = url('/'.$teste);

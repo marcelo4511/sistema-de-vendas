@@ -3,7 +3,6 @@ import axios from 'axios'
 const getClient = ({commit}) => {
     axios.get('http://127.0.0.1:8000/api/clients')
     .then(res => {
-        console.log(res.data)
         commit('GET_CLIENT',res.data)
     })
 }
@@ -18,7 +17,7 @@ const postClient = ({commit},client) => {
 const updateClient = async ({commit},client) => {
    await axios.put(`http://127.0.0.1:8000/api/clients/${client.id}`,client)
    .then(resposta =>{
-    console.log(resposta.data)
+   return resposta.data
 })
     commit('UPDATE_CLIENT',client)
 }
