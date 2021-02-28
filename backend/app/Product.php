@@ -14,7 +14,6 @@ class Product extends Model
         'description',
         'price',
         'estoque',
-        'subtotal',
         'imagem',
         'status',
         'category_id'

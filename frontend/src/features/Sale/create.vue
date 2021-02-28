@@ -246,16 +246,8 @@ export default {
       detalheVenda.subtotal = total.toFixed(2);
     },
     calculateEstoque(detalheVenda) {
-    // let total =  0
-     let teste = detalheVenda.quantidade ++
-    let r = detalheVenda.quantidade--
-    if(detalheVenda.quantidade++){
-       var estoque =  parseInt(detalheVenda.estoque) + parseInt(r)
-
-    }else if(detalheVenda.quantidade--){
-        estoque =  parseInt(detalheVenda.estoque) - parseInt(teste)
-    }
-      detalheVenda.estoque = estoque
+     let estoque =  detalheVenda.estoque = detalheVenda.estoque - detalheVenda.quantidade
+     detalheVenda.estoque = estoque
     },
     /*exportPdfSale(){
        
@@ -278,9 +270,11 @@ export default {
     },*/
   },
   watch:{
-    'details_sales.estoque' :function(value){
-       this['details_sales.estoque'] = value - this['details_sales.quantidade'] || this.details_sales.estoque
-      console.log(this.details_sales.estoque)
+    'detalheVenda.estoque' :function(detalheVenda){
+     detalheVenda.estoque = detalheVenda - detalheVenda.quantidade || 0
+    },
+     'detalheVenda.quantidade' :function(value){
+      this.getProducts(value)
     }
   },
   computed:{
@@ -293,7 +287,6 @@ export default {
                 
             },0)
         },
-      
   }  
 }
 </script>

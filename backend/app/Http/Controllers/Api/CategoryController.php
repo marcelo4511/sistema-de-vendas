@@ -17,7 +17,7 @@ class CategoryController extends Controller
    
     public function index(Request $request) 
     {
-        $categories = $this->category->orderBy("id","ASC")->get(); 
+        $categories = $this->category->orderBy("id","ASC")->paginate(10); 
         return response()->json($categories);
     }
 

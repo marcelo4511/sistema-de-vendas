@@ -11,7 +11,7 @@
 <div class="form-group">
     <button class="btn btn-primary"><router-link tag="span" to="categories/create">Cadastrar</router-link></button>
  
-  <input class="form-control col-md-3 mb-3" type="search" style="float: right;" name="nome" placeholder="Buscar" v-model="pesquisa">
+  <input class="form-control col-md-3 mb-3" type="search" style="float: right;"  placeholder="Buscar">
 
 </div>
 
@@ -24,7 +24,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="(category,i) in pesquisar" :key="i">
+                <tr v-for="(category,i) in categories" :key="i">
                     <td>{{category.name}}</td>
                     <td>{{category.status}}</td>
                     <td>
@@ -34,6 +34,11 @@
                     </td>
                   
                 </tr>
+
+  <infinite-loading spinner="bubbles" @infinite="infiniteHandler">
+      <div class="text-red" slot="no-more">No more users</div>
+      <div class="text-red" slot="no-results">No more users</div>
+  </infinite-loading>
                 </tbody>
             </table>
         
@@ -41,25 +46,76 @@
 </template>
 
 <script>
+import InfiniteLoading from 'vue-infinite-loading';
+
+import axios from 'axios'
 import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
 import {mapState, mapActions} from 'vuex'
 import swal from 'sweetalert'
 export default {
  data(){
       return{
-        name:'',
-        pesquisa:''
-        
+      
+     //   pesquisa:'',
+       categories: [],
+        page: 2,
+        lastPage: 0,
       }
     },
-  name:'categories',
+  name:'categories', components: {
+    InfiniteLoading,
+  },
   created(){
-    this.$store.dispatch('Category/setList')
+    this.fetchUsers()
+          .then(response => {
+            if (response.data.data.length > 0) {
+              this.categories = response.data.data;
+              //this.isInit = false;
+            }else{
+              console.log('No users found.');
+            }
+          })
+          .catch(e => console.log(e))
+    
   },
  methods:{
    ...mapActions('Category',['postList','setList','updateList','removeList']),
 
-  
+        getCategories(){
+           axios.get(`http://localhost:8000/api/categories?page=${this.page}`).then(res => {
+           //  this.categories = res.data.data
+           this.categories.data.push(...res.data)
+           this.categories.meta = res.data.meta
+           })
+        },
+        fetchUsers: function() {
+          return  axios.get(`http://localhost:8000/api/categories?page=${this.page}`);   
+        },
+          infiniteHandler: function($state) {
+          setTimeout(function () {
+            this.fetchUsers()
+                .then(response => {
+                  console.log(response)
+                    if (response.data.data.length > 0) {
+                      this.lastPage = response.data.data.last_page;
+                      response.data.data.forEach(message => {
+                        this.categories.push(message);
+                      });
+                      if (this.page -1 === this.lastPage) {
+                        this.page = 2;
+                        $state.complete();
+                      } else {
+                        this.page += 1;
+                      }
+                      $state.loaded();
+                    } else {
+                      this.page = 2;
+                      $state.complete();
+                    }
+                })
+                .catch(e => console.log(e));
+            }.bind(this), 1000);
+      },
         editList(){
           const update = {
             id:this.list.id,
@@ -91,11 +147,11 @@ export default {
  
   computed: {
     ...mapState('Category',{list:state => state.list}),
-        pesquisar:function() {
-            return this.list.filter(l => {
-                return l.name.includes(this.pesquisa)
-            })
-        },
+      //  pesquisar:function() {
+//return this.list.filter(l => {
+       //         return l.name.includes(this.pesquisa)
+        //    })
+       // },
   }
 }
 </script>

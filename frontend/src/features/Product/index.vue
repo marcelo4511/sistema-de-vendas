@@ -1,33 +1,27 @@
 <template>
 
 <main>
-<h4 cabecalho="Produto">Produtos</h4>
-<nav aria-label="breadcrumb mb-4">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
-  
-    <li class="breadcrumb-item active" aria-current="page">Produtos</li>
-  </ol>
-</nav>
+    <h4 cabecalho="Produto">Produtos</h4>
+    <nav aria-label="breadcrumb mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
+        
+            <li class="breadcrumb-item active" aria-current="page">Produtos</li>
+        </ol>
+    </nav>
 
+    <div class="row">
+        <div class="col-md-12">
+        
+            <input type="text" class="form-control col-3 mr-3" placeholder="Buscar por nome do produto" style="float:right;" v-model="pesquisa" >
+        
+        <div v-for="(u,k) in user" :key="k">
+            <button class="btn btn-primary" v-show="u.type_user_id  == 1"><router-link tag="span" to="products/create">Cadastrar</router-link></button>
+        </div>
+        </div>
+    </div>
 
-      <div class="row">
-          <div class="col-md-12">
-               <select  v-model="searchCategory" style="float:right;"  required class="form-control col-md-3">
-                    <option  disabled selected value="">Buscar por categorias</option>
-                    <option  v-for="(category, key) in list" v-show="category.status == 'Ativo'" :key="key" :value="category.id">{{category.name}}</option>
-            </select>
-           
-                <input type="text" class="form-control col-3 mr-3" placeholder="Buscar por nome do produto" style="float:right;" v-model="pesquisa" >
-           
-            <div v-for="(u,k) in user" :key="k">
-                <button class="btn btn-primary" v-show="u.type_user_id  == 1"><router-link tag="span" to="products/create">Cadastrar</router-link></button>
-            </div>
-          </div>
-      </div>
-
-
-    <table class="table table-sm"> 
+    <table class="table responsive-sm"> 
         <thead>
             <tr>
                 <th scope="col">Imagem</th>
@@ -60,8 +54,7 @@
         <hr>
     </table> 
 
-
-    </main>
+</main>
 </template>
 
 <script>
@@ -145,8 +138,7 @@ export default {
 
         pesquisar:function() {
             return this.products.filter(product => {
-                return product.name.includes(this.pesquisa)
-                || product.category_id.includes(this.searchCategory)
+                return product.description.includes(this.pesquisa)
             })
         },
     },

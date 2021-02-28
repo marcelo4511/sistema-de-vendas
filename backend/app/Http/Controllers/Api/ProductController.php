@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Product;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -30,20 +31,26 @@ class ProductController extends Controller
 
     public function save(Request $request)
     {
-        $product = $request->all();
-        if(empty($product['estoque'])) {
-            $product['estoque'] = $product['estoque'];
-        }
-        if(isset($product['price'])) {
+      $product = $request->all();
+      if(empty($product['estoque'])) {
+          $product['estoque'] = $product['estoque'];
+      }
+      if(isset($product['price'])) {
 
-            $product['price'] = str_replace(',', '.',$product['price']);
-            $product['price'] = preg_replace('/[^\d\.]/', '', $product['price']);
-        }
-        $teste = $request->file('imagem')->getClientOriginalName();
-        $request->file('imagem')->move(public_path("/"),$teste);
-        $photo = url('/'.$teste);
-        Product::create($product);
-        return response()->json(['sucess'=>$product,'url'=> $photo],200);
+          $product['price'] = str_replace(',', '.',$product['price']);
+          $product['price'] = preg_replace('/[^\d\.]/', '', $product['price']);
+      }
+      //$teste = $request->file('imagem')->getClientOriginalName();
+      //$request->file('imagem')->move(public_path("/"),$teste);
+      //$photo = url('/'.$teste);
+
+      if($request->imagem) {
+        $name = time().'.' . explode('/', explode(':', substr($request->imagem, 0, strpos($request->imagem, ';')))[1])[1];
+        \Intervention\Image\Facades\Image::make($request->imagem)->save(public_path('/').$name);
+      }
+      Product::create($product);
+      return response()->json(['sucess'=>$product,'url'=> $request->imagem],200);
+
     }
 
     public function update(Request $request,$id) 

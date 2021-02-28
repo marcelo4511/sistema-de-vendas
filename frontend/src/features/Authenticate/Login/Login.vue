@@ -40,7 +40,7 @@ export default {
         })
        .then(()=>{
          this.$noty.success('Bem vindo ao sistema!')
-           this.$router.push('/perfil')
+          // this.$router.push('/perfil')
        }).catch(err => {
          console.log(err)
          this.$noty.info('houve um problema na altenticação')

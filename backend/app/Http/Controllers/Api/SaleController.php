@@ -202,16 +202,17 @@ class SaleController extends Controller
             
             if(!empty($data['details_sales'])){
                 foreach($request->details_sales as $detalhes){
-                    //$detalhesupdate = Detail::find($detalhes['id']);
-                    Detail::updateOrCreate(
+                   
+                    // $detalhesupdate = DB::table('details_sales')->where('id',$detalhes['id']);
+                    Detail::where('id',$detalhes['id'])->updateOrCreate(
                         ['id' => $detalhes['id']],
                         [
+                       
                         'sale_id' => $venda->id,
                         'product_id' => $detalhes['product_id'],
                         'subtotal' => $detalhes['subtotal'],
                         'quantidade' => $detalhes['quantidade'],
                         'price' => $detalhes['price'],
-                      //  'estoque' => $detalhes['estoque'],
                     ]);
 
                     if(!empty($detalhes['estoque'])){

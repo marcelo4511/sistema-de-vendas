@@ -39,7 +39,7 @@
 
         <div class="form-group col-md-4">
           <strong>Imagem</strong>
-            <input type="file" name="imagem" class="form-control col-md-auto form-control-file" id="imagem" v-on:change="onFileChange">
+            <input type="file" name="imagem" class="form-control col-md-auto form-control-file" id="imagem" v-on:change="salvaImagem">
         </div>  
             
         <div class="form-group col-md-4">
@@ -115,11 +115,25 @@ export default {
     methods:{
         ...mapActions('Product',['postProducts']),
 
-        onFileChange(event){
-           this.product.imagem = event.target.files[0];
-           console.log(this.product.imagem)
-          },
+        //onFileChange(event){
+        //   this.product.imagem = event.target.files[0];
+        //   console.log(this.product.imagem)
+        //  },
           
+        salvaImagem(e) {
+          let arquivo = e.target.files ?? e.dataTransfer.files
+          if(!arquivo.length){
+            return
+          }
+
+          let reader = new FileReader()
+          reader.onload = (e) => {
+            this.imagem = e.target.result
+          }
+
+          reader.readAsDataURL(arquivo[0])
+          console.log(arquivo)
+        },
         onSubmit(){
              /*this.$store.dispatch('Product/postProducts',{   
                      name:this.product.name,
@@ -130,25 +144,26 @@ export default {
                      price:this.product.price,
                
                 })*/
-           let formData = new FormData()
-            formData.append('imagem', this.product.imagem)
-            formData.append('name', this.product.name)
+           //let formData = new FormData()
+           // formData.append('imagem', this.product.imagem)
+           // formData.append('name', this.product.name)
 
-            formData.append('description', this.product.description)
+          //  formData.append('description', this.product.description)
 
-            formData.append('category_id', this.product.category_id)
-           
-            formData.append('status', this.product.status)
-            formData.append('price', this.product.price)
-            formData.append('estoque', this.product.estoque)
+          //  formData.append('category_id', this.product.category_id)
+          /// 
+          //  formData.append('status', this.product.status)
+          //  formData.append('price', this.product.price)
+          //  formData.append('estoque', this.product.estoque)
 
-               this.$store.dispatch('Product/postProducts',formData,
-                      
-               {
-                headers: {
-             'Content-Type': "multipart/form-data"
-           },
-             })
+               this.$store.dispatch('Product/postProducts',this.product,
+
+             //  {
+           //     headers: {
+            // 'Content-Type': "multipart/form-data"
+         //  },
+           //  }
+           )
                 try {
                     this.$noty.success("Cadastrado com sucesso!!") 
                     this.$router.push('/products')
