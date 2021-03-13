@@ -28,8 +28,10 @@
                     <td>{{category.name}}</td>
                     <td>{{category.status}}</td>
                     <td>
-                        
+                        <div>
+
                         <router-link :to="`/categoryedit/${category.id}/edit`" class="btn btn-warning"><i class="fa fa-pen"></i></router-link>
+                        </div>
                         <button @click="removeList(category)" class="btn btn-danger ml-2"><i class="fa fa-trash"></i></button>
                     </td>
                   
@@ -67,15 +69,15 @@ export default {
   },
   created(){
     this.fetchUsers()
-          .then(response => {
-            if (response.data.data.length > 0) {
-              this.categories = response.data.data;
-              //this.isInit = false;
-            }else{
-              console.log('No users found.');
-            }
-          })
-          .catch(e => console.log(e))
+        //  .then(response => {
+        //    if (response.data.data.length > 0) {
+        //      this.categories = response.data.data;
+        //      //this.isInit = false;
+        //    }else{
+        //      console.log('No users found.');
+        //    }
+        //  })
+        //  .catch(e => console.log(e))
     
   },
  methods:{

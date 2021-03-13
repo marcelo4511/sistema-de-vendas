@@ -23,6 +23,19 @@ class ProductController extends Controller
         return response()->json($products);
     }
 
+    public function filtro(Request $request)
+    {
+        $products = Product::select('id','name','description','price','estoque','category_id','status')->with('categories:id,name')
+        ->when($request['name'],function($query) use($request) {
+            $query->whereName($request['name']);
+        })
+        ->when($request['category_id'], function ($query) use ($request) {
+            $query->whereCategoryId($request['category_id']);
+        })
+        ->get();
+
+        return $products;
+    }
     public function show($id) 
     {
         $product = $this->product->find($id);
@@ -40,9 +53,6 @@ class ProductController extends Controller
           $product['price'] = str_replace(',', '.',$product['price']);
           $product['price'] = preg_replace('/[^\d\.]/', '', $product['price']);
       }
-      //$teste = $request->file('imagem')->getClientOriginalName();
-      //$request->file('imagem')->move(public_path("/"),$teste);
-      //$photo = url('/'.$teste);
 
       if($request->imagem) {
         $name = time().'.' . explode('/', explode(':', substr($request->imagem, 0, strpos($request->imagem, ';')))[1])[1];

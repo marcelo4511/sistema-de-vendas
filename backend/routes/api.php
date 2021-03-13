@@ -12,9 +12,6 @@ use Illuminate\Support\Facades\Route;
         Route::post('/login', 'UserController@login');
         Route::post('/register', 'UserController@register');
         Route::get('/typeuser','UserController@listar');    
-        //Route::resource('sales','SaleController');
-        Route::get('teste','SaleController@teste');
-        Route::get('/products/{id}','ProductController@show');
     });
 
     Route::namespace('Api')->middleware('auth:sanctum')->group(function(){
@@ -25,6 +22,7 @@ use Illuminate\Support\Facades\Route;
             Route::post('/products','ProductController@save');
             Route::put('/products/{id}','ProductController@update');
             Route::delete('/products/{id}','ProductController@delete');
+            Route::post('/filtro', 'ProductController@filtro');
             
             Route::get('/categories','CategoryController@index');
             Route::get('/categories/{id}','CategoryController@show');
@@ -47,11 +45,11 @@ use Illuminate\Support\Facades\Route;
             Route::get('product/{id}','SaleController@product');
 
             //gráficos
-            Route::get('graficomensal','SaleController@graficoMensal');
-            Route::get('graficoanual','SaleController@graficoAnual');
-            Route::get('grafico','SaleController@grafico');
-            Route::get('teste','SaleController@teste');
-            Route::get('teste2','SaleController@teste2');
+            Route::get('bi/grafico/mensal','SaleController@graficoMensal');
+            Route::get('bi/grafico/anual','SaleController@graficoAnual');
+            Route::get('bi/grafico/comissao/vendedor','SaleController@graficoComissaoVendedores');
+            Route::get('bi/grafico/quantidade/total/vendedor','SaleController@GraficoQuantidadeTotalVendedor');
+            Route::get('bi/grafico/quantidade/produtos/vendidos','SaleController@GraficoQuantidadeProdutoVendido');
         });
 
         //caixa
@@ -71,6 +69,12 @@ use Illuminate\Support\Facades\Route;
             Route::get('saleusuario','SaleController@saleusuario');
             Route::get('/usuario','UserController@show');
             Route::get('/products','ProductController@index');
+            Route::get('/products/{id}','ProductController@show');
+            Route::post('/products','ProductController@save');
+            Route::put('/products/{id}','ProductController@update');
+            Route::delete('/products/{id}','ProductController@delete');
+            Route::get('product/{id}','SaleController@product');
+            Route::post('/filtro', 'ProductController@filtro');
            Route::get('/categories','CategoryController@index');
             Route::resource('clients','ClientController');
             Route::resource('sales','SaleController');

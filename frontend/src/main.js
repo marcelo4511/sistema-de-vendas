@@ -9,6 +9,8 @@ import VueNoty from 'vuejs-noty-fa';
 import money from 'v-money'
 import auth from './config/auth'
 import axios from 'axios'
+import '@/config/apexcharts'
+
 import './config/Api'
 
 import './config/filterData'
@@ -22,11 +24,13 @@ import '@fortawesome/fontawesome-free/js/all.js'
 
 import 'font-awesome/css/font-awesome.css'
 
+//Vue.component('grafico', require('./template/Grafico.vue').default);
+
 Vue.use(money, {precision: 2})
+//Vue.use(VueApexCharts)
 
 Vue.use(ChartKick.use(Chart))
 Vue.config.productionTip = false
-//Vue.use(VueAuth, auth)
 Vue.use(VueNoty, {
   timeout: 4000,
   progressBar: true,
@@ -42,6 +46,7 @@ new Vue({
   store,
   auth,
   router,
+  //VueApexCharts,
   created () {
     const userInfo = localStorage.getItem('user')
     if (userInfo) {

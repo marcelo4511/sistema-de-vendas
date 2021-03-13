@@ -9,14 +9,27 @@
             <li class="breadcrumb-item active" aria-current="page">Produtos</li>
         </ol>
     </nav>
-
+    
     <div class="row">
-        <div class="col-md-12">
+       
+    </div>
+    <div class="row">
+        <div class="col-md-12 d-flex justify-content-beetween">
         
-            <input type="text" class="form-control col-3 mr-3" placeholder="Buscar por nome do produto" style="float:right;" v-model="pesquisa" >
-        
+            
+            <div class="d-flex justify-content-start">
+
+            <input type="text" class="form-control mr-1" placeholder="Buscar por nome do produto" v-model="filtro.name" @keyup="filter">
+            <select name="category_id" id="categort_id" class="form-control" style="margin-right:600px;" v-model="filtro.category_id" @change="filter">
+                <option v-for="l in categories" :value="l.id" :key="l.id">{{l.name}}</option>
+            </select>
+            </div>
+ 
+        <div class="d-flex justify-content-end">
+
         <div v-for="(u,k) in user" :key="k">
-            <button class="btn btn-primary" v-show="u.type_user_id  == 1"><router-link tag="span" to="products/create">Cadastrar</router-link></button>
+            <button class="btn btn-primary " v-show="u.type_user_id  == 1"><router-link tag="span" to="products/create">Cadastrar</router-link></button>
+        </div>
         </div>
         </div>
     </div>
@@ -34,7 +47,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="product of pesquisar" :key="product.id">
+            <tr v-for="product of produtos" :key="product.id">
                 <td><img :src=product.name alt="imagem"></td>
                 <td>{{product.name}}</td>
                 <td>{{product.description}}</td>
@@ -76,6 +89,10 @@ export default {
                 amount:'',
                 status:''
             },
+            filtro:{
+                name:null,
+                category_id:null,
+            },
             produtos:[],
             categories:[],
             update:{},
@@ -87,7 +104,8 @@ export default {
     },
 
     created(){
-        //this.listar()
+        this.listar()
+        this.getProduto()
         this.$store.dispatch('Product/getProducts'),
         this.$store.dispatch('Category/setList')// dispatch loading
 
@@ -125,22 +143,38 @@ export default {
                 console.log(resposta.data)
             })
         },
-        
+        listar(){
+            axios.get('http://localhost:8000/api/categories').then(res => {
+                this.categories = res.data.data
+            })
+        },
+        filter(){
+             axios.post('http://localhost:8000/api/filtro',this.filtro).then(res => {
+                 this.produtos = res.data
+                 console.log(this.products)
+             })
+        },
+        getProduto(){
+             axios.get('http://localhost:8000/api/products').then(res => {
+                 this.produtos = res.data
+                 console.log(this.produtos)
+             })
+        }
     },
     
     
     computed:{
         ...mapState('Category',{list:state => state.list}),
-        ...mapState('Product',{products:state => state.products}),
+       // ...mapState('Product',{products:state => state.products}),
 
         ...mapState('User',{user:state => state.user}),
         ...mapGetters('User',['isLogged']),
 
-        pesquisar:function() {
-            return this.products.filter(product => {
-                return product.description.includes(this.pesquisa)
-            })
-        },
+     //   pesquisar:function() {
+        //    return this.products.filter(product => {
+        //        return product.description.includes(this.pesquisa)
+        //    })
+      //  },
     },
     
 }

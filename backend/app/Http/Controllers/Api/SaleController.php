@@ -22,16 +22,6 @@ class SaleController extends Controller
     
     public function index()
     {
-        /*$sales = DB::table('sales')
-            ->join('clients', 'clients.id', '=', 'sales.client_id')
-            ->join('situacao', 'situacao.id', '=', 'sales.situacao_id')
-            ->join('users', 'users.id', '=', 'sales.user_id')
-            ->select('sales.id','sales.dataVenda','sales.total','sales.client_id','sales.user_id','clients.name','situacao.descricao','sales.situacao_id')
-            ->orderBy('sales.user_id','asc')
-            ->orderBy('sales.situacao_id','desc')
-            ->get();
-        return response()->json($sales);*/
-
         $sales = Sale::select('id','dataVenda','total','user_id','client_id','situacao_id')
                         ->with('clients','details_sales','situacao','user.tipo_usuario','user')
                         ->with(['user'=> function($query) {
@@ -78,37 +68,71 @@ class SaleController extends Controller
             ->selectRaw('SUM(total) as teste,monthname (dataVenda) as mes')
             ->groupBy('mes')
             ->get();
-            return response()->json($sales,200);
+
+            $arr['categories'] = array();
+            $arr['series'] = [];
+
+            foreach($sales as $value){
+                array_push($arr['categories'],$value->mes);
+                array_push($arr['series'],$value->teste);
+            }
+            return response()->json($arr,200);
         }catch(Exception $e) {
             return response()->json($e->getMessage(),400);
         }
     }
 
-    public function grafico()
+    public function graficoComissaoVendedores()
     {
         $sales = Sale::join('users', 'users.id', '=', 'sales.user_id')
                         ->selectRaw('Sum(round(total * 5/100)) as comissao,users.name as name')
                         ->groupBy('name')
                         ->get();
+
+                        $arr['categories'] = array();
+                        $arr['series'] = [];
+
+                        foreach($sales as $sale) {
+                            array_push($arr['categories'], $sale->name);
+                            array_push($arr['series'],$sale->comissao);
+                        }
+                        
+                        return $arr;
         return response()->json( $sales,200);
     }
 
-    public function teste(){
+    public function GraficoQuantidadeTotalVendedor(){
         $sales = Sale::join('users', 'users.id', '=', 'sales.user_id')
                         ->selectRaw('count(total) as qtd ,SUM(total) as total,users.name as name')
                         ->groupBy('name')
                         ->get();
-        return response()->json( $sales,200);
+
+                        $arr['categories'] = array();
+                        $arr['series'] = [];
+
+                        foreach($sales as $value){
+                            array_push($arr['categories'],$value->name);
+                            array_push($arr['series'],$value);
+                        }
+        return response()->json( $arr,200);
     }
 
-    public function teste2() {
+    public function GraficoQuantidadeProdutoVendido() {
         $sales = Sale::join('details_sales', 'details_sales.id', '=', 'details_sales.sale_id')
                         ->join('details_sales as detalhe', 'detalhe.product_id', '=', 'detalhe.product_id')
                         ->join('products','products.id','=','detalhe.product_id')
                         ->selectRaw('SUM(round(details_sales.quantidade)) as venda,products.name as name')
                         ->groupBy('name')
                         ->get();
-        return response()->json($sales,200);
+
+                        $arr['categories'] = array();
+                        $arr['series'] = [];
+
+                        foreach($sales as $sale) {
+                            array_push($arr['categories'], $sale->name);
+                            array_push($arr['series'],$sale->venda);
+                        }
+                       return $arr;
     }
     public function graficoAnual()
     {
@@ -118,7 +142,16 @@ class SaleController extends Controller
                         ->selectRaw('SUM(total) as total,year (dataVenda) as ano')
                         ->groupBy('ano')
                         ->get();
-        return response()->json( $sales,200);
+
+                        $arr['categories'] = array();
+                        $arr['series'] = [];
+
+                        foreach($sales as $value){
+                            array_push($arr['categories'],$value->ano);
+                            array_push($arr['series'],$value->total);
+                        }
+
+                      return $arr;
     }
 
     public function store(Request $request)

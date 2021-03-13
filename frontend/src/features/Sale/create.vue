@@ -136,12 +136,9 @@ export default {
         product_id:'',
         quantidade:'',
         subtotal:0,
-      
-       
-          price:'',
-          name:'',
-          estoque:''
-        
+        price:'',
+        name:'',
+        estoque:''
       }],
       client_id:'',
       datavenda:'',
