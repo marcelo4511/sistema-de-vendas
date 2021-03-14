@@ -12,9 +12,9 @@ export default {
     return {
       height:220,
       options: {
-        colors: ['#990000'],
+        colors: ['#990000','#0000FF'],
         title: {
-          text: 'Commisão (Vendas) em 5%',
+          text: 'Total de Vendas e quantidade',
           align: 'left',
           margin: 10,
           offsetX: 0,
@@ -27,7 +27,7 @@ export default {
           },
         },
         subtitle: {
-          text: 'Para Vendedores',
+          text: 'Por Vendedor',
           align: 'left',
           margin: 10,
           offsetX: 0,
@@ -56,6 +56,7 @@ export default {
         },
         plotOptions: {
           bar: {
+               horizontal: false,
             columnWidth: '80%',
             dataLabels: {
               position: 'top',
@@ -70,22 +71,13 @@ export default {
             opacity: 0.5,
           },
         },
-        dataLabels: {
-          style: {
-            colors: ['#333'],
-          },
-           formatter: function (val) {
-              return parseFloat(val).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) 
-            },
-          enabled: true,
-          offsetY: -20,
-          hideOverflowingLabels: false,
-        },
+      
         markers: {
           size: 1,
         },
         xaxis: {
           categories: [],
+           tickPlacement: 'between',
           labels: {
             rotate: 0,
             show: true,
@@ -97,14 +89,20 @@ export default {
         tooltip: {
           shared: true,
           intersect: false,
-            y: {
-            formatter: function (val) {
-              return parseFloat(val).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-            },
-        },
+          y: {
+    
+          },
         },
       },
-      series: []
+     series: [
+       {
+         name:'Total',
+        data: []
+      }, {
+        name:'Quantidade',
+       data: []      
+       }
+       ]
     }
   },
   created(){
@@ -112,9 +110,15 @@ export default {
   },methods:{
       get() {
         this.height = 220;
-          axios.get('http://localhost:8000/api/bi/grafico/comissao/vendedor').then(res => {
-              this.options.xaxis.categories = res.data.categories
-              this.series = [{ 'name': 'Commissão','data': res.data.series }]
+          axios.get('http://localhost:8000/api/bi/grafico/quantidade/total').then(res => {
+            
+                this.options.xaxis.categories = res.data.categories
+            
+                this.series[0].data = res.data.series
+
+                this.series[1].data = res.data.seriesx
+             
+                console.log(this.series[0])
           }).then(() => {
             this.height = 219;
           })

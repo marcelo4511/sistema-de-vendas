@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
     Route::namespace('Api')->group(function(){
         Route::post('/login', 'UserController@login');
         Route::post('/register', 'UserController@register');
-        Route::get('/typeuser','UserController@listar');    
+        Route::get('/typeuser','UserController@listar');   
     });
 
     Route::namespace('Api')->middleware('auth:sanctum')->group(function(){
@@ -45,11 +45,12 @@ use Illuminate\Support\Facades\Route;
             Route::get('product/{id}','SaleController@product');
 
             //gráficos
-            Route::get('bi/grafico/mensal','SaleController@graficoMensal');
-            Route::get('bi/grafico/anual','SaleController@graficoAnual');
-            Route::get('bi/grafico/comissao/vendedor','SaleController@graficoComissaoVendedores');
-            Route::get('bi/grafico/quantidade/total/vendedor','SaleController@GraficoQuantidadeTotalVendedor');
-            Route::get('bi/grafico/quantidade/produtos/vendidos','SaleController@GraficoQuantidadeProdutoVendido');
+            Route::get('bi/grafico/mensal','DashboardController@graficoMensal');
+            Route::get('bi/grafico/anual','DashboardController@graficoAnual');
+            Route::get('bi/grafico/comissao/vendedor','DashboardController@graficoComissaoVendedores');
+            Route::get('bi/grafico/quantidade/total','DashboardController@GraficoQuantidadeTotalVendedor');
+            Route::get('bi/grafico/clientes/compra','DashboardController@GraficoClienteCompra');   
+            Route::get('bi/grafico/quantidade/produtos/vendidos','DashboardController@GraficoQuantidadeProdutoVendido');
         });
 
         //caixa

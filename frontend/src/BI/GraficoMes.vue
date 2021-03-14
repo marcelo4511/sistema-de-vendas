@@ -12,7 +12,7 @@ export default {
     return {
       height:220,
       options: {
-        colors: ['#990000'],
+        colors: ['#FFFF00'],
         title: {
           text: 'Total de vendas (Mês)',
           align: 'left',

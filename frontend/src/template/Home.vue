@@ -70,6 +70,13 @@
     </div>
   </div>       
       
+  <div class="d-flex justify-content-between">
+    <div class="card col-12">
+      <div class="card-body">
+        <grafico-cliente-compra></grafico-cliente-compra>
+      </div>
+    </div>
+  </div>       
 </div>
 
 </template>
@@ -80,15 +87,16 @@ import { mapGetters} from 'vuex'
 
 import '../config/filterData'
 import { } from "chartjs-plugin-datalabels";
-import GraficoQuantidadeProdutoVendidos from './GraficoQuantidadeProdutoVendidos.vue'
-import GraficoComissaoVendedor from './GraficoComissaoVendedor.vue'
-import GraficoTotal from './GraficoTotal.vue'
-import GraficoMes from './GraficoMes.vue'
-import GraficoAno from './GraficoAno.vue'
+import GraficoQuantidadeProdutoVendidos from './../BI/GraficoQuantidadeProdutoVendidos.vue'
+import GraficoComissaoVendedor from './../BI/GraficoComissaoVendedor.vue'
+import GraficoTotal from './../BI/GraficoTotal.vue'
+import GraficoMes from './../BI/GraficoMes.vue'
+import GraficoAno from './../BI/GraficoAno.vue'
+import GraficoClienteCompra from './../BI/GraficoClienteCompra'
 export default {
     
 name: 'LineChartContainer',
-  components: { GraficoQuantidadeProdutoVendidos,GraficoComissaoVendedor, GraficoTotal, GraficoMes, GraficoAno },
+  components: { GraficoQuantidadeProdutoVendidos,GraficoComissaoVendedor,GraficoClienteCompra, GraficoTotal, GraficoMes, GraficoAno },
     data() {
       return{
         testando1:null,

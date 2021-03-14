@@ -12,9 +12,9 @@ export default {
     return {
       height:220,
       options: {
-        colors: ['#990000'],
+        colors: ['#4169E1'],
         title: {
-          text: 'Total de vendas (Ano)',
+          text: 'Commisão (Vendas) em 5%',
           align: 'left',
           margin: 10,
           offsetX: 0,
@@ -27,7 +27,7 @@ export default {
           },
         },
         subtitle: {
-          text: 'Por Produtos',
+          text: 'Para Vendedores',
           align: 'left',
           margin: 10,
           offsetX: 0,
@@ -74,9 +74,9 @@ export default {
           style: {
             colors: ['#333'],
           },
-          formatter: function (val) {
-            return parseFloat(val).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-          },
+           formatter: function (val) {
+              return parseFloat(val).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) 
+            },
           enabled: true,
           offsetY: -20,
           hideOverflowingLabels: false,
@@ -97,16 +97,14 @@ export default {
         tooltip: {
           shared: true,
           intersect: false,
-          y: {
-         formatter: function (val) {
-            return parseFloat(val).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-          },
-          },
+            y: {
+            formatter: function (val) {
+              return parseFloat(val).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
+            },
+        },
         },
       },
-      series: [{
-          data:[]
-      }]
+      series: []
     }
   },
   created(){
@@ -114,9 +112,9 @@ export default {
   },methods:{
       get() {
         this.height = 220;
-          axios.get('http://localhost:8000/api/bi/grafico/anual').then(res => {
+          axios.get('http://localhost:8000/api/bi/grafico/comissao/vendedor').then(res => {
               this.options.xaxis.categories = res.data.categories
-              this.series = [{ 'name': 'Vendas','data': res.data.series }]
+              this.series = [{ 'name': 'Commissão','data': res.data.series }]
           }).then(() => {
             this.height = 219;
           })

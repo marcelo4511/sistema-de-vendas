@@ -12,9 +12,9 @@ export default {
     return {
       height:220,
       options: {
-        colors: ['#990000'],
+        colors: ['#228B22'],
         title: {
-          text: 'Vendas',
+          text: 'Total de vendas (Ano)',
           align: 'left',
           margin: 10,
           offsetX: 0,
@@ -56,7 +56,6 @@ export default {
         },
         plotOptions: {
           bar: {
-               horizontal: false,
             columnWidth: '80%',
             dataLabels: {
               position: 'top',
@@ -71,13 +70,22 @@ export default {
             opacity: 0.5,
           },
         },
-      
+        dataLabels: {
+          style: {
+            colors: ['#333'],
+          },
+          formatter: function (val) {
+            return parseFloat(val).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
+          },
+          enabled: true,
+          offsetY: -20,
+          hideOverflowingLabels: false,
+        },
         markers: {
           size: 1,
         },
         xaxis: {
           categories: [],
-           tickPlacement: 'between',
           labels: {
             rotate: 0,
             show: true,
@@ -90,27 +98,15 @@ export default {
           shared: true,
           intersect: false,
           y: {
-    
+         formatter: function (val) {
+            return parseFloat(val).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
+          },
           },
         },
       },
-     series: [
-       {
-         name:'Total',
-        data: [{
-          x: 'Total',
-          y: []
-        }]
-      }, {
-        name:'Quantidade',
-        data: [{
-          x: 'Quantidade',
-          y: []
-        }]
-              
-          
-       }
-       ]
+      series: [{
+          data:[]
+      }]
     }
   },
   created(){
@@ -118,19 +114,9 @@ export default {
   },methods:{
       get() {
         this.height = 220;
-          axios.get('http://localhost:8000/api/bi/grafico/quantidade/total/vendedor').then(res => {
-            
-                this.options.xaxis.categories = res.data.categories
-            
-                this.series[0].data[0].y = [res.data.series.map(e => {
-                  return e.total
-                })]
-
-                this.series[1].data[0].y= [res.data.series.map(e => {
-                  return e.qtd
-                })]
-             
-                console.log(this.series[0])
+          axios.get('http://localhost:8000/api/bi/grafico/anual').then(res => {
+              this.options.xaxis.categories = res.data.categories
+              this.series = [{ 'name': 'Vendas','data': res.data.series }]
           }).then(() => {
             this.height = 219;
           })

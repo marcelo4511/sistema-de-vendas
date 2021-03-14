@@ -12,9 +12,9 @@ export default {
     return {
       height:220,
       options: {
-        colors: ['#990000'],
+        colors: ['#40E0D0'],
         title: {
-          text: 'Quantidade de Produtos Vendidos',
+          text: 'Compras',
           align: 'left',
           margin: 10,
           offsetX: 0,
@@ -27,7 +27,7 @@ export default {
           },
         },
         subtitle: {
-          text: 'Por Produtos',
+          text: 'Por Clientes',
           align: 'left',
           margin: 10,
           offsetX: 0,
@@ -74,6 +74,9 @@ export default {
           style: {
             colors: ['#333'],
           },
+          formatter: function (val) {
+            return parseFloat(val).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
+          },
           enabled: true,
           offsetY: -20,
           hideOverflowingLabels: false,
@@ -92,13 +95,16 @@ export default {
           },
         },
         tooltip: {
-          shared: true,
-          intersect: false,
           y: {
+            formatter: function (val) {
+              return parseFloat(val).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
+            },
           },
         },
       },
-      series: []
+      series: [{
+          data:[]
+      }]
     }
   },
   created(){
@@ -106,9 +112,9 @@ export default {
   },methods:{
       get() {
         this.height = 220;
-          axios.get('http://localhost:8000/api/bi/grafico/quantidade/produtos/vendidos').then(res => {
+          axios.get('http://localhost:8000/api/bi/grafico/clientes/compra').then(res => {
               this.options.xaxis.categories = res.data.categories
-              this.series = [{ 'name': 'Vendas','data': res.data.series }]
+              this.series = [{ 'name': 'Compra total','data': res.data.series }]
           }).then(() => {
             this.height = 219;
           })
