@@ -1,7 +1,6 @@
 
 
 <template>
-
    <div class="plano-de-fundo">
     <fieldset class="form-group col-md-6">
       <h4 class="titulo"><i class="fa fa-user">  </i> Sistema de vendas </h4>
@@ -40,7 +39,7 @@ export default {
         })
        .then(()=>{
          this.$noty.success('Bem vindo ao sistema!')
-          // this.$router.push('/perfil')
+           this.$router.push('/perfil')
        }).catch(err => {
          console.log(err)
          this.$noty.info('houve um problema na altenticação')

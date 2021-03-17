@@ -34,6 +34,7 @@ use Illuminate\Support\Facades\Route;
             Route::get('/users','UserController@index');
             Route::get('/list','UserController@show');
             Route::put('/users','UserController@update');
+            Route::get('/search','UserController@search');
         
             Route::resource('sales','SaleController');
             Route::get('relatorioexcel','SaleController@relatorioexcel');
@@ -76,7 +77,7 @@ use Illuminate\Support\Facades\Route;
             Route::delete('/products/{id}','ProductController@delete');
             Route::get('product/{id}','SaleController@product');
             Route::post('/filtro', 'ProductController@filtro');
-           Route::get('/categories','CategoryController@index');
+            Route::get('/categories','CategoryController@index');
             Route::resource('clients','ClientController');
             Route::resource('sales','SaleController');
             Route::get('salesemandamento','SaleController@statusOne');

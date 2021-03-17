@@ -1,11 +1,11 @@
 <template>
 <div>
-<h4 cabecalho="Produto">Home</h4>
-<nav aria-label="breadcrumb mb-4">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
-  </ol>
-</nav>
+  <h4 cabecalho="Produto">Home</h4>
+  <nav aria-label="breadcrumb mb-4">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
+    </ol>
+  </nav>
   <div class="row painel">
     <div class="card text-white bg-primary ml-3 " style="width:300px;height:250px">
        <div class="card-header">
@@ -33,8 +33,7 @@
       </div>
     </div>
 
-  <div class="d-flex justify-content-between">
-      
+  <div class="d-flex justify-content-between">    
     <div class="card col-12">
       <div class="card-body">
          <grafico-ano></grafico-ano>
@@ -56,7 +55,7 @@
     </div>
   </div>
 
-<div class="d-flex justify-content-between">
+  <div class="d-flex justify-content-between">
     <div class="card col-12 col-lg-6">
       <div class="card-body">
         <grafico-mes></grafico-mes>

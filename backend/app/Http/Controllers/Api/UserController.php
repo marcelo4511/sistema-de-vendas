@@ -161,4 +161,26 @@ class UserController extends Controller
         $typeuser = TypeUser::select('id','descricao')->whereNotIn('id',[1])->get();
         return response()->json($typeuser,200);
     }
+
+    public function search(Request $request){
+      
+        if($search = $request->get('q')){
+            
+              $user = User::select('id','name','email','type_user_id')->with('tipo_usuario')->where(function($query) use ($search){
+             
+                 $query->Where('name','LIKE',"%$search%")
+             
+                 ->orWhere('email','LIKE',"%$search%")
+              //   ->orWhere('type_user_id','LIKE',"%$search%")
+             
+              ->orWhereHas('tipo_usuario',function($query) use($search) {
+                $query->where('descricao','LIKE',"%$search%");
+              });   
+             })->get();
+     
+         }        else{
+            $user = User::latest()->get();
+                      }
+          return $user;
+        } 
 }

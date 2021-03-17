@@ -1,7 +1,5 @@
 <template>
   <div id="app">
-       
-    
      <Nav v-show="isLogged"/>
      <Header v-show="isLogged"/>
      <Main/>

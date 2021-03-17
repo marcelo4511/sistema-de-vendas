@@ -11,7 +11,7 @@
 <div class="form-group">
     <button class="btn btn-primary"><router-link tag="span" to="users/create">Cadastrar</router-link></button>
  
-  <input class="form-control col-md-3 mb-3" type="search" style="float: right;" name="nome" placeholder="Buscar">
+  <input class="form-control col-md-3 mb-3" type="search" style="float: right;" name="nome" placeholder="Buscar" v-model="search" @input="get">
 
 </div>
 
@@ -49,7 +49,8 @@ export default {
  data(){
       return{
        
-        users:[]
+        users:[],
+        search:[]
       }
     },
   name:'users',
@@ -60,28 +61,14 @@ export default {
     setUsers(){
         axios.get(`${API_BASE_URL}/users`).then(res => {
             this.users = res.data
-            console.log(res.data)
         })
-    }
-       /* removeList(category){
-           swal({
-            title: "Você está certo disso ?",
-            text: "Depois de excluído, você não será capaz de recuperar este arquivo!",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-            })
-            .then((willDelete) => {
-              if(willDelete) {
-                this.$store.dispatch('Category/removeList',category)
-                  swal("Cliente deletado com sucesso!", {
-                icon: "success",
-                });
-              }else {
-                swal("seu dado está a salvo");
-              }
-          })
-        }  */
+    },
+        get(){
+       
+          axios.get(`${API_BASE_URL}/search?q=${this.search}`).then(res => {
+              this.users = res.data
+        })
+        }
       },
 }
 </script>
