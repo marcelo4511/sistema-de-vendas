@@ -16,26 +16,26 @@
 </div>
 
   <table class="table table-sm">
-                <thead>
-                <tr>
-                    <th scope="col">Nome</th>
-                    <th scope="col">Email</th>
-                      <th scope="col">Tipo de Usuário</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="(user,i) in users" :key="i">
-                    <td>{{user.name}}</td>
-                    <td>{{user.email}}</td>
-                     <td>{{user.tipo_usuario.descricao}}</td>
-                    <td>
-                        <button class="btn btn-warning ml-2"><i class="fa fa-edit"></i></button>
-                        <button @click="removeList(user)" class="btn btn-danger ml-2"><i class="fa fa-trash"></i></button>
-                    </td>
-                  
-                </tr>
-                </tbody>
-            </table>
+          <thead>
+          <tr>
+              <th scope="col">Nome</th>
+              <th scope="col">Email</th>
+                <th scope="col">Tipo de Usuário</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="(user,i) in users" :key="i">
+              <td>{{user.name}}</td>
+              <td>{{user.email}}</td>
+              <td>{{user.tipo_usuario.descricao}}</td>
+              <td>
+                  <button class="btn btn-warning ml-2"><i class="fa fa-edit"></i></button>
+                  <button @click="removeList(user)" class="btn btn-danger ml-2"><i class="fa fa-trash"></i></button>
+              </td>
+            
+          </tr>
+          </tbody>
+      </table>
         
   </div>
 </template>

@@ -24,7 +24,7 @@
       </thead>
       <tbody>
           <tr v-for="(sale,k) in sales" :key="k" >
-              <td>{{sale.clients.name}}</td>
+              <td>{{sale.clients && sale.clients.name ? sale.clients.name : 'NI'}}</td>
               <td>{{sale.dataVenda | formatDate}}</td>
               <td>{{sale.total | formatPrice}}</td>
               <td>{{sale.situacao.descricao}}</td>
@@ -55,7 +55,7 @@
 <script>
 import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
 import axios from 'axios'
-import {mapState} from 'vuex'
+import {mapGetters, mapState} from 'vuex'
 import jsPDF from 'jspdf'
 import swal from 'sweetalert'
 import 'jspdf-autotable' 
@@ -67,7 +67,6 @@ export default {
                 id:'',
                 dataVenda:'',
                 client_id:'',
-                //name:'',
                 total:''
             },
             search:[]
@@ -95,10 +94,12 @@ export default {
                 icon: "success",
                 });
             })
+               
             } else {
                 swal("seu dado está a salvo");
             }
             });
+             return this.$forceUpdate();
                
         },
         
@@ -174,30 +175,31 @@ export default {
                 axios.post(`http://localhost:8000/api/aprovar/${sale.id}`)
             .then(res => {
                 console.log(res.data)
+               
                 swal("Venda aprovada!", {
                 icon: "success",
                 });
+                return location.reload()
             })
             } else {
                 swal("Venda continua a esperar o pagamento");
             }
-            this.$router.push('/sales')
-            //return(window.location.href=`${this.baseURL}/proposta/listar`);
             });
+         
+           
                
         },
     },
     computed:{
         ...mapState('Sale',{sales:state => state.sales}),
-
+        ...mapGetters({
+        
+            Sale:'Sale/teste'
+        }),
         reais:function(){
             return this.total.toFixed(2).replace('.',',')
         },
-       // searching:function(){
-//return this.sales.filter(sale => {
-//return sale.name.includes(this.search)
-//})
-//}
+       
     }    
 }
 

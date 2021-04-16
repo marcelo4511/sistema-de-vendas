@@ -25,6 +25,7 @@
     "sass-loader": "^9.0.3",
     "sweetalert": "^2.1.2",
     "v-money": "^0.8.1",
+    "vee-validate": "^3.4.5",
     "vue": "^2.6.11",
     "vue-acl": "^4.1.10",
     "vue-apexcharts": "^1.6.0",

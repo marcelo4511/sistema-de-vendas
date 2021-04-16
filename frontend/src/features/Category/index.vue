@@ -149,11 +149,6 @@ export default {
  
   computed: {
     ...mapState('Category',{list:state => state.list}),
-      //  pesquisar:function() {
-//return this.list.filter(l => {
-       //         return l.name.includes(this.pesquisa)
-        //    })
-       // },
   }
 }
 </script>

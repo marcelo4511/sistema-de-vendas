@@ -19,7 +19,7 @@ class CreateFormaPagamentoTable extends Migration
             $table->string('parcelas')->nullable();
             $table->string('entrada')->nullable();
 
-            $table->unsignedInteger('sale_id');
+            $table->unsignedInteger('sale_id')->nullable();
             $table->foreign('sale_id')->references('id')->on('sales')->onDelete('cascade');
             
             $table->timestamps();

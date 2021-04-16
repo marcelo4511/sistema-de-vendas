@@ -16,10 +16,10 @@ class CreateAcessosUsersTable extends Migration
         Schema::create('acessos_users', function (Blueprint $table) {
             $table->id();
 
-            $table->bigInteger('acesso_id')->unsigned();
+            $table->bigInteger('acesso_id')->unsigned()->nullable();
             $table->foreign('acesso_id')->references('id')->on('acessos')->onDelete('cascade');
             
-            $table->integer('user_id')->unsigned();
+            $table->integer('user_id')->unsigned()->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             
             $table->timestamps();

@@ -31,17 +31,17 @@
           <tr v-for="(detalheVenda,key) of details_sales" :key="key">
                <td><label><strong>Produto</strong>
                  </label>
-             <select class="form-control" required v-model="detalheVenda.product_id" @blur="getProducts(detalheVenda.product_id,key)">
+             <select class="form-control" :disabled="disabled" required v-model="detalheVenda.product_id" @change="getProducts(detalheVenda.product_id,key), calculateEstoque(detalheVenda)">
                <option v-for="(product) in products" :key="product.id"  v-show="product.status == 'Ativo'" :value="product.id">{{product.name}}</option>
 
              </select>
               </td>
-           <!-- <td><label><strong>Produto</strong></label><input type="text" class="form-control" @blur="getProducts(detalheVenda.name,key)"  v-model="detalheVenda.name"></td>-->
+          
 
-            <td><label><strong>Preço</strong></label><money v-model="detalheVenda.price" :value="detalheVenda.price" @blur="getProducts(detalheVenda.price, indice,key)"  v-bind="money" name="valorSinistrado" class="form-control" @change="calculateLineTotal(detalheVenda)" readonly></money></td>
-            <td><label><strong>Estoque</strong></label><input class="form-control" type="number" @blur="getProducts(detalheVenda.estoque, indice)" v-model="detalheVenda.estoque" required readonly></td>
+            <td><label><strong>Preço</strong></label><money v-model="detalheVenda.price" :value="detalheVenda.price" @change="getProducts(detalheVenda.price,key),calculateLineTotal(detalheVenda)"  v-bind="money" name="valorSinistrado" class="form-control" readonly></money></td>
+            <td><label><strong>Estoque</strong></label><input class="form-control" type="number" @change="getProducts(detalheVenda.estoque, key)" v-model="detalheVenda.estoque" required readonly></td>
     
-            <td><label><strong>Quantidade</strong></label><input class="form-control" type="number" v-model="detalheVenda.quantidade" @change="calculateLineTotal(detalheVenda)" @keyup="calculateEstoque(detalheVenda)" required></td>
+            <td><label><strong>Quantidade</strong></label><input  :disabled="loading" class="form-control" type="text" v-model="detalheVenda.quantidade" @change="calculateLineTotal(detalheVenda)" @input="calculateEstoque(detalheVenda)" required></td>
             <td><label><strong>Subtotal</strong></label><money readonly disabled :value="detalheVenda.subtotal" v-bind="money" name="totalPrejuizo" class="form-control"></money></td>
             <td><label><strong>Ação</strong></label>
             <button  class="btn btn-danger" @click="remova(detalheVenda)" ><i class="fa fa-times"></i></button></td>
@@ -85,19 +85,20 @@
               <div class="form-group m-2">
                 <label for="">Parcelas</label>
                 <select type="text" class="form-control" v-model="formapagamento.parcelas" v-show="formapagamento.tipo_forma_pagamento == '2'">
-                  <option selected value="null">1x</option>
-                  <option value="1">6x</option>
-                  <option value="2">10x</option>
-                  <option value="3">12x</option>
-                  <option value="4">24x</option>
+                  <option selected value="null">Selecione</option>
+                  <option :value="1">1x</option>
+                  <option :value="6">6x</option>
+                  <option :value="10">10x</option>
+                  <option :value="12">12x</option>
+                  <option :value="24">24x</option>
                 </select>
 
-                 <select type="text" class="form-control" v-model="formapagamento.parcelas" disabled v-show="formapagamento.tipo_forma_pagamento !== '2'">
+                 <select type="text" class="form-control" v-model="formapagamento.parcelas" @change="valorCreditoFunction(formapagamento.parcelas)" disabled v-show="formapagamento.tipo_forma_pagamento !== '2'">
                   <option selected value="null">1x</option>
-                  <option value="1">6x</option>
-                  <option value="2">10x</option>
-                  <option value="3">12x</option>
-                  <option value="4">24x</option>
+                  <option :value="1">6x</option>
+                  <option :value="2">10x</option>
+                  <option :value="3">12x</option>
+                  <option :value="4">24x</option>
                 </select>
               </div>
 
@@ -107,8 +108,11 @@
                 <input type="text" class="form-control" v-show="formapagamento.tipo_forma_pagamento !== '2'" disabled  v-model="formapagamento.entrada" placeholder="0,00">
               </div>
 
-              <div v-show="formapagamento.tipo_forma_pagamento == '2'">
-                <p>teste de exibicao</p>
+              <div class="form-group m-0">
+                <label for="">Parcelas de :</label>
+                <div v-show="formapagamento.tipo_forma_pagamento == '2' && formapagamento.parcelas != null">
+                  <p><span>{{formapagamento.parcelas +'x' + teste}}</span></p>
+                </div>
               </div>
             </div>
           </div>
@@ -123,7 +127,7 @@
 import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
 import {mapState} from 'vuex'
 import axios from 'axios'
-//import jsPDF from 'jspdf'
+//import VeeValidate from "vee-validate";
 import {VMoney} from 'v-money'
 import 'jspdf-autotable' 
 
@@ -132,6 +136,11 @@ export default {
 
   data(){
     return {
+      disabled:false,
+      loading:true,
+      testeT:null,
+      valorCreditoData:null,
+        result: 0,
       details_sales:[{
         product_id:'',
         quantidade:'',
@@ -168,17 +177,13 @@ export default {
   methods:{
   getProducts(product,key){
     if(product) {
+      
       axios.get(`http://localhost:8000/api/product/${product}`).then(res => {
-          this.details_sales[key].product_id = res.data[0].id
+        this.details_sales[key].product_id = res.data[0].id
           this.details_sales[key].name = res.data[0].name
           this.details_sales[key].id = res.data[0].id
           this.details_sales[key].price = res.data[0].price
           this.details_sales[key].estoque = res.data[0].estoque   
-          console.log(res.data[0].id)   
-          let consulta = res.data
-          console.log(consulta.map(i => {
-            return i.name
-          }))   
         })
     }
     
@@ -204,7 +209,14 @@ export default {
     
     })
   },
-    
+    add () {
+      this.result += 1
+      this.emitResult()
+    },
+    sub () {
+      this.result -= 1
+      this.emitResult()
+    },
     remova(){
         if(this.details_sales.length > 1) {
 
@@ -243,35 +255,32 @@ export default {
       detalheVenda.subtotal = total.toFixed(2);
     },
     calculateEstoque(detalheVenda) {
-     let estoque =  detalheVenda.estoque = detalheVenda.estoque - detalheVenda.quantidade
-     detalheVenda.estoque = estoque
+      detalheVenda.quantidade = detalheVenda.quantidade.replace(/[^0-9]/g, '');
+      setTimeout(function(){ 
+        var estoque =  detalheVenda.estoque = detalheVenda.estoque - detalheVenda.quantidade ? detalheVenda.estoque - detalheVenda.quantidade : detalheVenda.estoque
+        detalheVenda.estoque = estoque
+        
+        if(detalheVenda.estoque < 0 && detalheVenda.estoque !== null){
+          this.loading = true
+          detalheVenda.quantidade = ''
+          this.$noty.error("Produto sem estoque!,favor colocar outro produto") 
+          this.disabled = true
+          this.disabled = false
+        }else{
+          this.loading = false
+        }
+      }.bind(this),2000)
     },
-    /*exportPdfSale(){
-       
-      axios.get("http://localhost:8000/api/details")
-      .then(function(){
-      })
-
-      let columns = [
-      {title:"Produto",dataKey:"name"},
-      {title:"Preço",dataKey:"price"},
-      {title:"Desconto",dataKey:"quantidade"},
-      {title:"Total da Venda R$",dataKey: "subtotal"}
-      ];
-      
-      var doc = new jsPDF('p','pt');
-      doc.text('Relatório das vendas realizadas',10,12)
-      doc.autoTable(columns,this.details_sales);
-      doc.save("relatorioVenda.pdf");
-
-    },*/
+    valorCreditoFunction(parcelas){
+      this.formapagamento.parcelas = parcelas
+    }
   },
   watch:{
     'detalheVenda.estoque' :function(detalheVenda){
-     detalheVenda.estoque = detalheVenda - detalheVenda.quantidade || 0
+     detalheVenda.estoque = detalheVenda + detalheVenda.quantidade || 0
     },
-     'detalheVenda.quantidade' :function(value){
-      this.getProducts(value)
+     'detalheVenda.quantidade' :function(val){
+     this.details_sales.quantidade = val.replace(/\W/g, "");
     }
   },
   computed:{
@@ -284,7 +293,17 @@ export default {
                 
             },0)
         },
-  }  
+        teste:function(){
+          return this.total / this.formapagamento.parcelas 
+        },
+  }  ,
+  filter:{
+    capitalize: function (value) {
+    if (!value) return ''
+    value = value.toString()
+    return value.charAt(0).toUpperCase() + value.slice(1)
+  }
+  }
 }
 </script>
 

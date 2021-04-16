@@ -20,10 +20,10 @@ class CreateDetailsSalesTable extends Migration
             $table->float('quantidade');
             $table->float('subtotal');
 
-            $table->unsignedInteger('product_id');
+            $table->unsignedInteger('product_id')->nullable();
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
            
-            $table->unsignedInteger('sale_id');
+            $table->unsignedInteger('sale_id')->nullable();
             $table->foreign('sale_id')->references('id')->on('sales')->onDelete('cascade');
             $table->timestamps();
            

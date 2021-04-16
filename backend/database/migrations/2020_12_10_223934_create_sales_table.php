@@ -18,13 +18,13 @@ class CreateSalesTable extends Migration
             $table->string('dataVenda');
             $table->float('total',8,2);  
 
-            $table->unsignedInteger('client_id');
+            $table->unsignedInteger('client_id')->nullable();
             $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
            
-            $table->unsignedInteger('situacao_id');
+            $table->unsignedInteger('situacao_id')->nullable();
             $table->foreign('situacao_id')->references('id')->on('situacao')->onDelete('cascade');
 
-            $table->integer('user_id')->unsigned();
+            $table->integer('user_id')->unsigned()->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->nullable();
 
             $table->timestamps();
