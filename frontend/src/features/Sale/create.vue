@@ -8,18 +8,22 @@
           <li class="breadcrumb-item active" aria-current="page">Criar</li>
         </ol>
       </nav>
-      <div class="form-row">
+      <div class="form-row">  
           <div @submit.prevent="abc" class="form-group col-md-6">
           <label for="">Clientes</label>
-          <select class="form-control" required v-model="client_id" >
+          <select class="form-control" required v-model="client_id" name="client_id" v-validate = "'required'" data-vv-as="Cliente" :class="['form-control form-control-sm', {'is-invalid': errors.has('client_id')},`${errorsRequest.client_id  ? `is-invalid` : ``}`]">
               <option selected disabled value="">selecione</option>
-              <option   v-for="(client,k) in clients" v-show="client.status == 'Ativo'" :key="k"  :value="client.id">{{client.name}}</option>
+              <option v-for="(client,k) in clients" v-show="client.status == 'Ativo'" :key="k"  :value="client.id">{{client.name}}</option>
           </select>
+          <div v-show="submitted && errors.has('client_id')" class="invalid-feedback">{{ errors.first('client_id') }}</div>
+          <div class="text-danger" v-if="errorsRequest.client_id">{{ errorsRequest.client_id[0] }}</div>
           </div>
           
           <div class="form-group col-md-6">
             <label for="">Data da Venda</label>
-            <input type="date" required v-model="datavenda" class="form-control">
+            <input type="date" name="datavenda" v-validate = "'required'" data-vv-as="Data Venda" required v-model="datavenda" class="form-control" :class="['form-control form-control-sm', {'is-invalid': errors.has('datavenda')},`${errorsRequest.dataVenda ? `is-invalid` : ``}`]" />
+            <div v-if="submitted && errors.has('datavenda')" class="invalid-feedback">{{ errors.first('datavenda') }}</div>
+            <div class="text-danger" v-if="errorsRequest.dataVenda">{{ errorsRequest.dataVenda[0] }}</div>
           </div>
       
       <fieldset class="m-3">
@@ -29,23 +33,23 @@
           <table class="table table-sm"> 
         <tbody>
           <tr v-for="(detalheVenda,key) of details_sales" :key="key">
-               <td><label><strong>Produto</strong>
-                 </label>
-             <select class="form-control" :disabled="disabled" required v-model="detalheVenda.product_id" @change="getProducts(detalheVenda.product_id,key), calculateEstoque(detalheVenda)">
-               <option v-for="(product) in products" :key="product.id"  v-show="product.status == 'Ativo'" :value="product.id">{{product.name}}</option>
-
-             </select>
+              <td>
+                <label><strong>Produto</strong></label>
+                  <select class="form-control"  :name="`product_id_${key}`" data-vv-as="Produto" v-validate="'required'" :class="['form-control form-control-sm', {'is-invalid': errors.has(`product_id_${key}`)},`${errorsRequest[`details_sales.${key}.product_id`] ? `is-invalid` : ``}`]"  :disabled="disabled" required v-model="detalheVenda.product_id" @change="getProducts(detalheVenda.product_id,key), calculateEstoque(detalheVenda)">
+                    <option v-for="(product) in products" :key="product.id"  v-show="product.status == 'Ativo'" :value="product.id">{{product.name}}</option>
+                  </select>
+                  <span v-show="errors.has(`product_id_${key}`)" class="invalid-feedback">{{ errors.first(`product_id_${key}`) }}</span>
+                  <span class="invalid-feedback">
+                    {{ `${errorsRequest[`details_sales.${key}.product_id`] ? errorsRequest[`details_sales.${key}.product_id`] : `` }` }}<br>
+                  </span> 
               </td>
-          
-
-            <td><label><strong>Preço</strong></label><money v-model="detalheVenda.price" :value="detalheVenda.price" @change="getProducts(detalheVenda.price,key),calculateLineTotal(detalheVenda)"  v-bind="money" name="valorSinistrado" class="form-control" readonly></money></td>
-            <td><label><strong>Estoque</strong></label><input class="form-control" type="number" @change="getProducts(detalheVenda.estoque, key)" v-model="detalheVenda.estoque" required readonly></td>
-    
-            <td><label><strong>Quantidade</strong></label><input  :disabled="loading" class="form-control" type="text" v-model="detalheVenda.quantidade" @change="calculateLineTotal(detalheVenda)" @input="calculateEstoque(detalheVenda)" required></td>
-            <td><label><strong>Subtotal</strong></label><money readonly disabled :value="detalheVenda.subtotal" v-bind="money" name="totalPrejuizo" class="form-control"></money></td>
-            <td><label><strong>Ação</strong></label>
-            <button  class="btn btn-danger" @click="remova(detalheVenda)" ><i class="fa fa-times"></i></button></td>
-    
+              <td><label><strong>Preço</strong></label><money v-model="detalheVenda.price" :value="detalheVenda.price" @change="getProducts(detalheVenda.price,key),calculateLineTotal(detalheVenda)"  v-bind="money" name="valorSinistrado" class="form-control" readonly></money></td>
+              <td><label><strong>Estoque</strong></label><input class="form-control" type="number" @change="getProducts(detalheVenda.estoque, key)" v-model="detalheVenda.estoque" required readonly></td>
+              <td><label><strong>Quantidade</strong></label><input  :disabled="loading" class="form-control" type="number" v-model="detalheVenda.quantidade" @change="calculateLineTotal(detalheVenda)" @input="calculateEstoque(detalheVenda)" required></td>
+              <td><label ><strong style="visibility: hidden;">tes </strong></label><div class="text-center"><span  @click="inc(detalheVenda)"><b>+</b> </span><br> <span style="padding:-20px;" @click="dec(detalheVenda)"><b>-</b></span></div></td>
+              <td><label><strong>Subtotal</strong></label><money readonly disabled :value="detalheVenda.subtotal" v-bind="money" name="totalPrejuizo" class="form-control"></money></td>
+              <td><label><strong>Ação</strong></label>
+              <button  class="btn btn-danger" @click="remova(detalheVenda)" ><i class="fa fa-times"></i></button></td>
           </tr>
         </tbody>
        
@@ -127,7 +131,6 @@
 import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
 import {mapState} from 'vuex'
 import axios from 'axios'
-//import VeeValidate from "vee-validate";
 import {VMoney} from 'v-money'
 import 'jspdf-autotable' 
 
@@ -140,7 +143,7 @@ export default {
       loading:true,
       testeT:null,
       valorCreditoData:null,
-        result: 0,
+      result: 0,
       details_sales:[{
         product_id:'',
         quantidade:'',
@@ -157,6 +160,8 @@ export default {
         parcelas:null,
         entrada:null
       },
+      submitted: false,
+      errorsRequest:[],
        money: {
         decimal: ',',
         thousands: '.',
@@ -184,11 +189,15 @@ export default {
           this.details_sales[key].id = res.data[0].id
           this.details_sales[key].price = res.data[0].price
           this.details_sales[key].estoque = res.data[0].estoque   
+          this.details_sales[key].subtotal = 0   
         })
     }
     
   },
   onSubmit(){
+    this.submitted = true;
+  //  this.$validator.validate().then(res=>{
+  //  if(res) {
     axios.post('http://localhost:8000/api/sales',{
         client_id:this.client_id,
         dataVenda:this.datavenda,
@@ -207,15 +216,30 @@ export default {
       return  this.$router.push('/vendas')
       }
     
-    })
+    }).catch(error => {
+          if (error.response.status === 422) {
+            this.errorsRequest = error.response.data.errors;
+            console.log(this.errorsRequest)
+          }
+        });
+  //  } else {
+      //            alert('Please correct all error!')
+   //   }
+   // })
   },
-    add () {
-      this.result += 1
-      this.emitResult()
+    inc(detalheVenda){
+      if(detalheVenda.estoque){
+        detalheVenda.quantidade ++
+        detalheVenda.estoque --
+      }  
+      this.calculateLineTotal(detalheVenda)
     },
-    sub () {
-      this.result -= 1
-      this.emitResult()
+    dec(detalheVenda){
+      if(detalheVenda.quantidade > 0){
+        detalheVenda.quantidade --
+        detalheVenda.estoque ++
+      }  
+       this.calculateLineTotal(detalheVenda)
     },
     remova(){
         if(this.details_sales.length > 1) {
@@ -255,14 +279,14 @@ export default {
       detalheVenda.subtotal = total.toFixed(2);
     },
     calculateEstoque(detalheVenda) {
-      detalheVenda.quantidade = detalheVenda.quantidade.replace(/[^0-9]/g, '');
+      //detalheVenda.quantidade = detalheVenda.quantidade.replace(/[^0-9]/g, '');
       setTimeout(function(){ 
-        var estoque =  detalheVenda.estoque = detalheVenda.estoque - detalheVenda.quantidade ? detalheVenda.estoque - detalheVenda.quantidade : detalheVenda.estoque
-        detalheVenda.estoque = estoque
+        detalheVenda.estoque - 1
+        detalheVenda.quantidade +  1
         
         if(detalheVenda.estoque < 0 && detalheVenda.estoque !== null){
           this.loading = true
-          detalheVenda.quantidade = ''
+          detalheVenda.quantidade = 0
           this.$noty.error("Produto sem estoque!,favor colocar outro produto") 
           this.disabled = true
           this.disabled = false
@@ -270,17 +294,10 @@ export default {
           this.loading = false
         }
       }.bind(this),2000)
+      
     },
     valorCreditoFunction(parcelas){
       this.formapagamento.parcelas = parcelas
-    }
-  },
-  watch:{
-    'detalheVenda.estoque' :function(detalheVenda){
-     detalheVenda.estoque = detalheVenda + detalheVenda.quantidade || 0
-    },
-     'detalheVenda.quantidade' :function(val){
-     this.details_sales.quantidade = val.replace(/\W/g, "");
     }
   },
   computed:{
@@ -289,7 +306,7 @@ export default {
 
      totalizar:function() {
              return  this.details_sales.reduce((total,detalheVenda) => {
-                return this.total =  parseFloat(total) + parseFloat(detalheVenda.subtotal) || this.total
+                return this.total =  parseFloat(total) + parseFloat(detalheVenda.subtotal) || this.subtotal
                 
             },0)
         },
@@ -297,13 +314,6 @@ export default {
           return this.total / this.formapagamento.parcelas 
         },
   }  ,
-  filter:{
-    capitalize: function (value) {
-    if (!value) return ''
-    value = value.toString()
-    return value.charAt(0).toUpperCase() + value.slice(1)
-  }
-  }
 }
 </script>
 

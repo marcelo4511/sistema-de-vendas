@@ -9,8 +9,10 @@ import VueNoty from 'vuejs-noty-fa';
 import money from 'v-money'
 import auth from './config/auth'
 import axios from 'axios'
-//import VeeValidate from "vee-validate";
-
+import VeeValidate, {
+  Validator
+} from "vee-validate";
+import pt_BR from 'vee-validate/dist/locale/pt_BR'
 import '@/config/apexcharts'
 import './config/Api'
 import './config/filterData'
@@ -24,7 +26,8 @@ import 'font-awesome/css/font-awesome.css'
 
 Vue.use(money, {precision: 2})
 //Vue.use(VueApexCharts)
-//Vue.use(VeeValidate);
+Vue.use(VeeValidate);
+Validator.localize('pt_BR', pt_BR);
 
 Vue.use(ChartKick.use(Chart))
 Vue.config.productionTip = false

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Sale;
 use App\Detail;
 use App\FormaPagamento;
+use App\Http\Requests\SaleRequest;
 use App\Product;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -55,7 +56,7 @@ class SaleController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(SaleRequest $request)
     {
         
         try{
