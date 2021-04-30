@@ -12,8 +12,8 @@
           <div @submit.prevent="abc" class="form-group col-md-6">
           <label for="">Clientes</label>
           <select class="form-control" required v-model="client_id" name="client_id" v-validate = "'required'" data-vv-as="Cliente" :class="['form-control form-control-sm', {'is-invalid': errors.has('client_id')},`${errorsRequest.client_id  ? `is-invalid` : ``}`]">
-              <option selected disabled value="">selecione</option>
-              <option v-for="(client,k) in clients" v-show="client.status == 'Ativo'" :key="k"  :value="client.id">{{client.name}}</option>
+            <option selected disabled value="">selecione</option>
+            <option v-for="(client,k) in clients" v-show="client.status == 'Ativo'" :key="k"  :value="client.id">{{client.name}}</option>
           </select>
           <div v-show="submitted && errors.has('client_id')" class="invalid-feedback">{{ errors.first('client_id') }}</div>
           <div class="text-danger" v-if="errorsRequest.client_id">{{ errorsRequest.client_id[0] }}</div>
@@ -43,11 +43,43 @@
                     {{ `${errorsRequest[`details_sales.${key}.product_id`] ? errorsRequest[`details_sales.${key}.product_id`] : `` }` }}<br>
                   </span> 
               </td>
-              <td><label><strong>Preço</strong></label><money v-model="detalheVenda.price" :value="detalheVenda.price" @change="getProducts(detalheVenda.price,key),calculateLineTotal(detalheVenda)"  v-bind="money" name="valorSinistrado" class="form-control" readonly></money></td>
-              <td><label><strong>Estoque</strong></label><input class="form-control" type="number" @change="getProducts(detalheVenda.estoque, key)" v-model="detalheVenda.estoque" required readonly></td>
-              <td><label><strong>Quantidade</strong></label><input  :disabled="loading" class="form-control" type="number" v-model="detalheVenda.quantidade" @change="calculateLineTotal(detalheVenda)" @input="calculateEstoque(detalheVenda)" required></td>
-              <td><label ><strong style="visibility: hidden;">tes </strong></label><div class="text-center"><span  @click="inc(detalheVenda)"><b>+</b> </span><br> <span style="padding:-20px;" @click="dec(detalheVenda)"><b>-</b></span></div></td>
-              <td><label><strong>Subtotal</strong></label><money readonly disabled :value="detalheVenda.subtotal" v-bind="money" name="totalPrejuizo" class="form-control"></money></td>
+
+              <td>
+                <label><strong>Preço</strong></label>
+                <money v-model="detalheVenda.price" :name="`price_${key}`" data-vv-as="Preço" v-validate="'min_value:0,01'" :class="['form-control form-control-sm', {'is-invalid': errors.has(`price_${key}`)},`${errorsRequest[`details_sales.${key}.price`] ? `is-invalid` : ``}`]" :value="detalheVenda.price" @change="getProducts(detalheVenda.price,key),calculateLineTotal(detalheVenda)"  v-bind="money" class="form-control" readonly></money>
+                <span v-show="errors.has(`price_${key}`)" class="invalid-feedback">{{ errors.first(`price_${key}`) }}</span>
+                  <span class="invalid-feedback">
+                    {{ `${errorsRequest[`details_sales.${key}.price`] ? errorsRequest[`details_sales.${key}.price`] : `` }` }}<br>
+                  </span> 
+              </td>
+
+              <td>
+                <label><strong>Estoque</strong></label>
+                <input class="form-control" type="number" @change="getProducts(detalheVenda.estoque, key)" v-model="detalheVenda.estoque" required readonly>
+              </td>
+
+              <td>
+                <label><strong>Quantidade</strong></label>
+                <input  :disabled="loading" class="form-control"  :name="`quantidade${key}`" type="number" data-vv-as="Quantidade" v-validate="'required'" :class="['form-control form-control-sm', {'is-invalid': errors.has(`quantidade${key}`)},`${errorsRequest[`details_sales.${key}.quantidade`] ? `is-invalid` : ``}`]" v-model="detalheVenda.quantidade" @change="calculateLineTotal(detalheVenda)" @input="calculateEstoque(detalheVenda)">
+                <span v-show="errors.has(`quantidade${key}`)" class="invalid-feedback">{{ errors.first(`quantidade${key}`) }}</span>
+                  <span class="invalid-feedback">
+                    {{ `${errorsRequest[`details_sales.${key}.quantidade`] ? errorsRequest[`details_sales.${key}.quantidade`] : `` }` }}<br>
+                  </span> 
+              </td>
+
+              <td>
+                <label ><strong style="visibility: hidden;">tes </strong></label>
+                <div class="text-center">
+                  <span  @click="inc(detalheVenda)"><b>+</b></span><br>
+                  <span style="padding:-20px;" @click="dec(detalheVenda)"><b>-</b></span>
+                </div>
+              </td>
+
+              <td>
+                <label><strong>Subtotal</strong></label>
+                <money readonly disabled :value="detalheVenda.subtotal" v-bind="money" name="totalPrejuizo" class="form-control"></money>
+              </td>
+
               <td><label><strong>Ação</strong></label>
               <button  class="btn btn-danger" @click="remova(detalheVenda)" ><i class="fa fa-times"></i></button></td>
           </tr>
@@ -182,50 +214,49 @@ export default {
   methods:{
   getProducts(product,key){
     if(product) {
-      
       axios.get(`http://localhost:8000/api/product/${product}`).then(res => {
         this.details_sales[key].product_id = res.data[0].id
-          this.details_sales[key].name = res.data[0].name
-          this.details_sales[key].id = res.data[0].id
-          this.details_sales[key].price = res.data[0].price
-          this.details_sales[key].estoque = res.data[0].estoque   
-          this.details_sales[key].subtotal = 0   
-        })
+        this.details_sales[key].name = res.data[0].name
+        this.details_sales[key].id = res.data[0].id
+        this.details_sales[key].price = res.data[0].price
+        this.details_sales[key].estoque = res.data[0].estoque   
+        this.details_sales[key].subtotal = 0   
+      })
     }
     
   },
   onSubmit(){
     this.submitted = true;
-  //  this.$validator.validate().then(res=>{
-  //  if(res) {
-    axios.post('http://localhost:8000/api/sales',{
-        client_id:this.client_id,
-        dataVenda:this.datavenda,
-        total:this.total,
-        details_sales:this.details_sales,
-        formapagamento:this.formapagamento
-    }).then((res) => {
-      console.log(res.data)
-       let usuario = res.data.resultado.user_id
-      console.log(usuario)
-      this.$noty.success("Cadastrado com sucesso!!")
-      if(usuario === 1) {
-        return this.$router.push('/sales')
+    this.$validator.validate().then(res=>{
+        if(res) {
+        axios.post('http://localhost:8000/api/sales',{
+            client_id:this.client_id,
+            dataVenda:this.datavenda,
+            total:this.total,
+            details_sales:this.details_sales,
+            formapagamento:this.formapagamento
+        }).then((res) => {
+          console.log(res.data)
+          let usuario = res.data.resultado.user_id
+          console.log(usuario)
+          this.$noty.success("Cadastrado com sucesso!!")
+          if(usuario === 1) {
+            return this.$router.push('/sales')
 
-      }else {
-      return  this.$router.push('/vendas')
-      }
-    
-    }).catch(error => {
-          if (error.response.status === 422) {
-            this.errorsRequest = error.response.data.errors;
-            console.log(this.errorsRequest)
+          }else {
+          return  this.$router.push('/vendas')
           }
-        });
-  //  } else {
-      //            alert('Please correct all error!')
-   //   }
-   // })
+        
+        }).catch(error => {
+              if (error.response.status === 422) {
+                this.errorsRequest = error.response.data.errors;
+                console.log(this.errorsRequest)
+              }
+            });
+        } else {
+    //         
+      }
+    })
   },
     inc(detalheVenda){
       if(detalheVenda.estoque){

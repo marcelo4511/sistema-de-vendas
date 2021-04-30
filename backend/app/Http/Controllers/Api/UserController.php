@@ -166,14 +166,13 @@ class UserController extends Controller
       
         if($search = $request->get('q')){
             
-              $user = User::select('id','name','email','type_user_id')->with('tipo_usuario')->where(function($query) use ($search){
+            $user = User::select('id','name','email','type_user_id')->with('tipo_usuario')->where(function($query) use ($search){
              
-                 $query->Where('name','LIKE',"%$search%")
+            $query->Where('name','LIKE',"%$search%")
              
-                 ->orWhere('email','LIKE',"%$search%")
-              //   ->orWhere('type_user_id','LIKE',"%$search%")
+            ->orWhere('email','LIKE',"%$search%")
              
-              ->orWhereHas('tipo_usuario',function($query) use($search) {
+            ->orWhereHas('tipo_usuario',function($query) use($search) {
                 $query->where('descricao','LIKE',"%$search%");
               });   
              })->get();

@@ -4,15 +4,15 @@ import { API_BASE_URL } from '../../../config/Api'
  const setList = ({commit}) => {
    axios.get(`${API_BASE_URL}/categories`)
    .then(resposta => {
-       console.log(resposta.data)
+       //console.log(resposta.data)
        commit('SET_LIST',resposta.data)
    })
 }
 
 const showList = async( { commit }, category) => {
     await axios.get(`${API_BASE_URL}/categories/${category.id}`,category)
-    .then(resposta =>{
-        console.log(resposta.data)
+    .then(() =>{
+        //console.log(resposta.data)
     })
    commit('SHOW_LIST', category);
 }
@@ -33,8 +33,8 @@ const removeList = ({commit}, category) => {
 }
 const updateList = async( { commit }, category) => {
      await axios.put(`${API_BASE_URL}/categories/${category.id}`,category)
-     .then(resposta =>{
-         console.log(resposta.data)
+     .then(() =>{
+         //console.log(resposta.data)
      })
     commit('UPDATE_LIST', category);
 }

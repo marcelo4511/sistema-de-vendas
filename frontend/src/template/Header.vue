@@ -1,7 +1,6 @@
 <template>
   <header>
     <div>
-      
       <div class="dropdown" >
         <button class="drops btn btn-write dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <span v-for="(u,k) in user" :key="k">{{u.name}}</span>
@@ -20,10 +19,7 @@
         </div>
       </div>
     </div>
-     
   </header>
-
-  
 </template>
 
 <script>
@@ -32,7 +28,6 @@ import {mapGetters,mapState} from 'vuex'
 export default {
  
   computed:{
-   
      ...mapState('User',{user:state => state.user}),
     ...mapGetters('User',[
       'isLogged'

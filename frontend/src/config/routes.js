@@ -16,6 +16,9 @@ import CategoryCreate from '../features/Category/create'
 import Client from '../features/Client/index'
 import ClientCadastro from '../features/Client/create'
 import ClientAtualiza from '../features/Client/edit'
+import Provider from '../features/Provider/index'
+import ProviderCadastro from '../features/Provider/create'
+import ProviderAtualiza from '../features/Provider/edit'
 import Sales from '../features/Sale/index'
 import SalesCreate from '../features/Sale/create'
 import SalesEdit from '../features/Sale/edit'
@@ -67,6 +70,28 @@ const routes = [
     name:'clientedit',
     path:'/clientedit/:client/edit',                                                                                                                                                                                                                       
     component:ClientAtualiza,
+    params:true,
+    meta: {
+        auth: true
+    },
+},{
+    name:'provider',
+    path:'/providers',                                                                                                                                                                                                                       
+    component:Provider,
+    meta: {
+        auth: true
+    },
+},{
+    name:'providerstore',
+    path:'/providerstore',                                                                                                                                                                                                                       
+    component:ProviderCadastro,
+    meta: {
+        auth: true
+    },
+},{
+    name:'provideredit',
+    path:'/provideredit/:provider/edit',                                                                                                                                                                                                                       
+    component:ProviderAtualiza,
     params:true,
     meta: {
         auth: true

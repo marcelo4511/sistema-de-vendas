@@ -29,8 +29,9 @@ class SaleRequest extends FormRequest
             "details_sales" => "required|array",
             
             'details_sales.*.product_id' => 'required',
-            'details_sales.*.price' => 'required',
+            'details_sales.*.price' => 'required|numeric|between:0.00,99.99',
             'details_sales.*.quantidade' => 'required',
+            'details_sales.*.subtotal' => 'required',
         ];
     }
 
@@ -40,7 +41,8 @@ class SaleRequest extends FormRequest
             'dataVenda.required' => 'Campo Data da Venda é requirido' ,
             'client_id.required' => 'Campo Cliente é requirido',
             'details_sales.*.product_id.required' => 'O campo Produto é obrigatório',
-            'details_sales.*.conhecimento.required' => 'O campo conhecimento é obrigatório',
+            'details_sales.*.quantidade.required' => 'O campo quantidade é obrigatório',
+            'details_sales.*.price.min' => 'O campo quantidade é obrigatório',
         ];
     }
 }

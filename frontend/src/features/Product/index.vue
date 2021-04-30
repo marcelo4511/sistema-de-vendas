@@ -140,7 +140,6 @@ export default {
          const url = `http://localhost:8000/api/products/${product.id}`
             axios.get(url).then(resposta => {
                 resposta.data
-                console.log(resposta.data)
             })
         },
         listar(){
@@ -149,16 +148,14 @@ export default {
             })
         },
         filter(){
-             axios.post('http://localhost:8000/api/filtro',this.filtro).then(res => {
-                 this.produtos = res.data
-                 console.log(this.products)
-             })
+            axios.post('http://localhost:8000/api/filtro',this.filtro).then(res => {
+                this.produtos = res.data
+            })
         },
         getProduto(){
-             axios.get('http://localhost:8000/api/products').then(res => {
-                 this.produtos = res.data
-                 console.log(this.produtos)
-             })
+            axios.get('http://localhost:8000/api/products').then(res => {
+                this.produtos = res.data
+            })
         }
     },
     

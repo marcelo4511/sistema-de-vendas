@@ -35,6 +35,8 @@ use Illuminate\Support\Facades\Route;
             Route::get('/list','UserController@show');
             Route::put('/users','UserController@update');
             Route::get('/search','UserController@search');
+            
+            Route::resource('fornecedores','FornecedorController');
         
             Route::resource('sales','SaleController');
             Route::get('relatorioexcel','SaleController@relatorioexcel');
