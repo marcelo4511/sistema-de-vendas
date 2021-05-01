@@ -23,6 +23,6 @@ class Fornecedor extends Model
         'responsavel',
         'status' 
     ];
-    protected $table = "fornecedor";
+    protected $table = "fornecedores";
 
 }

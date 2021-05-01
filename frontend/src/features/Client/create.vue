@@ -14,86 +14,83 @@
         <div class="row">  
             <div class="form-group col-md-3">
                 <label for="">Nome</label>
-                <input type="text" class="form-control" v-model="client.name" required>
+                <input type="text" class="form-control form-control-sm" v-model="client.name" required>
             </div>
 
             <div class="form-grouṕ col-md-3">
                 <label for="">CPF</label>
-                <input type="text" class="form-control" v-model="client.cpf" @blur="verificaCpf()" v-mask = "'###.###.###-##'" required>
+                <input type="text" class="form-control form-control-sm" v-model="client.cpf" @blur="verificaCpf()" v-mask = "'###.###.###-##'" required>
             </div>
           
             <div class="form-group col-md-3">
                 <label for="">Email</label>
-                <input type="email" class="form-control" v-model="client.email" required>
+                <input type="email" class="form-control form-control-sm" v-model="client.email" required>
             </div>
 
             <div class="form-group col-md-3">
                 <label for="">Data de nascimento</label>
-                <input type="date" class="form-control" v-model="client.data_nasc" required>
+                <input type="date" class="form-control form-control-sm" v-model="client.data_nasc" required>
             </div>
-
         </div>
 
         <div class="row">
-
-           
             <div class="form-group col-sm-3">
                 <label for="">CEP</label>
-                <input type="text" class="form-control"  v-model="client.cep"  v-mask = "'#####-###'" required>
+                <input type="text" class="form-control form-control-sm"  v-model="client.cep"  v-mask = "'#####-###'" required>
             </div>
 
             <div class="form-group col-md-1">
                 <label class="hidden" style="color:#fff;">Buscar</label>
-                 <button type="button" class="form-control btn btn-primary col-md-auto" value="Buscar" @click.prevent="apicep"><i class="fa fa-search"></i></button>
+                 <button type="button" class="form-control form-control-sm btn btn-primary col-md-auto" value="Buscar" @click.prevent="apicep"><i class="fa fa-search"></i></button>
             </div>
 
             <div class="form-group col-md-4">
                 <label for="">Endereço</label>
-                <input type="text" class="form-control" v-model="client.rua" readonly required>
+                <input type="text" class="form-control form-control-sm" v-model="client.rua" readonly required>
             </div>
 
             <div class="form-group col-md-2">
                 <label for="">Bairro </label>
-                <input type="text" class="form-control" v-model="client.bairro" readonly required>
+                <input type="text" class="form-control form-control-sm" v-model="client.bairro" readonly required>
             </div>
 
             <div class="form-group col-md-2">
                 <label for="">Numero </label>
-                <input type="text" class="form-control" v-model="client.numero" required>
+                <input type="text" class="form-control form-control-sm" v-model="client.numero" required>
             </div>
         </div>
 
         <div class="row">
             <div class="form-group col-md-4">
                 <label for="">Complemento</label>
-                <input type="text" class="form-control" v-model="client.complemento">
+                <input type="text" class="form-control form-control-sm" v-model="client.complemento">
             </div>
 
             <div class="form-group col-md-4"> 
                 <label for="">Cidade</label>         
-                <input type="text" class="form-control" v-model="client.cidade" readonly required>
+                <input type="text" class="form-control form-control-sm" v-model="client.cidade" readonly required>
             </div>
 
             <div class="form-group col-md-4">
                 <label for="">Estado</label>
-                <input type="text" class="form-control" v-model="client.estado" readonly required>
+                <input type="text" class="form-control form-control-sm" v-model="client.estado" readonly required>
             </div>
         </div>
 
         <div class="row">
             <div class="form-group col-md-4">
                 <label for="">Telefone</label>
-                <input type="text" @input="phoneValidator()" class="form-control" v-model="client.telefone" required>
+                <input type="text" @input="phoneValidator()" class="form-control form-control-sm" v-model="client.telefone" required>
             </div>
 
             <div class="form-group col-md-4">
                 <label for="">Celular</label>
-                <input type="text" class="form-control" @input="celValidator()" v-model="client.celular" required>
+                <input type="text" class="form-control form-control-sm" @input="celValidator()" v-model="client.celular" required>
             </div>
 
             <div class="form-group col-md-4">
                 <label for="">Status</label>
-                <select class="form-control" name="" id="" v-model="client.status">
+                <select class="form-control form-control-sm" name="" id="" v-model="client.status">
                     <option selected disabled value=null>Selecione</option>
                     <option value=Ativo>Ativo</option>
                     <option value=Inativo>Inativo</option>
@@ -123,22 +120,20 @@ export default {
     data(){
         return{
             client:{
-
-            name:'',
-            cpf:'',
-            data_nasc:'',
-            email:'',
-            cep:'',
-            rua:'',
-            numero:'',
-            complemento:'',
-            cidade:'',
-            estado:'',
-            bairro:'',
-            telefone:'',
-            celular:'',
-            status:'',
-
+                name:'',
+                cpf:'',
+                data_nasc:'',
+                email:'',
+                cep:'',
+                rua:'',
+                numero:'',
+                complemento:'',
+                cidade:'',
+                estado:'',
+                bairro:'',
+                telefone:'',
+                celular:'',
+                status:'',
             }
         }
     },
@@ -181,24 +176,7 @@ export default {
             }
         },
         onSubmit(){
-            this.$store.dispatch('Client/postClient',{
-
-                name:this.client.name,
-                cpf:this.client.cpf,
-                email:this.client.email,
-                date_nasc:this.client.data_nasc,
-                cep:this.client.cep,
-                street:this.client.rua,
-                number:this.client.numero,
-                complement:this.client.complemento,
-                city:this.client.cidade,
-                state:this.client.estado,
-                heigthboard:this.client.bairro,
-                fone:this.client.telefone,
-                celular:this.client.celular,
-                status:this.client.status
-            })
-                
+            this.$store.dispatch('Client/postClient',this.client)
                 try {
                     console.log()   
                     this.$noty.success("Atualizado com sucesso!!") 
@@ -213,11 +191,15 @@ export default {
     },
     computed:{
         ...mapState('Client',{clients:state => state.clients}),
-  
     },
     watch:{
         'client.name': function(name){
-            return this.client.name = name[0].toUpperCase() + name.substr(1)
+            if(name) {
+                return this.client.name = name[0].toUpperCase() + name.substr(1)
+            }
+            if(name == undefined){
+                return null
+            }
         }
     },
 }

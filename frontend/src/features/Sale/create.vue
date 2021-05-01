@@ -11,7 +11,7 @@
       <div class="form-row">  
           <div @submit.prevent="abc" class="form-group col-md-6">
           <label for="">Clientes</label>
-          <select class="form-control" required v-model="client_id" name="client_id" v-validate = "'required'" data-vv-as="Cliente" :class="['form-control form-control-sm', {'is-invalid': errors.has('client_id')},`${errorsRequest.client_id  ? `is-invalid` : ``}`]">
+          <select class="form-control form-control-sm" required v-model="client_id" name="client_id" v-validate = "'required'" data-vv-as="Cliente" :class="['form-control form-control-sm form-control form-control-sm-sm', {'is-invalid': errors.has('client_id')},`${errorsRequest.client_id  ? `is-invalid` : ``}`]">
             <option selected disabled value="">selecione</option>
             <option v-for="(client,k) in clients" v-show="client.status == 'Ativo'" :key="k"  :value="client.id">{{client.name}}</option>
           </select>
@@ -21,83 +21,79 @@
           
           <div class="form-group col-md-6">
             <label for="">Data da Venda</label>
-            <input type="date" name="datavenda" v-validate = "'required'" data-vv-as="Data Venda" required v-model="datavenda" class="form-control" :class="['form-control form-control-sm', {'is-invalid': errors.has('datavenda')},`${errorsRequest.dataVenda ? `is-invalid` : ``}`]" />
+            <input type="date" name="datavenda" v-validate = "'required'" data-vv-as="Data Venda" required v-model="datavenda" class="form-control form-control-sm" :class="['form-control form-control-sm form-control form-control-sm-sm', {'is-invalid': errors.has('datavenda')},`${errorsRequest.dataVenda ? `is-invalid` : ``}`]" />
             <div v-if="submitted && errors.has('datavenda')" class="invalid-feedback">{{ errors.first('datavenda') }}</div>
             <div class="text-danger" v-if="errorsRequest.dataVenda">{{ errorsRequest.dataVenda[0] }}</div>
           </div>
       
-      <fieldset class="m-3">
-          <div class="row m-2">
-
-          </div>
-          <table class="table table-sm"> 
-        <tbody>
-          <tr v-for="(detalheVenda,key) of details_sales" :key="key">
-              <td>
-                <label><strong>Produto</strong></label>
-                  <select class="form-control"  :name="`product_id_${key}`" data-vv-as="Produto" v-validate="'required'" :class="['form-control form-control-sm', {'is-invalid': errors.has(`product_id_${key}`)},`${errorsRequest[`details_sales.${key}.product_id`] ? `is-invalid` : ``}`]"  :disabled="disabled" required v-model="detalheVenda.product_id" @change="getProducts(detalheVenda.product_id,key), calculateEstoque(detalheVenda)">
+      <div class="card col-md-12">
+        <div class="card-header pl-3 pb-0 m-0">
+          <h4><strong>Produtos</strong></h4>
+        </div>
+        <div class="card-body">
+        <div class="table table-sm"> 
+        <div class="text-center">
+          <div class="form-row" v-for="(detalheVenda,key) of details_sales" :key="key">
+              <div class="col-2">
+                <label class="col-form-label col-form-label-sm "><strong>Produto</strong></label>
+                  <select class="form-control form-control-sm"  :name="`product_id_${key}`" data-vv-as="Produto" v-validate="'required'" :class="['form-control form-control-sm form-control form-control-sm-sm', {'is-invalid': errors.has(`product_id_${key}`)},`${errorsRequest[`details_sales.${key}.product_id`] ? `is-invalid` : ``}`]"  :disabled="disabled" required v-model="detalheVenda.product_id" @change="getProducts(detalheVenda.product_id,key), calculateEstoque(detalheVenda)">
                     <option v-for="(product) in products" :key="product.id"  v-show="product.status == 'Ativo'" :value="product.id">{{product.name}}</option>
                   </select>
                   <span v-show="errors.has(`product_id_${key}`)" class="invalid-feedback">{{ errors.first(`product_id_${key}`) }}</span>
                   <span class="invalid-feedback">
                     {{ `${errorsRequest[`details_sales.${key}.product_id`] ? errorsRequest[`details_sales.${key}.product_id`] : `` }` }}<br>
                   </span> 
-              </td>
-
-              <td>
-                <label><strong>Preço</strong></label>
-                <money v-model="detalheVenda.price" :name="`price_${key}`" data-vv-as="Preço" v-validate="'min_value:0,01'" :class="['form-control form-control-sm', {'is-invalid': errors.has(`price_${key}`)},`${errorsRequest[`details_sales.${key}.price`] ? `is-invalid` : ``}`]" :value="detalheVenda.price" @change="getProducts(detalheVenda.price,key),calculateLineTotal(detalheVenda)"  v-bind="money" class="form-control" readonly></money>
+              </div>
+              <div class="col-2">
+                <label class="col-form-label col-form-label-sm"><strong>Preço</strong></label>
+                <money v-model="detalheVenda.price" :name="`price_${key}`" data-vv-as="Preço" v-validate="'min_value:0,01'" :class="['form-control form-control-sm', {'is-invalid': errors.has(`price_${key}`)},`${errorsRequest[`details_sales.${key}.price`] ? `is-invalid` : ``}`]" :value="detalheVenda.price" @change="getProducts(detalheVenda.price,key),calculateLineTotal(detalheVenda)"  v-bind="money" class="form-control form-control-sm" readonly></money>
                 <span v-show="errors.has(`price_${key}`)" class="invalid-feedback">{{ errors.first(`price_${key}`) }}</span>
                   <span class="invalid-feedback">
                     {{ `${errorsRequest[`details_sales.${key}.price`] ? errorsRequest[`details_sales.${key}.price`] : `` }` }}<br>
                   </span> 
-              </td>
-
-              <td>
-                <label><strong>Estoque</strong></label>
-                <input class="form-control" type="number" @change="getProducts(detalheVenda.estoque, key)" v-model="detalheVenda.estoque" required readonly>
-              </td>
-
-              <td>
-                <label><strong>Quantidade</strong></label>
-                <input  :disabled="loading" class="form-control"  :name="`quantidade${key}`" type="number" data-vv-as="Quantidade" v-validate="'required'" :class="['form-control form-control-sm', {'is-invalid': errors.has(`quantidade${key}`)},`${errorsRequest[`details_sales.${key}.quantidade`] ? `is-invalid` : ``}`]" v-model="detalheVenda.quantidade" @change="calculateLineTotal(detalheVenda)" @input="calculateEstoque(detalheVenda)">
+              </div>
+              <div class="col-2">
+                <label class="col-form-label col-form-label-sm"><strong>Estoque</strong></label>
+                <input class="form-control form-control-sm" type="number" @change="getProducts(detalheVenda.estoque, key)" v-model="detalheVenda.estoque" required readonly>
+              </div>
+              <div class="col-2">
+                <label class="col-form-label col-form-label-sm"><strong>Quantidade</strong></label>
+                <input  :disabled="loading" class="form-control form-control-sm"  :name="`quantidade${key}`" type="number" data-vv-as="Quantidade" v-validate="'required'" :class="['form-control form-control-sm form-control form-control-sm-sm', {'is-invalid': errors.has(`quantidade${key}`)},`${errorsRequest[`details_sales.${key}.quantidade`] ? `is-invalid` : ``}`]" v-model="detalheVenda.quantidade" @change="calculateLineTotal(detalheVenda)" @input="calculateEstoque(detalheVenda)">
                 <span v-show="errors.has(`quantidade${key}`)" class="invalid-feedback">{{ errors.first(`quantidade${key}`) }}</span>
                   <span class="invalid-feedback">
                     {{ `${errorsRequest[`details_sales.${key}.quantidade`] ? errorsRequest[`details_sales.${key}.quantidade`] : `` }` }}<br>
                   </span> 
-              </td>
-
-              <td>
-                <label ><strong style="visibility: hidden;">tes </strong></label>
+              </div>
+              <div>
+                <label class="col-form-label col-form-label-sm"><strong style="visibility: hidden;">tes </strong></label>
                 <div class="text-center">
                   <span  @click="inc(detalheVenda)"><b>+</b></span><br>
-                  <span style="padding:-20px;" @click="dec(detalheVenda)"><b>-</b></span>
+                  <span @click="dec(detalheVenda)"><b>-</b></span>
                 </div>
-              </td>
-
-              <td>
-                <label><strong>Subtotal</strong></label>
-                <money readonly disabled :value="detalheVenda.subtotal" v-bind="money" name="totalPrejuizo" class="form-control"></money>
-              </td>
-
-              <td><label><strong>Ação</strong></label>
-              <button  class="btn btn-danger" @click="remova(detalheVenda)" ><i class="fa fa-times"></i></button></td>
-          </tr>
-        </tbody>
-       
-        </table>
-
-         <table>
-              <tr>
-                <td scope="col" style="margin-left:200px;">Total</td>
-                <td scope="col"><money readonly disabled :value="totalizar" v-bind="money" name="totalPrejuizo" class="form-control form-control-sm" style="background-color:#993399;color:#fff;"></money></td>
-              </tr> 
-         </table>
-        <button type='button' style="float-right;" class="btn btn-info m-4" @click="adiciona">
-          <i class="fas fa-plus-circle"></i>
-         Adicione
-        </button>
-      </fieldset>
+              </div>
+              <div class="col-2">
+                <label class="col-form-label col-form-label-sm"><strong>Subtotal</strong></label>
+                <money readonly disabled :value="detalheVenda.subtotal" v-bind="money" name="totalPrejuizo" class="form-control form-control-sm"></money>
+              </div>
+              <div class="col-1">
+                <label class="col-form-label col-form-label-sm"><b> Ação</b></label>
+                <button  class="form-control form-control-sm btn btn-danger col-md-auto" @click="remova(detalheVenda)" ><i class="fa fa-times"></i></button>
+              </div>
+          </div>
+        </div>
+        </div>
+        
+         <div class="form-row">
+            <div>
+              <span scope="col"><money readonly disabled :value="totalizar" v-bind="money" name="totalPrejuizo" class="form-control form-control-sm ml-1" style="background-color:#993399;color:#fff;"></money></span>
+            </div>
+            
+            <button type='button' style="float-right;" class="btn btn-sm btn-info ml-3" @click="adiciona">
+              <i class="fas fa-plus-circle"></i>Adicione
+            </button>
+          </div>
+          </div>
+      </div>
     <br>
 
         <div class="card col-12 m-2">
@@ -109,7 +105,7 @@
             <div class="row">
               <div class="form-group m-2">
                 <label for="">Forma de Pagamento</label>
-                <select type="text" class="form-control" required v-model="formapagamento.tipo_forma_pagamento" >
+                <select type="text" class="form-control form-control-sm" required v-model="formapagamento.tipo_forma_pagamento" >
                   <option disabled selected value="null">Selecione</option>
                   <option value="0">Boleto bancário</option>
                   <option value="1">A vista</option>
@@ -120,7 +116,7 @@
 
               <div class="form-group m-2">
                 <label for="">Parcelas</label>
-                <select type="text" class="form-control" v-model="formapagamento.parcelas" v-show="formapagamento.tipo_forma_pagamento == '2'">
+                <select type="text" class="form-control form-control-sm" v-model="formapagamento.parcelas" v-show="formapagamento.tipo_forma_pagamento == '2'">
                   <option selected value="null">Selecione</option>
                   <option :value="1">1x</option>
                   <option :value="6">6x</option>
@@ -129,7 +125,7 @@
                   <option :value="24">24x</option>
                 </select>
 
-                 <select type="text" class="form-control" v-model="formapagamento.parcelas" @change="valorCreditoFunction(formapagamento.parcelas)" disabled v-show="formapagamento.tipo_forma_pagamento !== '2'">
+                 <select type="text" class="form-control form-control-sm" v-model="formapagamento.parcelas" @change="valorCreditoFunction(formapagamento.parcelas)" disabled v-show="formapagamento.tipo_forma_pagamento !== '2'">
                   <option selected value="null">1x</option>
                   <option :value="1">6x</option>
                   <option :value="2">10x</option>
@@ -140,8 +136,8 @@
 
               <div class="form-group m-2">
                 <label for="">Entrada</label>
-                <input type="text" class="form-control" v-show="formapagamento.tipo_forma_pagamento == '2'"  v-model="formapagamento.entrada" placeholder="0,00">
-                <input type="text" class="form-control" v-show="formapagamento.tipo_forma_pagamento !== '2'" disabled  v-model="formapagamento.entrada" placeholder="0,00">
+                <input type="text" class="form-control form-control-sm" v-show="formapagamento.tipo_forma_pagamento == '2'"  v-model="formapagamento.entrada" placeholder="0,00">
+                <input type="text" class="form-control form-control-sm" v-show="formapagamento.tipo_forma_pagamento !== '2'" disabled  v-model="formapagamento.entrada" placeholder="0,00">
               </div>
 
               <div class="form-group m-0">
@@ -154,8 +150,8 @@
           </div>
         </div>
       </div>
-    <button type="submit" @click="onSubmit" class="btn btn-success">Cadastrar</button>
-     <button class="btn btn-danger" style="float:right;" v-show="this.details_sales.length > 2" >Baixar relatório da venda<i class="fa fa-print"></i></button>
+    <button type="submit" @click="onSubmit" class="btn btn-sm btn-success">Cadastrar</button>
+     <button class="btn btn-sm btn-danger" style="float:right;" v-show="this.details_sales.length > 2" >Baixar relatório da venda<i class="fa fa-print"></i></button>
   </div>
 </template>
 
@@ -199,7 +195,6 @@ export default {
         thousands: '.',
         prefix: 'R$ ',
         suffix: '',
-        
         precision: 2,
         masked: false
       }
@@ -288,7 +283,6 @@ export default {
 
       adiciona(){
             if(this.details_sales.length <= 2) {
-
               this.details_sales.push({
                 product_id:'',
                 quantidade:'',
@@ -296,7 +290,6 @@ export default {
                 name:'',
                 price:'',
                 estoque:''
-                
               })
             }else {
               return this.details_sales
@@ -347,10 +340,3 @@ export default {
   }  ,
 }
 </script>
-
-<style>
- div fieldset {
-     border: black solid 3px;
-     border-radius: 10px;
- }
-</style>

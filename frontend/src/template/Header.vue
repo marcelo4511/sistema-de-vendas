@@ -2,16 +2,14 @@
   <header>
     <div>
       <div class="dropdown" >
-        <button class="drops btn btn-write dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <span v-for="(u,k) in user" :key="k">{{u.name}}</span>
+        <button class="drops btn btn-write dropdown-toggle" type="button" id="dropdownMenuButton" style="color:white;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <span style="color:white;" v-for="(u,k) in user" :key="k">{{u.name}}</span>
         </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" >
           <div v-for="(u,k) in user" :key="k">
             <div v-show="u.type_user_id === 1">
-
-              <router-link to="/home" class="d-flex justify-content-beetween dropdown-item">Home</router-link> 
+              <router-link to="/home" class="d-flex justify-content-beetween dropdown-item m-0">Home</router-link> 
             </div>
-
           </div>
           <router-link to="/" class="d-flex justify-content-beetween dropdown-item" v-if="!isLogged">Login</router-link>
           <span class="d-flex justify-content-beetween dropdown-item" @click="sair()">Sair
@@ -32,7 +30,6 @@ export default {
     ...mapGetters('User',[
       'isLogged'
     ])
-  
  },
   methods: {
     sair () {
@@ -46,15 +43,13 @@ export default {
 <style>
 
     header{
-        width:100vw;
-         grid-area: header;
-        background: linear-gradient(to right, #1e469a, #49a7c1);
-
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        
-        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      width:100vw;
+        grid-area: header;
+      background: linear-gradient(to right, #1e469a, #49a7c1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     }
       .drops{
           background-color: linear-gradient(to right, #1e469a, #49a7c1);
@@ -71,14 +66,6 @@ export default {
       margin-right: 30px;
       margin-top: 5px;
     }
-
-/**.drops axios.post('http://localhost:8000/api/logout',this.form).then(res => {
-         console.log(res.data)
-         localStorage.removeItem('token');
-         this.$router.push('/')
-        }).catch(errors => {
-          console.log(errors.res.data)
-        }) */
 </style>
 
 

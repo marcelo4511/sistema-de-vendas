@@ -1,194 +1,173 @@
 <template>
   <div>
-      <h4 cabecalho="Produto">Clientes</h4>
+      <h4 cabecalho="Produto">Fornecedores</h4>
         <nav aria-label="breadcrumb mb-4">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
-            <li class="breadcrumb-item"><router-link to="/clients">Clientes</router-link></li>
-           
-            <li class="breadcrumb-item active" aria-current="page">Criar</li>
-        </ol>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
+                <li class="breadcrumb-item"><router-link to="/providers">Fornecedores</router-link></li>
+                <li class="breadcrumb-item active" aria-current="page">Criar</li>
+            </ol>
         </nav>
-      <form @submit.prevent="onSubmit" class="form-group">
-
-        <div class="row">  
-            <div class="form-group col-md-3">
-                <label for="">Nome</label>
-                <input type="text" class="form-control" v-model="client.name" required>
+        <form @submit.prevent="onSubmit" class="form-group">
+            <div class="row">  
+                <div class="form-group col-md-6 col-lg-3">
+                    <label for="">Nome/Razão Social</label>
+                    <input type="text" class="form-control form-control-sm" v-model="provider.name" required>
+                </div>
+                <div class="form-grouṕ col-md-6 col-lg-3">
+                    <label for="">CNPJ/CPF</label>
+                    <input type="text" class="form-control form-control-sm" v-model="provider.cnpj_cpf" v-mask="['###.###.###-##', '##.###.###/####-##']" required>
+                </div>
+                <div class="form-group col-md-6 col-lg-3">
+                    <label for="">Email</label>
+                    <input type="email" class="form-control form-control-sm" v-model="provider.email" required>
+                </div>
+                <div class="form-group col-md-6 col-lg-3">
+                    <label for="">Nome responsável</label>
+                    <input type="text" class="form-control form-control-sm" v-model="provider.responsavel" required>
+                </div>
             </div>
 
-            <div class="form-grouṕ col-md-3">
-                <label for="">CPF</label>
-                <input type="text" class="form-control" v-model="client.cpf" @blur="verificaCpf()" required>
+            <div class="row">
+                <div class="form-group col-md-3 col-sm-3">
+                    <label for="">CEP</label>
+                    <input type="text" class="form-control form-control-sm"  v-model="provider.cep"  v-mask = "'#####-###'" required>
+                </div>
+                <div class="form-group col-9 col-md-2 col-lg-1">
+                    <label class="hidden" style="color:#fff;">Buscar</label>
+                        <button type="button" class="form-control form-control-sm btn btn-primary col-lg-auto" value="Buscar" @click.prevent="apicep"><i class="fa fa-search"></i></button>
+                </div>
+                <div class="form-group col-md-7 col-lg-4">
+                    <label for="">Endereço</label>
+                    <input type="text" class="form-control form-control-sm" v-model="provider.street" readonly required>
+                </div>
+                <div class="form-group col-md-6 col-lg-2">
+                    <label for="">Bairro </label>
+                    <input type="text" class="form-control form-control-sm" v-model="provider.heigthboard" readonly required>
+                </div>
+                <div class="form-group col-md-6 col-lg-2">
+                    <label for="">Numero </label>
+                    <input type="text" class="form-control form-control-sm" v-model="provider.number" required>
+                </div>
             </div>
-          
-            <div class="form-group col-md-3">
-                <label for="">Email</label>
-                <input type="email" class="form-control" v-model="client.email" required>
-            </div>
-
-            <div class="form-group col-md-3">
-                <label for="">Data de nascimento</label>
-                <input type="date" class="form-control" v-model="client.date_nasc" required>
-            </div>
-
-        </div>
-
-        <div class="row">
-
-           
-            <div class="form-group col-sm-3">
-                <label for="">CEP</label>
-                <input type="text" class="form-control" v-model="client.cep" required>
-            </div>
-
-            <div class="form-group col-md-1">
-                <label class="hidden" style="color:#fff;">Buscar</label>
-                 <button type="button" class="form-control btn btn-primary col-md-auto" value="Buscar" @click.prevent="apicep"><i class="fa fa-search"></i></button>
-            </div>
-
-            <div class="form-group col-md-4">
-                <label for="">Endereço</label>
-                <input type="text" class="form-control" v-model="client.street" readonly required>
-            </div>
-
-            <div class="form-group col-md-2">
-                <label for="">Bairro </label>
-                <input type="text" class="form-control" v-model="client.heigthboard" readonly required>
+            <div class="row">
+                <div class="form-group col-md-3 col-lg-4">
+                    <label for="">Complemento</label>
+                    <input type="text" class="form-control form-control-sm" v-model="provider.complement">
+                </div>
+                <div class="form-group col-md-3 col-lg-4"> 
+                    <label for="">Cidade</label>         
+                    <input type="text" class="form-control form-control-sm" v-model="provider.city" readonly required>
+                </div>
+                <div class="form-group col-md-6 col-lg-4">
+                    <label for="">Estado</label>
+                    <input type="text" class="form-control form-control-sm" v-model="provider.state" readonly required>
+                </div>
             </div>
 
-            <div class="form-group col-md-2">
-                <label for="">Numero </label>
-                <input type="text" class="form-control" v-model="client.number" required>
+            <div class="row">
+                <div class="form-group col-md-3 col-lg-4">
+                    <label for="">Contato 1</label>
+                    <input type="text" @input="phoneValidator()" class="form-control form-control-sm" v-model="provider.fone" required>
+                </div>
+                <div class="form-group col-md-3 col-lg-4">
+                    <label for="">Contato 2</label>
+                    <input type="text" class="form-control form-control-sm" @input="celValidator()" v-model="provider.celular" required>
+                </div>
+                <div class="form-group col-md-6 col-lg-4">
+                    <label for="">Status</label>
+                    <select class="form-control form-control-sm" name="" id="" v-model="provider.status">
+                        <option selected disabled value=null>Selecione</option>
+                        <option value=Ativo>Ativo</option>
+                        <option value=Inativo>Inativo</option>
+                    </select>
+                </div>
             </div>
-        </div>
-
-        <div class="row">
-            <div class="form-group col-md-4">
-                <label for="">Complemento</label>
-                <input type="text" class="form-control" v-model="client.complement">
+            <div class="row">
+                <div class="form-group col-md-10 col-lg-10">
+                    <router-link to="/providers" tag="span"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i>voltar</router-link>
+                    <button class="btn btn-sm btn-success" style="float:right;" type="submit">Salvar</button>
+                </div>
             </div>
-
-            <div class="form-group col-md-4"> 
-                <label for="">Cidade</label>         
-                <input type="text" class="form-control" v-model="client.city" readonly required>
-            </div>
-
-            <div class="form-group col-md-4">
-                <label for="">Estado</label>
-                <input type="text" class="form-control" v-model="client.state" readonly required>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="form-group col-md-4">
-                <label for="">Telefone</label>
-                <input type="text" class="form-control" @keyup="phoneValidator()" v-model="client.fone" required>
-            </div>
-
-            <div class="form-group col-md-4">
-                <label for="">Celular</label>
-                <input type="text" class="form-control" @keyup="phoneValidator()" v-model="client.celular" required>
-            </div>
-
-            <div class="form-group col-md-4">
-                <label for="">Status</label>
-                <select class="form-control" name="" id="" v-model="client.status">
-                    <option selected disabled value=null>Selecione</option>
-                    <option value=Ativo>Ativo</option>
-                    <option value=Inativo>Inativo</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="form-group col-md-10">
-                <router-link to="/clients" tag="span"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i>voltar</router-link>
-
-            <button class="btn btn-success" style="float:right;" type="submit">Atualizar</button>
-            </div>
-        </div>
       </form>
   </div>
 </template>
 
 <script>
-import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
 import axios from 'axios'
+import {API_BASE_URL} from '../../config/Api'
+import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
+import {mapActions,mapState} from 'vuex'
+import {mask} from 'vue-the-mask'
 export default {
-    
-    name:'clientedit',
-
-     created(){
-        this.getClient()
-    },
-
+    directives: {mask},
+    name:'providerstore',
     data(){
         return{
-           
-            client:{}
+            provider:{}
         }
     },
-
+     created(){
+        this.getProvider()
+    },
     methods:{
-
-        apicep(){
-            fetch(`https://viacep.com.br/ws/${this.cep}/json/`)
-            .then(response => response.json())
-            .then(response => {
-                    this.bairro = response.bairro
-                    this.cidade = response.localidade
-                    this.rua = response.logradouro
-                    this.estado = response.uf
-                    if(response.erro == true) {
-                        alert('CEP inválido')
-                    }
-                    console.log(response)})
-                    .catch((err) => {
-                        console.log(err)
-                        alert('cpf invalido')
-                    })
-            console.log(this.cep)
+        ...mapActions('Provider',['postProvider']),
+        getProvider(){
+            axios.get(`${API_BASE_URL}/fornecedores/${this.$route.params.provider}`)
+            .then(res => {
+                this.provider = res.data
+            })
         },
-
+        apicep(){
+            fetch(`https://viacep.com.br/ws/${this.provider.cep}/json/`).then(response => response.json()).then(response => {
+                    this.provider.heigthboard = response.bairro
+                    this.provider.city = response.localidade
+                    this.provider.street = response.logradouro
+                    this.provider.state = response.uf
+                if(response.erro == true) {
+                    alert('CEP inválido')
+                }
+            })
+            .catch((err) => {
+                console.log(err)
+                alert('CEP inválido')
+            })
+        },
+        
         phoneValidator () {
-            var x = this.client.telefone.replace(/\D/g, '').match(/(\d{0,2})(\d{0,4})(\d{0,4})/);
-            this.client.telefone = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+            var x = this.provider.fone.replace(/\D/g, '').match(/(\d{0,2})(\d{0,4})(\d{0,4})/);
+            this.provider.fone = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
         },
 
         celValidator(){
-             var x = this.client.celular.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
-            this.client.celular = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+             var x = this.provider.celular.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+            this.provider.celular = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
         },    
-        
-        verificaCpf(){
-            if(this.client.cpf.length < 14){
-            alert('CPF inválido!')
-            }
-        },
-
-        getClient(){
-            axios.get(`http://localhost:8000/api/clients/${this.$route.params.client}`)
-            .then(res => {
-                this.client = res.data
-            })
-        },
-
         onSubmit(){
-            axios.put(`http://localhost:8000/api/clients/${this.$route.params.client}`,this.client)
-                .then(res => {
-                     console.log(res.data)
+            axios.put(`${API_BASE_URL}/fornecedores/${this.$route.params.provider}`,this.provider)
+                .then(() => {
                    this.$noty.success("Atualizado com sucesso!!") 
                     setTimeout(() => {
-                        this.$router.push('/clients')
+                        this.$router.push('/providers')
                     },3000)
-                }).catch(e => {
+                })
+                .catch(() => {
                     this.$noty.info("Houve um problema com o seu formulério. Por favor, tente novamente.");
-                console.log('errrou',e)
-            })
+                })
+            }
+    },
+    computed:{
+        ...mapState('Provider',{providers:state => state.providers}),
+    },
+    watch:{
+        'provider.name': function(name){
+            if(name) {
+                return this.provider.name = name[0].toUpperCase() + name.substr(1)  
+            }else if(name == undefined){
+                return null
+            }
         }
-    }
-
+    },
 }
 </script>
 

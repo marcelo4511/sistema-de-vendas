@@ -22,25 +22,25 @@
               <th scope="col">Ações</th>
           </tr>
       </thead>
-      <tbody>
+      <tbody class="text-center">
           <tr v-for="(sale,k) in sales" :key="k" >
-              <td>{{sale.clients && sale.clients.name ? sale.clients.name : 'NI'}}</td>
-              <td>{{sale.dataVenda | formatDate}}</td>
-              <td>{{sale.total | formatPrice}}</td>
-              <td>{{sale.situacao.descricao}}</td>
-              <td>{{sale.user.tipo_usuario.descricao}}</td>
-              <td>  
+                <td>{{sale.clients && sale.clients.name ? sale.clients.name : 'NI'}}</td>
+                <td>{{sale.dataVenda | formatDate}}</td>
+                <td>{{sale.total | formatPrice}}</td>
+                <td>{{sale.situacao.descricao}}</td>
+                <td>{{sale.user.tipo_usuario.descricao}}</td>
+                <td class="align-middle" width="20%">   
                     <div v-show="sale.situacao_id == 1">
-                        <button  class="btn btn-success ml-2" @click="aprovar(sale)"><i class="fa fa-check "></i></button>
-                        <router-link :to="`/salesedit/${sale.id}/edit`" class="btn btn-warning ml-2"><i class="fa fa-pen"></i></router-link>
-                        <button  class="btn btn-danger ml-2"  @click="removeSale(sale)"><i class="fa fa-trash"></i></button>  
+                        <button  class="btn btn-success m-1" @click="aprovar(sale)"><i class="fa fa-check "></i></button>
+                        <router-link :to="`/salesedit/${sale.id}/edit`" class="btn btn-warning m-1"><i class="fa fa-pen"></i></router-link>
+                        <button  class="btn btn-danger"  @click="removeSale(sale)"><i class="fa fa-trash"></i></button>  
                     </div>
 
                     <div v-show="sale.situacao_id == 2">
-                        <router-link :to="`/salesshow/${sale.id}/show`" class="btn btn-info ml-2"><i class="fa fa-eye"></i></router-link>  
-                        <button  class="btn btn-dark ml-2"  @click="relatorioVenda(sale)"><i class="fa fa-file-pdf"></i></button>
+                        <router-link :to="`/salesshow/${sale.id}/show`" class="btn btn-info m-1"><i class="fa fa-eye"></i></router-link>  
+                        <button  class="btn btn-dark"  @click="relatorioVenda(sale)"><i class="fa fa-file-pdf"></i></button>
                     </div>
-              </td>
+                </td>
           </tr>
       </tbody>
   </table>

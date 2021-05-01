@@ -15,15 +15,15 @@
       <div class="row ">
           <div class="form-group col-md-4">
             <label for="">Nome</label>
-            <input class="form-control col-md-auto " type="text" name="name " v-model="product.name" @input="product.name = $event.target.value.toUpperCase()">
+            <input class="form-control form-control-sm col-md-auto " type="text" name="name " v-model="product.name" @input="product.name = $event.target.value.toUpperCase()">
           </div>
           <div class="form-group col-md-4">
             <label for="">Descrição</label>
-            <input type="text" name="description" class="form-control col-md-auto" v-model="product.description">
+            <input type="text" name="description" class="form-control form-control-sm col-md-auto" v-model="product.description">
           </div>     
           <div class="form-group col-md-4">
             <label for="">Categorias</label>
-            <select  v-model="product.category_id" class="form-control col-md-auto">
+            <select  v-model="product.category_id" class="form-control form-control-sm col-md-auto">
                     <option  disabled selected value="">selecione</option>
                     <option  v-for="(category, key) in list" v-show="category.status == 'Ativo'" :key="key" :value="category.id">{{category.name}}</option>
             </select>
@@ -33,7 +33,7 @@
       <div class="row">
         <div class="form-group col-md-4">
           <strong>Imagem</strong>
-          <input type="file" name="imagem" v-validate="'image'" data-vv-as="Imagem"  :class="['form-control form-control-sm', { 'is-invalid':errors.has('imagem')}]" class="form-control col-md-auto" id="imagem" v-on:change="salvaImagem">
+          <input type="file" name="imagem" v-validate="'image'" data-vv-as="Imagem"  :class="['form-control form-control-sm form-control form-control-sm-sm', { 'is-invalid':errors.has('imagem')}]" class="form-control form-control-sm col-md-auto" id="imagem" v-on:change="salvaImagem">
           <span v-show="errors.has('imagem')" class="invalid-feedback">
             {{ errors.first('imagem') }}
           </span>
@@ -41,24 +41,24 @@
             
         <div class="form-group col-md-4">
          <label for="">Preço</label>
-         <input type="text" name="price" v-money="money" class="form-control col-md-auto"  v-model="product.price">
+         <input type="text" name="price" v-money="money" class="form-control form-control-sm col-md-auto"  v-model="product.price">
         </div>  
 
         <div class="form-group col-md-4">
          <label for="">Estoque</label>
-         <input type="number" name="estoque"  class="form-control col-md-auto"  v-model="product.estoque">
+         <input type="number" name="estoque"  class="form-control form-control-sm col-md-auto"  v-model="product.estoque">
         </div>  
 
        <div class="form-group col-md-4">
           <label for="">Status</label>
-          <select class="form-control col-12" v-model="product.status">
+          <select class="form-control form-control-sm col-12" v-model="product.status">
             <option selected disabled value=null>Selecione</option>
             <option value=Ativo>Ativo</option>
             <option value=Inativo>Inativo</option>
           </select>
       </div>
     </div>
-    <button type="submit" class="btn btn-info" :disabled="loading">Cadastrar</button>
+    <button type="submit" class="btn btn-sm btn-info" :disabled="loading">Cadastrar</button>
   </form>
   
     
@@ -105,8 +105,6 @@ export default {
     created(){
         this.$store.dispatch('Category/setList')
         this.$store.dispatch('Product/getProducts')
-        
-
     },
     methods:{
         ...mapActions('Product',['postProducts']),
@@ -120,13 +118,10 @@ export default {
           reader.onload = (e) => {
             this.imagem = e.target.result
           }
-
           reader.readAsDataURL(arquivo[0])
-          console.log(arquivo)
         },
         onSubmit(){
-          this.loading = true
-          console.log('entrei')
+        this.loading = true
           this.$validator.validate().then(res=> {
             if(res) {
               this.$store.dispatch('Product/postProducts',this.product).then(() => {
@@ -136,10 +131,7 @@ export default {
               }).catch(() => {
                 this.$noty.info("Houve um problema com o seu formulério. Por favor, tente novamente.");
               })
-            } else {
-              ///sdfwsf
-              console.log('teste se entriou')
-              }
+            }
             }) 
           }
     },

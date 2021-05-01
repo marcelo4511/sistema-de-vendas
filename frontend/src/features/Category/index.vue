@@ -1,55 +1,47 @@
 <template>
 <div>
   <h4 cabecalho="Produto">Categorias</h4>
-<nav aria-label="breadcrumb mb-4">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
-  
-    <li class="breadcrumb-item active" aria-current="page">Categorias</li>
-  </ol>
-</nav>
-<div class="form-group">
-    <button class="btn btn-primary"><router-link tag="span" to="categories/create">Cadastrar</router-link></button>
- 
-  <input class="form-control col-md-3 mb-3" type="search" style="float: right;"  placeholder="Buscar">
+  <nav aria-label="breadcrumb mb-4">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
+      <li class="breadcrumb-item active" aria-current="page">Categorias</li>
+    </ol>
+  </nav>
+  <div class="form-group">
+      <button class="btn btn-sm btn-primary"><router-link tag="span" to="categories/create">Cadastrar</router-link></button>
+      <input class="form-control form-control-sm col-md-3 mb-3" type="search" style="float: right;"  placeholder="Buscar">
+  </div>
 
-</div>
-
-  <table class="table table-sm">
-                <thead>
-                <tr>
-                    <th scope="col">Nome</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Ações</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="(category,i) in categories" :key="i">
-                    <td>{{category.name}}</td>
-                    <td>{{category.status}}</td>
-                    <td>
-                        <div>
-
-                        <router-link :to="`/categoryedit/${category.id}/edit`" class="btn btn-warning"><i class="fa fa-pen"></i></router-link>
-                        </div>
-                        <button @click="removeList(category)" class="btn btn-danger ml-2"><i class="fa fa-trash"></i></button>
-                    </td>
-                  
-                </tr>
-
-  <infinite-loading spinner="bubbles" @infinite="infiniteHandler">
-      <div class="text-red" slot="no-more">No more users</div>
-      <div class="text-red" slot="no-results">No more users</div>
-  </infinite-loading>
-                </tbody>
-            </table>
-        
+    <div class="table table-responsive">
+      <table class="table table-sm">
+        <thead class="text-center">
+          <tr>
+              <th scope="col">Nome</th>
+              <th scope="col">Status</th>
+              <th scope="col">Ações</th>
+          </tr>
+        </thead>
+        <tbody class="text-center">
+          <tr v-for="(category,i) in categories" :key="i">
+              <td>{{category.name}}</td>
+              <td>{{category.status}}</td>
+              <td>
+                <router-link :to="`/categoryedit/${category.id}/edit`" class="btn btn-sm btn-warning"><i class="fa fa-pen"></i></router-link>
+                <button @click="removeList(category)" class="btn btn-sm btn-danger ml-2"><i class="fa fa-trash"></i></button>
+              </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <infinite-loading spinner="bubbles" @infinite="infiniteHandler">
+        <div class="text-red" slot="no-more">No more users</div>
+        <div class="text-red" slot="no-results">No more users</div>
+    </infinite-loading>
   </div>
 </template>
 
 <script>
 import InfiniteLoading from 'vue-infinite-loading';
-
 import axios from 'axios'
 import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
 import {mapState, mapActions} from 'vuex'
@@ -57,8 +49,6 @@ import swal from 'sweetalert'
 export default {
  data(){
       return{
-      
-     //   pesquisa:'',
        categories: [],
         page: 2,
         lastPage: 0,
@@ -69,23 +59,12 @@ export default {
   },
   created(){
     this.fetchUsers()
-        //  .then(response => {
-        //    if (response.data.data.length > 0) {
-        //      this.categories = response.data.data;
-        //      //this.isInit = false;
-        //    }else{
-        //      console.log('No users found.');
-        //    }
-        //  })
-        //  .catch(e => console.log(e))
-    
   },
  methods:{
    ...mapActions('Category',['postList','setList','updateList','removeList']),
 
         getCategories(){
            axios.get(`http://localhost:8000/api/categories?page=${this.page}`).then(res => {
-           //  this.categories = res.data.data
            this.categories.data.push(...res.data)
            this.categories.meta = res.data.meta
            })

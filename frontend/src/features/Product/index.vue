@@ -5,32 +5,22 @@
     <nav aria-label="breadcrumb mb-4">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
-        
             <li class="breadcrumb-item active" aria-current="page">Produtos</li>
         </ol>
     </nav>
-    
-    <div class="row">
-       
-    </div>
     <div class="row">
         <div class="col-md-12 d-flex justify-content-beetween">
-        
-            
             <div class="d-flex justify-content-start">
-
-            <input type="text" class="form-control mr-1" placeholder="Buscar por nome do produto" v-model="filtro.name" @keyup="filter">
-            <select name="category_id" id="categort_id" class="form-control" style="margin-right:600px;" v-model="filtro.category_id" @change="filter">
-                <option v-for="l in categories" :value="l.id" :key="l.id">{{l.name}}</option>
-            </select>
+                <input type="text" class="form-control form-control-sm col-4 col-md-4 mr-1" placeholder="Buscar por nome do produto" v-model="filtro.name" @keyup="filter">
+                <select name="category_id" id="categort_id" class="form-control form-control-sm col-4 col-md-4" style="margin-right:600px;" v-model="filtro.category_id" @change="filter">
+                    <option v-for="l in categories" :value="l.id" :key="l.id">{{l.name}}</option>
+                </select>
             </div>
- 
-        <div class="d-flex justify-content-end">
-
-        <div v-for="(u,k) in user" :key="k">
-            <button class="btn btn-primary " v-show="u.type_user_id  == 1"><router-link tag="span" to="products/create">Cadastrar</router-link></button>
-        </div>
-        </div>
+            <div class="d-flex justify-content-end">
+                <div v-for="(u,k) in user" :key="k">
+                    <button class="btn btn-sm btn-primary " v-show="u.type_user_id  == 1"><router-link tag="span" to="products/create">Cadastrar</router-link></button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -44,9 +34,10 @@
                 <th scope="col">Preco</th>
                 <th scope="col">Estoque</th>
                 <th scope="col">Status</th>
+                <th scope="col">Ações</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="text-center">
             <tr v-for="product of produtos" :key="product.id">
                 <td><img :src=product.name alt="imagem"></td>
                 <td>{{product.name}}</td>
@@ -55,18 +46,16 @@
                 <td>{{product.price}}</td>
                 <td>{{product.estoque}}</td>
                 <td>{{product.status}}</td>
-                
                 <td v-for="(u,k) in user" :key="k">
                     <div v-show="u.type_user_id === 1">
-                        <router-link :to="`/products/${product.id}/edit`" class="btn btn-warning m-1"><i class="fa fa-pen"></i></router-link>
-                        <button class="btn btn-danger" @click="removeClient(product)"> <i class="fa fa-trash"></i> </button>
+                        <router-link :to="`/products/${product.id}/edit`" class="btn btn-sm btn-warning m-1"><i class="fa fa-pen"></i></router-link>
+                        <button class="btn btn-sm btn-danger" @click="removeClient(product)"> <i class="fa fa-trash"></i> </button>
                     </div>
                 </td>
             </tr>
         </tbody>
         <hr>
     </table> 
-
 </main>
 </template>
 

@@ -11,7 +11,7 @@
       <div class="form-row">
           <div @submit.prevent="abc" class="form-group col-md-6">
           <label for="">Clientes</label>
-          <select class="form-control" v-model="sales.client_id" >
+          <select class="form-control form-control-sm" v-model="sales.client_id" >
               <option selected disabled value="">selecione</option>
               <option   v-for="(client,k) in clients" v-show="client.status == 'Ativo'" :key="k"  :value="client.id">{{client.name}}</option>
           </select>
@@ -20,7 +20,7 @@
           <div class="form-group col-md-6">
             <label for="">Data da Venda</label>
           <input type="date" v-model="sales.dataVenda"
-          class="form-control">
+          class="form-control form-control-sm">
           </div>
       
       <fieldset class="m-3">
@@ -34,18 +34,18 @@
             
             <td><label><strong>Produto</strong>
                  </label>
-             <select class="form-control" required v-model="detalheVenda.product_id" @blur="getProducts(detalheVenda.product_id,key)">
+             <select class="form-control form-control-sm" required v-model="detalheVenda.product_id" @blur="getProducts(detalheVenda.product_id,key)">
                <option v-for="(product) in products" :key="product.id"  v-show="product.status == 'Ativo'" :value="product.id">{{product.name}}</option>
 
              </select>
               </td>
-           <!-- <td><label><strong>Produto</strong></label><input type="text" class="form-control" @blur="getProducts(detalheVenda.name,key)"  v-model="detalheVenda.name"></td>-->
+           <!-- <td><label><strong>Produto</strong></label><input type="text" class="form-control form-control-sm" @blur="getProducts(detalheVenda.name,key)"  v-model="detalheVenda.name"></td>-->
 
-            <td><label><strong>Preço</strong></label><money v-model="detalheVenda.price" :value="detalheVenda.price" @blur="getProducts(detalheVenda.price, indice,key)"  v-bind="money" name="valorSinistrado" class="form-control" @change="calculateLineTotal(detalheVenda)" readonly></money></td>
-            <td><label><strong>Estoque</strong></label><input class="form-control" type="number" @blur="getProducts(detalheVenda.estoque, indice)" v-model="detalheVenda.estoque" required readonly></td>
+            <td><label><strong>Preço</strong></label><money v-model="detalheVenda.price" :value="detalheVenda.price" @blur="getProducts(detalheVenda.price, indice,key)"  v-bind="money" name="valorSinistrado" class="form-control form-control-sm" @change="calculateLineTotal(detalheVenda)" readonly></money></td>
+            <td><label><strong>Estoque</strong></label><input class="form-control form-control-sm" type="number" @blur="getProducts(detalheVenda.estoque, indice)" v-model="detalheVenda.estoque" required readonly></td>
     
-            <td><label><strong>Quantidade</strong></label><input class="form-control" type="number" v-model="detalheVenda.quantidade" @change="calculateLineTotal(detalheVenda)" @keyup="calculateEstoque(detalheVenda)" required></td>
-            <td><label><strong>Subtotal</strong></label><money readonly disabled :value="detalheVenda.subtotal" v-bind="money" name="totalPrejuizo" class="form-control"></money></td>
+            <td><label><strong>Quantidade</strong></label><input class="form-control form-control-sm" type="number" v-model="detalheVenda.quantidade" @change="calculateLineTotal(detalheVenda)" @keyup="calculateEstoque(detalheVenda)" required></td>
+            <td><label><strong>Subtotal</strong></label><money readonly disabled :value="detalheVenda.subtotal" v-bind="money" name="totalPrejuizo" class="form-control form-control-sm"></money></td>
             <td><label><strong>Ação</strong></label>
             <button  class="btn btn-danger" @click="remova(detalheVenda)" ><i class="fa fa-times"></i></button></td>
     
@@ -56,7 +56,7 @@
                 <th scope="col">Total</th>
                 <th></th>
                 <th></th>
-                <th scope="col"><money readonly disabled :value="totalizar" v-money="money" name="totalPrejuizo" class="form-control form-control-sm" style="background-color:#993399;color:#fff;"></money></th>
+                <th scope="col"><money readonly disabled :value="totalizar" v-money="money" name="totalPrejuizo" class="form-control form-control-sm form-control form-control-sm-sm" style="background-color:#993399;color:#fff;"></money></th>
             </tr>
         </tfoot>
         </table>
@@ -76,7 +76,7 @@
             <div class="row">
               <div class="form-group m-2">
                 <label for="">Forma de Pagamento</label>
-                <select type="text" class="form-control" v-model="sales.forma_pagamento.tipo_forma_pagamento">
+                <select type="text" class="form-control form-control-sm" v-model="sales.forma_pagamento.tipo_forma_pagamento">
                   <option disabled selected value="null">Selecione</option>
                   <option value="0">Boleto bancário</option>
                   <option value="1">A vista</option>
@@ -87,7 +87,7 @@
 
               <div class="form-group m-2">
                 <label for="">Parcelas</label>
-                <select type="text" class="form-control" v-model="sales.forma_pagamento.parcelas" v-show="sales.forma_pagamento.tipo_forma_pagamento == '2'">
+                <select type="text" class="form-control form-control-sm" v-model="sales.forma_pagamento.parcelas" v-show="sales.forma_pagamento.tipo_forma_pagamento == '2'">
                   <option selected value="null">1x</option>
                   <option value="1">6x</option>
                   <option value="2">10x</option>
@@ -95,7 +95,7 @@
                   <option value="4">24x</option>
                 </select>
 
-                 <select type="text" class="form-control" v-model="sales.forma_pagamento.parcelas" disabled v-show="sales.forma_pagamento.tipo_forma_pagamento !== '2'">
+                 <select type="text" class="form-control form-control-sm" v-model="sales.forma_pagamento.parcelas" disabled v-show="sales.forma_pagamento.tipo_forma_pagamento !== '2'">
                   <option selected value="null">1x</option>
                   <option value="1">6x</option>
                   <option value="2">10x</option>
@@ -106,8 +106,8 @@
 
               <div class="form-group m-2">
                 <label for="">Entrada</label>
-                <input type="text" class="form-control" v-show="sales.forma_pagamento.tipo_forma_pagamento == '2'"  v-model="sales.forma_pagamento.entrada" placeholder="0,00">
-                <input type="text" class="form-control" v-show="sales.forma_pagamento.tipo_forma_pagamento !== '2'" disabled  v-model="sales.forma_pagamento.entrada" placeholder="0,00">
+                <input type="text" class="form-control form-control-sm" v-show="sales.forma_pagamento.tipo_forma_pagamento == '2'"  v-model="sales.forma_pagamento.entrada" placeholder="0,00">
+                <input type="text" class="form-control form-control-sm" v-show="sales.forma_pagamento.tipo_forma_pagamento !== '2'" disabled  v-model="sales.forma_pagamento.entrada" placeholder="0,00">
               </div>
             </div>
           </div>

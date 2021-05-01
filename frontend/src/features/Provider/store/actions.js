@@ -1,22 +1,17 @@
 import axios from 'axios' 
-
+import {API_BASE_URL} from '../../../config/Api'
 const getProvider = ({commit}) => {
-    axios.get('http://127.0.0.1:8000/api/fornecedores')
-    .then(res => {
+    axios.get(`${API_BASE_URL}/fornecedores`).then(res => {
         commit('GET_CLIENT',res.data)
     })
 }
-
 const postProvider = ({commit},fornecedor) => {
-    axios.post('http://127.0.0.1:8000/api/fornecedores',fornecedor) 
-    .then(() => {
+    axios.post(`${API_BASE_URL}/fornecedores`,fornecedor) .then(() => {
         commit('POST_CLIENT',fornecedor)
     })
 }
-
 const updateProvider = async ({commit},fornecedor) => {
-   await axios.put(`http://127.0.0.1:8000/api/fornecedores/${fornecedor.id}`,fornecedor)
-   .then(resposta =>{
+   await axios.put(`${API_BASE_URL}/fornecedores/${fornecedor.id}`,fornecedor).then(resposta =>{
    return resposta.data
 })
     commit('UPDATE_CLIENT',fornecedor)

@@ -2,15 +2,13 @@
 <div>
     <h4 cabecalho="Produto">Clientes</h4>
         <nav aria-label="breadcrumb mb-4">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
-           
-            <li class="breadcrumb-item active" aria-current="page">Clientes</li>
-        </ol>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
+                <li class="breadcrumb-item active" aria-current="page">Clientes</li>
+            </ol>
         </nav>
-  <router-link to="/clientstore" tag="span"><button class="btn btn-primary">Cadastrar</button></router-link>
-
-     <input class="form-control col-md-3 mb-3" type="search" style="float: right;" name="nome" placeholder="Buscar" v-model="buscar">
+    <router-link to="/clientstore" tag="span"><button class="btn btn-sm btn-primary">Cadastrar</button></router-link>
+    <input class="form-control form-control-sm col-md-3 mb-3" type="search" style="float: right;" name="nome" placeholder="Buscar" v-model="buscar">
   
   <table class="table table-sm">
       <thead>
@@ -20,22 +18,19 @@
               <th scope="col">Email</th>
               <th scope="col">Celular</th>
               <th scope="col">Status</th>
-              <th scope="col">Açôes</th>
-                
+              <th scope="col">Açôes</th>  
           </tr>
       </thead>
-      <tbody>
+      <tbody class="text-center">
           <tr v-for="(client,k) in pesquisar" :key="k" >
               <td>{{client.name}}</td>
               <td>{{client.cpf}}</td>
               <td>{{client.email}}</td>
               <td>{{client.celular}}</td>
               <td>{{client.status}}</td>
-
               <td>  
-                    
-                    <router-link :to="`/clientedit/${client.id}/edit`" class="btn btn-warning"><i class="fa fa-pen"></i></router-link>
-                    <button  class="btn btn-danger ml-2" @click="removeClient(client)"><i class="fa fa-trash"></i></button>
+                <router-link :to="`/clientedit/${client.id}/edit`" class="btn btn-sm btn-warning m-1"><i class="fa fa-pen"></i></router-link>
+                <button  class="btn btn-sm btn-danger" @click="removeClient(client)"><i class="fa fa-trash"></i></button>
               </td>
           </tr>
 
@@ -61,7 +56,6 @@ export default {
                 celular:'',
                 status:''
             },
-           
             buscar:[]
         }
 

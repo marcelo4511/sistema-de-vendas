@@ -18,13 +18,13 @@
       
         <div class="form-group col-6">
         <label for="" class="label label-default">Nome da Categoria</label>
-        <input type="text" class="form-control col-md-12 mr-5" name="name" v-model="category.name">
+        <input type="text" class="form-control form-control-sm col-md-12 mr-5" name="name" v-model="category.name">
         </div>
         
         <div class="form-group col-4">
 
           <label for="">Status</label>
-            <select class="form-control" v-model="category.status">
+            <select class="form-control form-control-sm" v-model="category.status">
               <option selected disabled value=null>Selecione</option>
               <option value=Ativo>Ativo</option>
               <option value=Inativo>Inativo</option>
@@ -33,7 +33,7 @@
               
         </div>
           <div class="form-group">
-            <button type="submit" class="btn btn-success  mt-4">Atualizar</button>
+            <button type="submit" class="btn btn-sm btn-success  mt-4">Atualizar</button>
           </div>
     </form>
   </div>
@@ -64,16 +64,14 @@ export default {
     },
     methods:{
          onSubmit(){
-              this.$store.dispatch('Category/updateList',this.category)
-              .then(() => {
-                    this.$noty.success("Cadastrado com sucesso!!") 
-                    setTimeout(() => {
-                        this.$router.push('/categories')
-                    },3000)
-                }).catch(e => {
-                   this.$noty.info("Houve um problema com o seu formulério. Por favor, tente novamente.");
-                console.log('errrou',e)
-                })
+          this.$store.dispatch('Category/updateList',this.category).then(() => {
+                this.$noty.success("Cadastrado com sucesso!!") 
+                setTimeout(() => {
+                    this.$router.push('/categories')
+                },3000)
+            }).catch(() => {
+                this.$noty.info("Houve um problema com o seu formulério. Por favor, tente novamente.");
+          })
         },
       
         getBlogById: function (id) {
@@ -81,9 +79,8 @@ export default {
             .then((response) => {
               this.category = response.data
             })
-            .catch((error) => {
-              console.log(error)
-            })
+            .catch(() => {
+          })
         }
     }  
 }
