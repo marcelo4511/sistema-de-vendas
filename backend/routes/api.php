@@ -37,6 +37,12 @@ use Illuminate\Support\Facades\Route;
             Route::get('/search','UserController@search');
             
             Route::resource('fornecedores','FornecedorController');
+            Route::resource('billstopay','BillsToPayController');
+            Route::post('billstopay/aprovar/{id}','BillsToPayController@aprovacao');
+            Route::resource('billstoreceive','BillsToReceiveController');
+            Route::post('billstoreceive/aprovar/{id}','BillsToReceiveController@aprovacao');
+            Route::get('movimentacao','MovimentacaoController@index');
+            Route::post('movimentacao','MovimentacaoController@store');
         
             Route::resource('sales','SaleController');
             Route::get('relatorioexcel','SaleController@relatorioexcel');
@@ -88,6 +94,5 @@ use Illuminate\Support\Facades\Route;
             Route::get('relatoriopdf','SaleController@relatoriopdf');
             Route::get('relatoriopdfdetalhes/{id}','SaleController@relatoriopdfDetails');
         });
-        
     });
 

@@ -4,15 +4,14 @@
         <nav aria-label="breadcrumb mb-4">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
-                
                 <li class="breadcrumb-item active" aria-current="page">Vendas</li>
             </ol>
         </nav>
-        <router-link to="/sales/create" tag="span"><button class="btn btn-primary">Cadastrar</button></router-link>
-     <input class="form-control col-md-3 mb-3" type="search" style="float: right;" name="nome" placeholder="Buscar" v-model="search">
+        <router-link to="/sales/create" tag="span"><button class="btn btn-sm btn-primary">Cadastrar</button></router-link>
+     <input class="form-control form-control-sm col-md-3 mb-3" type="search" style="float: right;" name="nome" placeholder="Buscar" v-model="search">
   
   <table class="table table-sm">
-      <thead>
+      <thead class="text-center">
           <tr>
               <th scope="col">Nome do Cliente</th>
               <th scope="col">Data da venda</th>
@@ -31,14 +30,14 @@
                 <td>{{sale.user.tipo_usuario.descricao}}</td>
                 <td class="align-middle" width="20%">   
                     <div v-show="sale.situacao_id == 1">
-                        <button  class="btn btn-success m-1" @click="aprovar(sale)"><i class="fa fa-check "></i></button>
-                        <router-link :to="`/salesedit/${sale.id}/edit`" class="btn btn-warning m-1"><i class="fa fa-pen"></i></router-link>
-                        <button  class="btn btn-danger"  @click="removeSale(sale)"><i class="fa fa-trash"></i></button>  
+                        <button  class="btn btn-sm btn-success m-1" @click="aprovar(sale)"><i class="fa fa-check "></i></button>
+                        <router-link :to="`/salesedit/${sale.id}/edit`" class="btn btn-sm btn-warning m-1"><i class="fa fa-pen"></i></router-link>
+                        <button  class="btn btn-sm btn-danger"  @click="removeSale(sale)"><i class="fa fa-trash"></i></button>  
                     </div>
 
                     <div v-show="sale.situacao_id == 2">
-                        <router-link :to="`/salesshow/${sale.id}/show`" class="btn btn-info m-1"><i class="fa fa-eye"></i></router-link>  
-                        <button  class="btn btn-dark"  @click="relatorioVenda(sale)"><i class="fa fa-file-pdf"></i></button>
+                        <router-link :to="`/salesshow/${sale.id}/show`" class="btn btn-sm btn-info m-1"><i class="fa fa-eye"></i></router-link>  
+                        <button  class="btn btn-sm btn-dark"  @click="relatorioVenda(sale)"><i class="fa fa-file-pdf"></i></button>
                     </div>
                 </td>
           </tr>
@@ -46,8 +45,8 @@
   </table>
   
   <div v-show="sale">
-    <button class="btn btn-success mr-2" @click="relatorioExcel">Baixar relatório total <i class="fa fa-file-excel"></i></button>
-    <button class="btn btn-danger" @click="relatorioPdf">Baixar relatório total <i class="fa fa-print"></i></button>
+    <button class="btn btn-sm btn-success mr-2" @click="relatorioExcel">Baixar relatório total <i class="fa fa-file-excel"></i></button>
+    <button class="btn btn-sm btn-danger" @click="relatorioPdf">Baixar relatório total <i class="fa fa-print"></i></button>
   </div>
 </div>
 </template>
@@ -71,7 +70,6 @@ export default {
             },
             search:[]
         }
-
     },
     created(){
         this.$store.dispatch('Sale/getSales')
@@ -94,13 +92,11 @@ export default {
                 icon: "success",
                 });
             })
-               
             } else {
                 swal("seu dado está a salvo");
             }
             });
-             return this.$forceUpdate();
-               
+            return this.$forceUpdate();  
         },
         
         exportPdf(){
@@ -185,9 +181,6 @@ export default {
                 swal("Venda continua a esperar o pagamento");
             }
             });
-         
-           
-               
         },
     },
     computed:{

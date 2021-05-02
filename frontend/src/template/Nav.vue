@@ -38,13 +38,13 @@
         </span>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <div id="teste">
-            <router-link tag="span" to="/clients">
+            <router-link tag="span" to="/billstopay">
               <li style="color:black;"><i class="fa fa-money-check-alt m-3" aria-hidden="true"></i> Contas a pagar</li>
             </router-link>
-            <router-link tag="span" to="/products">
+            <router-link tag="span" to="/billstoreceive">
               <li style="color:black;"><i class="fa fa-credit-card m-3" aria-hidden="true"></i> Contas a receber</li>
             </router-link>
-            <router-link tag="span" to="/categories">
+            <router-link tag="span" to="/movimentacao">
               <li style="color:black;"><i class="fa fa-chart-line m-3"></i> Fluxo de caixa</li>
             </router-link> 
           </div>

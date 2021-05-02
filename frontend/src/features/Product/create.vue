@@ -121,17 +121,17 @@ export default {
           reader.readAsDataURL(arquivo[0])
         },
         onSubmit(){
-        this.loading = true
-          this.$validator.validate().then(res=> {
-            if(res) {
-              this.$store.dispatch('Product/postProducts',this.product).then(() => {
-              this.loading = false
-              this.$noty.success("Cadastrado com sucesso!!") 
-              this.$router.push('/products')
-              }).catch(() => {
-                this.$noty.info("Houve um problema com o seu formulério. Por favor, tente novamente.");
-              })
-            }
+          this.loading = true
+            this.$validator.validate().then(res=> {
+              if(res) {
+                this.$store.dispatch('Product/postProducts',this.product).then(() => {
+                this.loading = false
+                this.$noty.success("Cadastrado com sucesso!!") 
+                this.$router.push('/products')
+                }).catch(() => {
+                  this.$noty.info("Houve um problema com o seu formulério. Por favor, tente novamente.");
+                })
+              }
             }) 
           }
     },
@@ -139,7 +139,6 @@ export default {
         ...mapState('Product',{products:state => state.products}),
         ...mapState('Category',{list:state => state.list.data}),
     },
-    
 }
    
 </script>

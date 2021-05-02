@@ -1,17 +1,16 @@
 <template>
 <div>
   <h4 cabecalho="Produto">Categorias</h4>
-  <nav aria-label="breadcrumb mb-4">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
-      <li class="breadcrumb-item active" aria-current="page">Categorias</li>
-    </ol>
-  </nav>
-  <div class="form-group">
-      <button class="btn btn-sm btn-primary"><router-link tag="span" to="categories/create">Cadastrar</router-link></button>
-      <input class="form-control form-control-sm col-md-3 mb-3" type="search" style="float: right;"  placeholder="Buscar">
-  </div>
-
+    <nav aria-label="breadcrumb mb-4">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
+        <li class="breadcrumb-item active" aria-current="page">Categorias</li>
+      </ol>
+    </nav>
+    <div class="form-group">
+        <button class="btn btn-sm btn-primary"><router-link tag="span" to="categories/create">Cadastrar</router-link></button>
+        <input class="form-control form-control-sm col-md-3 mb-3" type="search" style="float: right;"  placeholder="Buscar">
+    </div>
     <div class="table table-responsive">
       <table class="table table-sm">
         <thead class="text-center">
@@ -33,7 +32,7 @@
         </tbody>
       </table>
     </div>
-    <infinite-loading spinner="bubbles" @infinite="infiniteHandler">
+    <infinite-loading spinner="spiral" id="espiral" @infinite="infiniteHandler">
         <div class="text-red" slot="no-more">No more users</div>
         <div class="text-red" slot="no-results">No more users</div>
     </infinite-loading>
@@ -76,7 +75,6 @@ export default {
           setTimeout(function () {
             this.fetchUsers()
                 .then(response => {
-                  console.log(response)
                     if (response.data.data.length > 0) {
                       this.lastPage = response.data.data.last_page;
                       response.data.data.forEach(message => {
@@ -94,7 +92,7 @@ export default {
                       $state.complete();
                     }
                 })
-                .catch(e => console.log(e));
+                .catch(() => console.log());
             }.bind(this), 1000);
       },
         editList(){
@@ -133,5 +131,7 @@ export default {
 </script>
 
 <style>
-    
+    div #espiral{
+      color: firebrick;
+    }
 </style>

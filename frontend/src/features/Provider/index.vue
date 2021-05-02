@@ -12,7 +12,7 @@
   
    <div class="table table-responsive">
         <table class="table table-sm">
-            <thead>
+            <thead class="text-center">
                 <tr>
                     <th scope="col">Nome/Razão Social</th>
                     <th scope="col">CNPJ/CPF</th>

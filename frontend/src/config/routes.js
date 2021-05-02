@@ -19,6 +19,15 @@ import ClientAtualiza from '../features/Client/edit'
 import Provider from '../features/Provider/index'
 import ProviderCadastro from '../features/Provider/create'
 import ProviderAtualiza from '../features/Provider/edit'
+
+import BillsToPay from '../features/BillsToPay/index'
+import BillsToPayCreate from '../features/BillsToPay/create'
+
+import BillsToReceive from '../features/BillsToReceive/index'
+import BillsToReceiveCreate from '../features/BillsToReceive/create'
+
+import Movimentacao from '../features/Movimentacao/index'
+
 import Sales from '../features/Sale/index'
 import SalesCreate from '../features/Sale/create'
 import SalesEdit from '../features/Sale/edit'
@@ -93,6 +102,41 @@ const routes = [
     path:'/provideredit/:provider/edit',                                                                                                                                                                                                                       
     component:ProviderAtualiza,
     params:true,
+    meta: {
+        auth: true
+    },
+},{
+    name:'billstopay',
+    path:'/billstopay',                                                                                                                                                                                                                       
+    component:BillsToPay,
+    meta: {
+        auth: true
+    },
+},{
+    name:'billstopaystore',
+    path:'/billstopaystore',                                                                                                                                                                                                                       
+    component:BillsToPayCreate,
+    meta: {
+        auth: true
+    },
+},{
+    name:'billstoReceive',
+    path:'/billstoReceive',                                                                                                                                                                                                                       
+    component:BillsToReceive,
+    meta: {
+        auth: true
+    },
+},{
+    name:'billstoReceivestore',
+    path:'/billstoReceivestore',                                                                                                                                                                                                                       
+    component:BillsToReceiveCreate,
+    meta: {
+        auth: true
+    },
+},{
+    name:'movimentacao',
+    path:'/movimentacao',                                                                                                                                                                                                                       
+    component:Movimentacao,
     meta: {
         auth: true
     },

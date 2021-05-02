@@ -13,7 +13,7 @@
   </div>
 
       <table class="table table-sm">
-        <thead>
+        <thead class="text-center">
           <tr>
               <th scope="col">Nome</th>
               <th scope="col">Email</th>

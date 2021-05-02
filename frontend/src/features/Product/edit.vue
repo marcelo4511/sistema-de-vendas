@@ -75,7 +75,7 @@ export default {
                 status:''
             },
             produtos:[],
-            //categories:[],
+            categories:[],
             update:{},
             isEdit:false,
             pesquisa:[], 
@@ -110,8 +110,7 @@ export default {
 
         onSubmit(){
           axios.put(`http://localhost:8000/api/products/${this.$route.params.product}`,this.product)
-              .then(res => {
-                    console.log(res.data)
+              .then(() => {
                   this.$noty.success("Atualizado com sucesso!!") 
                   setTimeout(() => {
                       this.$router.push('/products')
@@ -126,7 +125,7 @@ export default {
     
     computed:{
         ...mapState('Product',{products:state => state.products}),
-        ...mapState('Category',{list:state => state.list}),
+        ...mapState('Category',{list:state => state.list.data}),
     },
     
 }

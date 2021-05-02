@@ -11,7 +11,7 @@
     <input class="form-control form-control-sm col-md-3 mb-3" type="search" style="float: right;" name="nome" placeholder="Buscar" v-model="buscar">
   
   <table class="table table-sm">
-      <thead>
+      <thead class="text-center">
           <tr>
               <th scope="col">Nome</th>
               <th scope="col">CPF</th>
@@ -33,7 +33,6 @@
                 <button  class="btn btn-sm btn-danger" @click="removeClient(client)"><i class="fa fa-trash"></i></button>
               </td>
           </tr>
-
       </tbody>
   </table>
 </div>

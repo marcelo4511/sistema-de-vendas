@@ -25,7 +25,7 @@
     </div>
 
     <table class="table responsive-sm"> 
-        <thead>
+        <thead class="text-center">
             <tr>
                 <th scope="col">Imagem</th>
                 <th scope="col">Nome</th>
@@ -151,16 +151,8 @@ export default {
     
     computed:{
         ...mapState('Category',{list:state => state.list}),
-       // ...mapState('Product',{products:state => state.products}),
-
         ...mapState('User',{user:state => state.user}),
         ...mapGetters('User',['isLogged']),
-
-     //   pesquisar:function() {
-        //    return this.products.filter(product => {
-        //        return product.description.includes(this.pesquisa)
-        //    })
-      //  },
     },
     
 }

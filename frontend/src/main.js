@@ -1,5 +1,4 @@
 import Vue from 'vue'
-
 import App from './App'
 import store from './store'
 import router from './config/routes'
@@ -9,10 +8,9 @@ import VueNoty from 'vuejs-noty-fa';
 import money from 'v-money'
 import auth from './config/auth'
 import axios from 'axios'
-import VeeValidate, {
-  Validator
-} from "vee-validate";
+import VeeValidate, { Validator } from "vee-validate";
 import pt_BR from 'vee-validate/dist/locale/pt_BR'
+
 import '@/config/apexcharts'
 import './config/Api'
 import './config/filterData'
@@ -25,7 +23,6 @@ import '@fortawesome/fontawesome-free/js/all.js'
 import 'font-awesome/css/font-awesome.css'
 
 Vue.use(money, {precision: 2})
-//Vue.use(VueApexCharts)
 Vue.use(VeeValidate);
 Validator.localize('pt_BR', pt_BR);
 
@@ -47,7 +44,6 @@ new Vue({
   store,
   auth,
   router,
-  //VueApexCharts,
     created () {
       const userInfo = localStorage.getItem('user')
       if (userInfo) {
@@ -60,7 +56,6 @@ new Vue({
           if (error.response.status === 403) {
             this.$store.dispatch('User/logout')
           }
-
           if(error.response.status === 401) {
             this.$store.dispatch('User/logout')
           }
