@@ -43,7 +43,9 @@ use Illuminate\Support\Facades\Route;
             Route::post('billstoreceive/aprovar/{id}','BillsToReceiveController@aprovacao');
             Route::get('movimentacao','MovimentacaoController@index');
             Route::post('movimentacao','MovimentacaoController@store');
-        
+            Route::get('tipo','MovimentacaoController@tipo');
+            Route::post('filtromovi','MovimentacaoController@filter');
+
             Route::resource('sales','SaleController');
             Route::get('relatorioexcel','SaleController@relatorioexcel');
             Route::get('detalhesdelete/{id}','SaleController@deleteDetalhe');

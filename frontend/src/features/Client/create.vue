@@ -29,7 +29,7 @@
 
             <div class="form-group col-md-3">
                 <label for="">Data de nascimento</label>
-                <input type="date" class="form-control form-control-sm" v-model="client.data_nasc" required>
+                <input type="date" class="form-control form-control-sm" v-model="client.date_nasc" required>
             </div>
         </div>
 
@@ -46,41 +46,41 @@
 
             <div class="form-group col-md-4">
                 <label for="">Endereço</label>
-                <input type="text" class="form-control form-control-sm" v-model="client.rua" readonly required>
+                <input type="text" class="form-control form-control-sm" v-model="client.street" readonly required>
             </div>
 
             <div class="form-group col-md-2">
                 <label for="">Bairro </label>
-                <input type="text" class="form-control form-control-sm" v-model="client.bairro" readonly required>
+                <input type="text" class="form-control form-control-sm" v-model="client.heigthboard" readonly required>
             </div>
 
             <div class="form-group col-md-2">
                 <label for="">Numero </label>
-                <input type="text" class="form-control form-control-sm" v-model="client.numero" required>
+                <input type="text" class="form-control form-control-sm" v-model="client.number" required>
             </div>
         </div>
 
         <div class="row">
             <div class="form-group col-md-4">
                 <label for="">Complemento</label>
-                <input type="text" class="form-control form-control-sm" v-model="client.complemento">
+                <input type="text" class="form-control form-control-sm" v-model="client.complement">
             </div>
 
             <div class="form-group col-md-4"> 
                 <label for="">Cidade</label>         
-                <input type="text" class="form-control form-control-sm" v-model="client.cidade" readonly required>
+                <input type="text" class="form-control form-control-sm" v-model="client.city" readonly required>
             </div>
 
             <div class="form-group col-md-4">
                 <label for="">Estado</label>
-                <input type="text" class="form-control form-control-sm" v-model="client.estado" readonly required>
+                <input type="text" class="form-control form-control-sm" v-model="client.state" readonly required>
             </div>
         </div>
 
         <div class="row">
             <div class="form-group col-md-4">
                 <label for="">Telefone</label>
-                <input type="text" @input="phoneValidator()" class="form-control form-control-sm" v-model="client.telefone" required>
+                <input type="text" @input="phoneValidator()" class="form-control form-control-sm" v-model="client.fone" required>
             </div>
 
             <div class="form-group col-md-4">
@@ -122,16 +122,16 @@ export default {
             client:{
                 name:'',
                 cpf:'',
-                data_nasc:'',
+                date_nasc:'',
                 email:'',
                 cep:'',
-                rua:'',
-                numero:'',
-                complemento:'',
-                cidade:'',
-                estado:'',
-                bairro:'',
-                telefone:'',
+                street:'',
+                number:'',
+                complement:'',
+                city:'',
+                state:'',
+                heigthboard:'',
+                fone:'',
                 celular:'',
                 status:'',
             }
@@ -145,10 +145,10 @@ export default {
             fetch(`https://viacep.com.br/ws/${this.client.cep}/json/`)
             .then(response => response.json())
             .then(response => {
-                    this.client.bairro = response.bairro
-                    this.client.cidade = response.localidade
-                    this.client.rua = response.logradouro
-                    this.client.estado = response.uf
+                    this.client.heigthboard = response.bairro
+                    this.client.city = response.localidade
+                    this.client.street = response.logradouro
+                    this.client.state = response.uf
                     if(response.erro == true) {
                         alert('CEP inválido')
                     }
