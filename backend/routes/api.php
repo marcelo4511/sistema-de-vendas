@@ -41,10 +41,10 @@ use Illuminate\Support\Facades\Route;
             Route::post('billstopay/aprovar/{id}','BillsToPayController@aprovacao');
             Route::resource('billstoreceive','BillsToReceiveController');
             Route::post('billstoreceive/aprovar/{id}','BillsToReceiveController@aprovacao');
-            Route::get('movimentacao','MovimentacaoController@index');
             Route::post('movimentacao','MovimentacaoController@store');
             Route::get('tipo','MovimentacaoController@tipo');
             Route::post('filtromovi','MovimentacaoController@filter');
+            Route::get('movimentacao/lista','MovimentacaoController@index');
 
             Route::resource('sales','SaleController');
             Route::get('relatorioexcel','SaleController@relatorioexcel');

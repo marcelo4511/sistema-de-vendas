@@ -7,58 +7,82 @@
                 <li class="breadcrumb-item active" aria-current="page">Movimentações</li>
             </ol>
         </nav>
-        <input class="form-control form-control-sm col-md-3 mb-3" type="search" style="float: right;" name="nome" placeholder="Buscar" v-model="buscar"><br>
         <div class="row">
-        <div class="col-md-12 d-flex justify-content-beetween">
-            <div class="d-flex justify-content-start">
-                <select name="tipo_movimentacao_id" id="tipo_movimentacao_id" class="form-control form-control-sm col-4 col-md-4"  v-model="filtro.tipo_movimentacao_id" @change="filter">
+            <div class="col-md-12 d-flex justify-content-beetween mb-3">
+                <select name="tipo_movimentacao_id" id="tipo_movimentacao_id" class="form-control form-control-sm col-6 col-md-5 mr-1"  v-model="filtro.tipo_movimentacao_id" @change="filter">
                     <option selected value="0">Todos</option>
                     <option v-for="tipo in tipos" :value="tipo.id" :key="tipo.id">{{tipo.descricao}}</option>
                 </select>
+                <input class="form-control form-control-sm col-md-2 mr-1" type="date" v-model="filtro.de" @change="filter">
+                <input class="form-control form-control-sm col-md-2 mr-1" type="date" v-model="filtro.ate" @change="filter">
+                <select name="tipo_movimentacao_id" id="tipo_movimentacao_id" class="form-control form-control-sm col-6 col-md-3 mr-1"  v-model="filtro.mes" @change="filter">
+                    <option selected value="0">Todos</option>
+                    <option value="1">Janeiro</option>
+                    <option value="2">Fev</option>
+                    <option value="3">Março</option>
+                    <option value="4">Abril</option>
+                    <option value="5">Maio</option>
+                    <option value="6">Junho</option>
+                    <option value="7">Julho</option>
+                    <option value="8">Agosto</option>
+                    <option value="9">Setembro</option>
+                    <option value="10">Outubro</option>
+                    <option value="11">Novembro</option>
+                    <option value="12">Dezembro</option>
+                </select>
             </div>
         </div>
+         <div class="form-row d-flex justify-content-between mt-4  mb-2" >
+            <span class="badge badge-danger p-1"><strong> Contas a pagar : R$ {{formatarMoeda(totalizarpagar)}}</strong> </span>
+            <span class="badge badge-success p-1"><strong> Contas a receber : R$ {{formatarMoeda(totalizarreceber)}}</strong> </span>
+        </div>
+
+        <div class=" border border-black">
+            <div class="form-row d-flex justify-content-between m-2 ">
+                <select name="" id="" class="form-control form-control-sm col-md-1">
+                    <option value=""></option>
+                    <option value="">10</option>
+                    <option value="">50</option>
+                    <option value="">100</option>
+                </select>
+                <input class="form-control form-control-sm col-md-2" type="search" name="nome" placeholder="Buscar" v-model="buscar">
+            </div>
+            <div class="form-row m-2" >
+                    <div class="table table-responsive">
+                        <table class="table table-hover table-sm">
+                            <thead class="text-center" >
+                                <tr>
+                                    <th scope="col" class="col-form-label col-form-label-sm">Descrição</th>
+                                    <th scope="col" class="col-form-label col-form-label-sm">Valor a pagar</th>
+                                    <th scope="col" class="col-form-label col-form-label-sm">Data do vencimento</th>
+                                    <th scope="col" class="col-form-label col-form-label-sm">Usuário</th>
+                                    <th scope="col" class="col-form-label col-form-label-sm">Movimentações</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                <tr v-for="(provider,k) in movimentacoes" :key="k"  v-show="provider.tipo_movimentacao_id == 2">
+                                    <td>{{provider.descricao}}</td>
+                                    <td>{{provider.valor | money}}</td>
+                                    <td>{{provider.dt_vencimento | momentDate}}</td>
+                                    <td>{{provider.user.name}}</td>
+                                    <td><span class="text-danger"><b>{{provider.tipo_movimentacao.descricao}}</b> </span></td>
+                                </tr>
+                                <tr v-for="(provider,k) in movimentacoes" :key="'y'+ k" v-show="provider.tipo_movimentacao_id == 1">
+                                    <td>{{provider.descricao}}</td>
+                                    <td>{{provider.valor | money}}</td>
+                                    <td>{{provider.dt_vencimento | momentDate}}</td>
+                                    <td>{{provider.user.name}}</td>
+                                    <td><span class="text-success"><b>{{provider.tipo_movimentacao.descricao}}</b> </span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        <div>
+            <span class="text-black mt-3"><b> Saldo :</b> R$ {{formatarMoeda(saldo)}}</span>
+        </div>
     </div>
-        <div class="d-flex justify-content-around mt-4" v-if="!filtro.tipo_movimentacao_id">
-            <span class="btn btn-danger"><strong>Total Contas a pagar : {{totalizarpagar | money}}</strong> </span>
-            <span class="btn btn-success"><strong>Total Contas a receber : {{totalizarreceber | money}}</strong> </span>
-            
-        </div>
-        <div v-if="filtro.tipo_movimentacao_id == 1">
-            <span class="btn btn-success"><strong>Total Contas a receber : {{totalizarreceber | money}}</strong> </span>
-        </div>
-        <div v-if="filtro.tipo_movimentacao_id == 2">
-            <span class="btn btn-danger"><strong>Total Contas a pagar : {{totalizarpagar | money}}</strong> </span>
-        </div>
-   <div class="table table-responsive">
-        <table class="table table-sm">
-            <thead class="text-center">
-                <tr>
-                    <th scope="col">Descrição</th>
-                    <th scope="col">Valor a pagar</th>
-                    <th scope="col">Data do vencimento</th>
-                    <th scope="col">Usuário</th>
-                    <th scope="col">Movimentações</th>
-                </tr>
-            </thead>
-            <tbody class="text-center">
-                <tr v-for="(provider,k) in movimentacoes" :key="k"  v-show="provider.tipo_movimentacao_id == 2">
-                    <td>{{provider.descricao}}</td>
-                    <td>{{provider.valor | money}}</td>
-                    <td>{{provider.dt_vencimento | momentDate}}</td>
-                    <td>{{provider.user.name}}</td>
-                    <td><span class="btn btn-sm btn-danger">{{provider.tipo_movimentacao.descricao}}</span></td>
-                </tr>
-                <tr v-for="(provider,k) in movimentacoes" :key="'y'+ k" v-show="provider.tipo_movimentacao_id == 1">
-                    <td>{{provider.descricao}}</td>
-                    <td>{{provider.valor | money}}</td>
-                    <td>{{provider.dt_vencimento | momentDate}}</td>
-                    <td>{{provider.user.name}}</td>
-                    <td><span class="btn btn-sm btn-success">{{provider.tipo_movimentacao.descricao}}</span></td>
-                </tr>
-            </tbody>
-        </table>
-   </div>
-</div>
 </template>
 
 <script>
@@ -77,7 +101,10 @@ export default {
               
             },
             filtro:{
-                tipo_movimentacao_id:null
+                tipo_movimentacao_id:0,
+                de:null,
+                ate:null,
+                mes:0
             },
             movimentacoes:[],
             movimentos:[],
@@ -90,17 +117,42 @@ export default {
     },
     created(){
         this.$store.dispatch('Provider/getProvider')
-        this.filter()
+        this.index()
         this.getTipo()
     },
     
     methods:{
         ...mapActions('Provider',['getProvider']),
-        
+        formatarMoeda(moeda){
+            moeda = parseFloat(moeda);
+            moeda = moeda.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+,)/g, "$1.");
+            return moeda;
+        },
         filter(){
             axios.post(`${API_BASE_URL}/filtromovi`,this.filtro).then(res => {
                 this.movimentacoes = res.data
             
+                this.movimentacoespagar = res.data
+                let produtosEletrodomestico = this.movimentacoespagar.filter(produto => produto.tipo_movimentacao_id == 2);
+                
+                let teste = produtosEletrodomestico.map(produto => { 
+                    return produto.valor
+                });
+                this.movimentacoespagar = teste
+
+                this.movimentacoesreceber = res.data
+                let produtosEletrodomesticoteste = this.movimentacoesreceber.filter(produto => produto.tipo_movimentacao_id == 1);
+                
+                let teste1 = produtosEletrodomesticoteste.map(produto => { 
+                    return produto.valor
+                });
+                this.movimentacoesreceber = teste1
+            })
+        },
+        index(){
+            axios.get(`${API_BASE_URL}/movimentacao/lista`).then(res => {
+                this.movimentacoes = res.data
+                
                 this.movimentacoespagar = res.data
                 let produtosEletrodomestico = this.movimentacoespagar.filter(produto => produto.tipo_movimentacao_id == 2);
                 
@@ -135,11 +187,14 @@ export default {
                 return this.total = parseFloat(acumulador) + parseFloat(valor)
             },0) 
         },
+        saldo(){
+            return parseFloat(this.movimentacoespagar) - parseFloat(this.movimentacoesreceber) || parseFloat(0)
+        }
     },
      filters:{
         money(value){
             if(value){
-                return value = parseFloat(value).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}) 
+                return value ? parseFloat(value).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}) : parseInt(value).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})
             }
         },
         momentDate(date){

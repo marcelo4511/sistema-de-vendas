@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Client;
 use App\Movimentacao;
 use App\TipoMovimentacao;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class MovimentacaoController extends Controller
@@ -20,7 +21,7 @@ class MovimentacaoController extends Controller
                                 ->with(['tipo_movimentacao'=> function($query) {
                                     $query->orderBy('id','desc');
                                 }])
-                               
+                                ->whereRaw('Date(dt_vencimento) = CURDATE()')
                                 ->get();
         return response()->json($clients);
     }
@@ -34,9 +35,20 @@ class MovimentacaoController extends Controller
                                 ->with(['tipo_movimentacao'=> function($query) {
                                     $query->orderBy('id','desc');
                                 }])
+                                //->whereDay ('dt_vencimento', '=', date('d'))
                                 ->when($request['tipo_movimentacao_id'], function ($query) use ($request) {
                                     $query->whereTipoMovimentacaoId($request['tipo_movimentacao_id']);
                                 })
+                                ->when($request->de, function ($query) use ($request) {
+                                    $query->whereDate('dt_vencimento', '>=', $request->de);
+                                })
+                                ->when($request->ate, function ($query) use ($request) {
+                                    $query->whereDate('dt_vencimento', '<=', $request->ate);
+                                })
+                                ->when($request->mes, function ($query) use ($request) {
+                                    $query->whereMonth('dt_vencimento',$request->mes);
+                                })
+                                ->orderBy('created_at','asc')
                                 ->get();
         return response()->json($clients);
     }

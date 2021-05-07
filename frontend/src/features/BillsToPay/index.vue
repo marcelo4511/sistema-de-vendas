@@ -38,6 +38,9 @@
                         <button  class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>  
                         <button  class="btn btn-sm btn-success m-1" @click="aprovar(provider)"><i class="fa fa-check "></i></button>
                     </div>
+                    <div v-show="provider.situacao_id == 2">
+                        <span class="text-success"><b>Baixado</b> </span>
+                    </div>
                 </td>
                 </tr>
             </tbody>
