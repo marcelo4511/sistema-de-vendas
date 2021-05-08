@@ -42,8 +42,8 @@ export default {
 
   #app {
     display:grid;
-    grid-template-rows: 60px 1fr 30px;
-		grid-template-columns: 300px 1fr;
+    grid-template-rows: 50px 1fr 30px;
+		grid-template-columns: 200px 1fr;
     height: 100vh;
     width: 100vw;
     grid-template-areas: 

@@ -35,7 +35,6 @@ class MovimentacaoController extends Controller
                                 ->with(['tipo_movimentacao'=> function($query) {
                                     $query->orderBy('id','desc');
                                 }])
-                                //->whereDay ('dt_vencimento', '=', date('d'))
                                 ->when($request['tipo_movimentacao_id'], function ($query) use ($request) {
                                     $query->whereTipoMovimentacaoId($request['tipo_movimentacao_id']);
                                 })

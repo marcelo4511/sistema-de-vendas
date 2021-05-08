@@ -27,76 +27,74 @@
           </div>
         </div>
       
+      <div class=" border border-black">
         <div class="form-row">   
-          <div class="card">
-            <div class="card-header pl-3 pb-0 m-0">
-              <span><strong>Produtos</strong></span>
-            </div>
-            <div class="card-body">
+          <div class="card-body">
             <div class="table table-sm"> 
-              <div class="text-center">
-                <div class="form-row" v-for="(detalheVenda,key) of details_sales" :key="key">
-                    <div class="col-2">
-                      <label class="col-form-label col-form-label-sm "><strong>Produto</strong></label>
-                        <select class="form-control form-control-sm"  :name="`product_id_${key}`" data-vv-as="Produto" v-validate="'required'" :class="['form-control form-control-sm form-control form-control-sm-sm', {'is-invalid': errors.has(`product_id_${key}`)},`${errorsRequest[`details_sales.${key}.product_id`] ? `is-invalid` : ``}`]"  :disabled="disabled" required v-model="detalheVenda.product_id" @change="getProducts(detalheVenda.product_id,key), calculateEstoque(detalheVenda)">
-                          <option v-for="(product) in products" :key="product.id"  v-show="product.status == 'Ativo'" :value="product.id">{{product.name}}</option>
-                        </select>
-                        <span v-show="errors.has(`product_id_${key}`)" class="invalid-feedback">{{ errors.first(`product_id_${key}`) }}</span>
-                        <span class="invalid-feedback">
-                          {{ `${errorsRequest[`details_sales.${key}.product_id`] ? errorsRequest[`details_sales.${key}.product_id`] : `` }` }}<br>
-                        </span> 
+              <div class="form-row d-flex-justify-content-around" style="height:20px;">
+                <span class="col-10"><b>Produtos</b> </span>
+                <button type='button' class="btn btn-sm btn-info mr-1" @click="adiciona">
+                  <i class="fas fa-plus"></i>
+                </button>
+                <button  class="btn btn-sm btn-danger" @click="remova" ><i class="fa fa-times"></i></button>
+              </div>
+              <hr>
+            <div class="text-center">
+              <div class="form-row" v-for="(detalheVenda,key) of details_sales" :key="key">
+                  <div class="col-2">
+                    <label class="col-form-label col-form-label-sm "><strong>Produto</strong></label>
+                      <select class="form-control form-control-sm"  :name="`product_id_${key}`" data-vv-as="Produto" v-validate="'required'" :class="['form-control form-control-sm form-control form-control-sm-sm', {'is-invalid': errors.has(`product_id_${key}`)},`${errorsRequest[`details_sales.${key}.product_id`] ? `is-invalid` : ``}`]"  :disabled="disabled" required v-model="detalheVenda.product_id" @change="getProducts(detalheVenda.product_id,key), calculateEstoque(detalheVenda)">
+                        <option v-for="(product) in products" :key="product.id"  v-show="product.status == 'Ativo'" :value="product.id">{{product.name}}</option>
+                      </select>
+                      <span v-show="errors.has(`product_id_${key}`)" class="invalid-feedback">{{ errors.first(`product_id_${key}`) }}</span>
+                      <span class="invalid-feedback">
+                        {{ `${errorsRequest[`details_sales.${key}.product_id`] ? errorsRequest[`details_sales.${key}.product_id`] : `` }` }}<br>
+                      </span> 
+                  </div>
+                  <div class="col-2">
+                    <label class="col-form-label col-form-label-sm"><strong>Preço</strong></label>
+                    <money v-model="detalheVenda.price" :name="`price_${key}`" data-vv-as="Preço" v-validate="'min_value:0,01'" :class="['form-control form-control-sm', {'is-invalid': errors.has(`price_${key}`)},`${errorsRequest[`details_sales.${key}.price`] ? `is-invalid` : ``}`]" :value="detalheVenda.price" @change="getProducts(detalheVenda.price,key),calculateLineTotal(detalheVenda)"  v-bind="money" class="form-control form-control-sm" readonly></money>
+                    <span v-show="errors.has(`price_${key}`)" class="invalid-feedback">{{ errors.first(`price_${key}`) }}</span>
+                      <span class="invalid-feedback">
+                        {{ `${errorsRequest[`details_sales.${key}.price`] ? errorsRequest[`details_sales.${key}.price`] : `` }` }}<br>
+                      </span> 
+                  </div>
+                  <div class="col-2">
+                    <label class="col-form-label col-form-label-sm"><strong>Estoque</strong></label>
+                    <input class="form-control form-control-sm" type="number" @change="getProducts(detalheVenda.estoque, key)" v-model="detalheVenda.estoque" required readonly>
+                  </div>
+                  <div class="col-2">
+                    <label class="col-form-label col-form-label-sm"><strong>Quantidade</strong></label>
+                    <input  :disabled="loading" class="form-control form-control-sm"  :name="`quantidade${key}`" type="number" data-vv-as="Quantidade" v-validate="'required'" :class="['form-control form-control-sm form-control form-control-sm-sm', {'is-invalid': errors.has(`quantidade${key}`)},`${errorsRequest[`details_sales.${key}.quantidade`] ? `is-invalid` : ``}`]" v-model="detalheVenda.quantidade" @change="calculateLineTotal(detalheVenda)" @input="calculateEstoque(detalheVenda)">
+                    <span v-show="errors.has(`quantidade${key}`)" class="invalid-feedback">{{ errors.first(`quantidade${key}`) }}</span>
+                      <span class="invalid-feedback">
+                        {{ `${errorsRequest[`details_sales.${key}.quantidade`] ? errorsRequest[`details_sales.${key}.quantidade`] : `` }` }}<br>
+                      </span> 
+                  </div>
+                  <div>
+                    <label class="col-form-label col-form-label-sm"><strong style="visibility: hidden;">tes </strong></label>
+                    <div class="text-center">
+                      <span  @click="inc(detalheVenda)"><b>+</b></span><br>
+                      <span @click="dec(detalheVenda)"><b>-</b></span>
                     </div>
-                    <div class="col-2">
-                      <label class="col-form-label col-form-label-sm"><strong>Preço</strong></label>
-                      <money v-model="detalheVenda.price" :name="`price_${key}`" data-vv-as="Preço" v-validate="'min_value:0,01'" :class="['form-control form-control-sm', {'is-invalid': errors.has(`price_${key}`)},`${errorsRequest[`details_sales.${key}.price`] ? `is-invalid` : ``}`]" :value="detalheVenda.price" @change="getProducts(detalheVenda.price,key),calculateLineTotal(detalheVenda)"  v-bind="money" class="form-control form-control-sm" readonly></money>
-                      <span v-show="errors.has(`price_${key}`)" class="invalid-feedback">{{ errors.first(`price_${key}`) }}</span>
-                        <span class="invalid-feedback">
-                          {{ `${errorsRequest[`details_sales.${key}.price`] ? errorsRequest[`details_sales.${key}.price`] : `` }` }}<br>
-                        </span> 
-                    </div>
-                    <div class="col-2">
-                      <label class="col-form-label col-form-label-sm"><strong>Estoque</strong></label>
-                      <input class="form-control form-control-sm" type="number" @change="getProducts(detalheVenda.estoque, key)" v-model="detalheVenda.estoque" required readonly>
-                    </div>
-                    <div class="col-2">
-                      <label class="col-form-label col-form-label-sm"><strong>Quantidade</strong></label>
-                      <input  :disabled="loading" class="form-control form-control-sm"  :name="`quantidade${key}`" type="number" data-vv-as="Quantidade" v-validate="'required'" :class="['form-control form-control-sm form-control form-control-sm-sm', {'is-invalid': errors.has(`quantidade${key}`)},`${errorsRequest[`details_sales.${key}.quantidade`] ? `is-invalid` : ``}`]" v-model="detalheVenda.quantidade" @change="calculateLineTotal(detalheVenda)" @input="calculateEstoque(detalheVenda)">
-                      <span v-show="errors.has(`quantidade${key}`)" class="invalid-feedback">{{ errors.first(`quantidade${key}`) }}</span>
-                        <span class="invalid-feedback">
-                          {{ `${errorsRequest[`details_sales.${key}.quantidade`] ? errorsRequest[`details_sales.${key}.quantidade`] : `` }` }}<br>
-                        </span> 
-                    </div>
-                    <div>
-                      <label class="col-form-label col-form-label-sm"><strong style="visibility: hidden;">tes </strong></label>
-                      <div class="text-center">
-                        <span  @click="inc(detalheVenda)"><b>+</b></span><br>
-                        <span @click="dec(detalheVenda)"><b>-</b></span>
-                      </div>
-                    </div>
-                    <div class="col-2">
-                      <label class="col-form-label col-form-label-sm"><strong>Subtotal</strong></label>
-                      <money readonly disabled :value="detalheVenda.subtotal" v-bind="money" name="totalPrejuizo" class="form-control form-control-sm"></money>
-                    </div>
-                    <div class="col-1">
-                      <label class="col-form-label col-form-label-sm"><b> Ação</b></label>
-                      <button  class="form-control form-control-sm btn btn-sm btn-danger col-md-auto" @click="remova(detalheVenda)" ><i class="fa fa-times"></i></button>
-                    </div>
-                </div>
+                  </div>
+                  <div class="col-3">
+                    <label class="col-form-label col-form-label-sm"><strong>Subtotal</strong></label>
+                    <money readonly disabled :value="detalheVenda.subtotal" v-bind="money" name="totalPrejuizo" class="form-control form-control-sm"></money>
+                  </div>
               </div>
             </div>
+          </div>
          
          <div class="form-row mb-2 ml-2">
             <div>
-              <span scope="col"><money readonly disabled :value="totalizar" v-bind="money" name="totalPrejuizo" class="form-control form-control-sm ml-1" style="background-color:#993399;color:#fff;"></money></span>
+              <span class="text-black p-1"><strong> Total da Venda : R$ {{formatarMoeda(totalizar)}}</strong> </span>
             </div>
-            <button type='button' style="float-right;" class="btn btn-sm btn-info ml-3" @click="adiciona">
-              <i class="fas fa-plus-circle mr-1"></i>Adicione
-            </button>
           </div>
         </div>
       </div>
       <br>
-
+      <div class="form-row">
         <div class="card m-2" v-if="total >  0">
           <div class="card-header pl-3 pb-0 m-0">
             <span><strong>Pagamento</strong></span>
@@ -148,7 +146,8 @@
           </div>
         </div>
       </div>
-    <button type="submit" @click="onSubmit" class="btn btn-sm btn-success">Cadastrar</button>
+      </div>
+    <button type="submit" @click="onSubmit" class="btn btn-sm btn-success mt-2">Cadastrar</button>
      <button class="btn btn-sm btn-danger" style="float:right;" v-show="this.details_sales.length > 2" >Baixar relatório da venda<i class="fa fa-print"></i></button>
   </div>
 </template>
@@ -214,6 +213,11 @@ export default {
       })
     }
   },
+   formatarMoeda(moeda){
+        moeda = parseFloat(moeda);
+        moeda = moeda.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+,)/g, "$1.");
+        return moeda;
+    },
   onSubmit(){
     this.submitted = true;
     this.$validator.validate().then(res=>{

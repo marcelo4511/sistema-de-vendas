@@ -22,6 +22,8 @@ import ProviderAtualiza from '../features/Provider/edit'
 
 import BillsToPay from '../features/BillsToPay/index'
 import BillsToPayCreate from '../features/BillsToPay/create'
+import Delay from '../features/BillsToPay/delay'
+import Today from '../features/BillsToPay/today'
 
 import BillsToReceive from '../features/BillsToReceive/index'
 import BillsToReceiveCreate from '../features/BillsToReceive/create'
@@ -116,6 +118,20 @@ const routes = [
     name:'billstopaystore',
     path:'/billstopaystore',                                                                                                                                                                                                                       
     component:BillsToPayCreate,
+    meta: {
+        auth: true
+    },
+},{
+    name:'delay',
+    path:'/delay',                                                                                                                                                                                                                       
+    component:Delay,
+    meta: {
+        auth: true
+    },
+},{
+    name:'today',
+    path:'/today',                                                                                                                                                                                                                       
+    component:Today,
     meta: {
         auth: true
     },

@@ -37,10 +37,15 @@ use Illuminate\Support\Facades\Route;
             Route::get('/search','UserController@search');
             
             Route::resource('fornecedores','FornecedorController');
+
             Route::resource('billstopay','BillsToPayController');
             Route::post('billstopay/aprovar/{id}','BillsToPayController@aprovacao');
+            Route::get('delay','BillsToPayController@delay');
+            Route::get('today','BillsToPayController@today');
+
             Route::resource('billstoreceive','BillsToReceiveController');
             Route::post('billstoreceive/aprovar/{id}','BillsToReceiveController@aprovacao');
+
             Route::post('movimentacao','MovimentacaoController@store');
             Route::get('tipo','MovimentacaoController@tipo');
             Route::post('filtromovi','MovimentacaoController@filter');

@@ -24,6 +24,35 @@ class BillsToPayController extends Controller
         return response()->json($clients);
     }
 
+    public function today() 
+    {
+        $clients = BillsToPay::select('id','dt_vencimento','comprovante','valor','descricao','situacao_id','user_id')
+                                    ->with(['user'=> function($query) {
+                                        $query->orderBy('id','asc');
+                                    }])
+                                    ->with(['situacao'=> function($query) {
+                                        $query->orderBy('id','desc');
+                                    }])
+                                    ->whereRaw('Date(dt_vencimento) = CURDATE()')
+                                    ->get();
+        return response()->json($clients);
+    }
+
+    public function delay() 
+    {
+        $clients = BillsToPay::select('id','dt_vencimento','comprovante','valor','descricao','situacao_id','user_id')
+                                    ->with(['user'=> function($query) {
+                                        $query->orderBy('id','asc');
+                                    }])
+                                    ->with(['situacao'=> function($query) {
+                                        //$query->where('id','=', 1);
+                                        $query->orderBy('id','desc');
+                                    }])
+                                    ->whereRaw('Date(dt_vencimento) < CURDATE()')
+                                    ->get();
+        return response()->json($clients);
+    }
+
     public function show($id) 
     {
         $client = BillsToPay::find($id);

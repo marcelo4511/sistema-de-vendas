@@ -8,28 +8,41 @@
             </ol>
         </nav>
         <div class="row">
-            <div class="col-md-12 d-flex justify-content-beetween mb-3">
-                <select name="tipo_movimentacao_id" id="tipo_movimentacao_id" class="form-control form-control-sm col-6 col-md-5 mr-1"  v-model="filtro.tipo_movimentacao_id" @change="filter">
-                    <option selected value="0">Todos</option>
-                    <option v-for="tipo in tipos" :value="tipo.id" :key="tipo.id">{{tipo.descricao}}</option>
-                </select>
-                <input class="form-control form-control-sm col-md-2 mr-1" type="date" v-model="filtro.de" @change="filter">
-                <input class="form-control form-control-sm col-md-2 mr-1" type="date" v-model="filtro.ate" @change="filter">
-                <select name="tipo_movimentacao_id" id="tipo_movimentacao_id" class="form-control form-control-sm col-6 col-md-3 mr-1"  v-model="filtro.mes" @change="filter">
-                    <option selected value="0">Todos</option>
-                    <option value="1">Janeiro</option>
-                    <option value="2">Fev</option>
-                    <option value="3">Março</option>
-                    <option value="4">Abril</option>
-                    <option value="5">Maio</option>
-                    <option value="6">Junho</option>
-                    <option value="7">Julho</option>
-                    <option value="8">Agosto</option>
-                    <option value="9">Setembro</option>
-                    <option value="10">Outubro</option>
-                    <option value="11">Novembro</option>
-                    <option value="12">Dezembro</option>
-                </select>
+            <div class="col-12 d-flex justify-content-beetween mb-2">
+                <div class="form-group col-6 col-md-5">
+                    <label for="">Movimentação</label>
+                    <select name="tipo_movimentacao_id" id="tipo_movimentacao_id" class="form-control form-control-sm"  v-model="filtro.tipo_movimentacao_id" @change="filter">
+                        <option selected value="0">Todos</option>
+                        <option v-for="tipo in tipos" :value="tipo.id" :key="tipo.id">{{tipo.descricao}}</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-2">
+                    <label class="col-form-label col-form-label-sm">De</label>
+                    <input class="form-control form-control-sm" type="date" v-model="filtro.de" @change="filter">
+                </div>
+                <div class="form-group col-md-2">
+                    <label class="col-form-label col-form-label-sm">ate</label>
+                    <input class="form-control form-control-sm" type="date" v-model="filtro.ate" @change="filter">
+                </div>
+
+                <div class="form-group col-6 col-md-3">
+                    <label class="col-form-label col-form-label-sm">Mês</label>
+                    <select name="tipo_movimentacao_id" id="tipo_movimentacao_id" class="form-control form-control-sm"  v-model="filtro.mes" @change="filter">
+                        <option selected value="0">Todos</option>
+                        <option value="1">Janeiro</option>
+                        <option value="2">Fev</option>
+                        <option value="3">Março</option>
+                        <option value="4">Abril</option>
+                        <option value="5">Maio</option>
+                        <option value="6">Junho</option>
+                        <option value="7">Julho</option>
+                        <option value="8">Agosto</option>
+                        <option value="9">Setembro</option>
+                        <option value="10">Outubro</option>
+                        <option value="11">Novembro</option>
+                        <option value="12">Dezembro</option>
+                    </select>
+                </div>
             </div>
         </div>
          <div class="form-row d-flex justify-content-between mt-4  mb-2" >
@@ -76,6 +89,9 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <div v-show="movimentacoes == 0">
+                            <div style="text-align:center;"><span class="col-form-label col-form-label-sm">Nenhum registro encontrado.</span> </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -188,7 +204,7 @@ export default {
             },0) 
         },
         saldo(){
-            return parseFloat(this.movimentacoespagar) - parseFloat(this.movimentacoesreceber) || parseFloat(0)
+            return parseFloat(this.movimentacoesreceber) - parseFloat(this.movimentacoespagar) || 0
         }
     },
      filters:{

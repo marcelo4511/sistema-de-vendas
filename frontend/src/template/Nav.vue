@@ -5,7 +5,7 @@
         
       <div v-if="u.type_user_id == 1">
        <router-link tag="span" to="/home">
-        <li><i class="fa fa-home m-3"></i> Home</li>
+        <li><i style="color:white;" class="fa fa-home m-2"></i> Home</li>
        </router-link>
        <div class="dropdown">
         <span style="color:white;" class="drops btn btn-write dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -32,9 +32,35 @@
         </div>
       </div>
 
-       <div class="dropdown">
+      <div class="dropdown">
         <span style="color:white;" class="drops btn btn-write dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <span style="color:white;"><i class="fa fa-dollar-sign m-2" aria-hidden="true"></i> Financeiro</span>
+        </span>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <div id="teste">
+            <router-link tag="span" to="/delay">
+              <li style="color:black;"><i class="fa fa-money-check-alt m-3" aria-hidden="true"></i>Pagar Vencidas</li>
+            </router-link>
+            <router-link tag="span" to="/today">
+              <li style="color:black;"><i class="fa fa-money-check-alt m-3" aria-hidden="true"></i>Pagar Hoje</li>
+            </router-link>
+            <hr>
+            <router-link tag="span" to="/billstopay">
+              <li style="color:black;"><i class="fa fa-money-check-alt m-3" aria-hidden="true"></i> Contas a pagar</li>
+            </router-link>
+            <router-link tag="span" to="/billstoreceive">
+              <li style="color:black;"><i class="fa fa-credit-card m-3" aria-hidden="true"></i> Contas a receber</li>
+            </router-link>
+            <router-link tag="span" to="/movimentacao">
+              <li style="color:black;"><i class="fa fa-chart-line m-3"></i> Fluxo de caixa</li>
+            </router-link> 
+          </div>
+        </div>
+      </div>
+
+      <div class="dropdown">
+        <span style="color:white;" class="drops btn btn-write dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <span style="color:white;"><i class="fa fa-file-excel m-2" aria-hidden="true"></i> Relatórios</span>
         </span>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <div id="teste">
@@ -51,7 +77,10 @@
         </div>
       </div>
        <router-link tag="span" to="/sales">
-         <li><i class="fa fa-shopping-cart m-3"></i>Vendas</li>
+         <li><i class="fa fa-shopping-cart m-2"></i>Vendas</li>
+       </router-link>
+       <router-link tag="span" to="/sales">
+         <li><i class="fa fa-shopping-basket m-2"></i>Compras</li>
        </router-link>
     </div>
 
@@ -118,10 +147,10 @@ export default {
     align-items: center;
     justify-content: flex-start;
     text-align: center;
-    font-size: 25px;
-    height: 80px;
+    font-size: 15px;
+    height: 50px;
     font:100;
-    padding: 10px;
+    padding: 5px;
     color:blanchedalmond;
     text-decoration: none;
     cursor: pointer;
@@ -139,16 +168,16 @@ export default {
     align-items: center;
     justify-content: flex-start;
     text-align: center;
-    font-size: 25px;
-    height: 80px;
+    font-size: 15px;
+    height: 50px;
     padding: 10px;
-    color:blanchedalmond;
+    color:white;
     text-decoration: none;
     cursor: pointer;
   }
   aside ul li:hover{
     background-color: blue;
-    color: blanchedalmond;
+    color: #fff;
     transition: 3ms;
     text-decoration: none;
   }
