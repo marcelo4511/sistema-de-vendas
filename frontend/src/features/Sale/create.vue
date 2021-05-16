@@ -13,11 +13,12 @@
           <label for="">Clientes</label>
             <select class="form-control form-control-sm" required v-model="client_id" name="client_id" v-validate = "'required'" data-vv-as="Cliente" :class="['form-control form-control-sm form-control form-control-sm-sm', {'is-invalid': errors.has('client_id')},`${errorsRequest.client_id  ? `is-invalid` : ``}`]">
               <option selected disabled value="">selecione</option>
-              <option v-for="(client,k) in clients" v-show="client.status == 'Ativo'" :key="k"  :value="client.id">{{client.name}}</option>
+              <option v-for="(client,indexCliente) in clients" v-show="client.status == 'Ativo'" :key="indexCliente"  :value="client.id">{{client.name}}</option>
             </select>
           <div v-show="submitted && errors.has('client_id')" class="invalid-feedback">{{ errors.first('client_id') }}</div>
           <div class="text-danger" v-if="errorsRequest.client_id">{{ errorsRequest.client_id[0] }}</div>
         </div>
+        
           
           <div class="form-group col-md-6">
             <label for="">Data da Venda</label>
@@ -28,17 +29,19 @@
         </div>
       
       <div class=" border border-black">
-        <div class="form-row">   
-          <div class="card-body">
-            <div class="table table-sm"> 
-              <div class="form-row d-flex-justify-content-around" style="height:20px;">
-                <span class="col-10"><b>Produtos</b> </span>
+        <div class="form-row d-flex-justify-content-around mt-2 ml-2" style="height:18px;" >
+                <span class="col-10 "><b>Produtos</b> </span>
                 <button type='button' class="btn btn-sm btn-info mr-1" @click="adiciona">
                   <i class="fas fa-plus"></i>
                 </button>
                 <button  class="btn btn-sm btn-danger" @click="remova" ><i class="fa fa-times"></i></button>
               </div>
               <hr>
+        <div class="form-row">   
+          <div class="card-body">
+            
+            <div class="table table-sm" > 
+              
             <div class="text-center">
               <div class="form-row" v-for="(detalheVenda,key) of details_sales" :key="key">
                   <div class="col-2">
@@ -53,7 +56,7 @@
                   </div>
                   <div class="col-2">
                     <label class="col-form-label col-form-label-sm"><strong>Preço</strong></label>
-                    <money v-model="detalheVenda.price" :name="`price_${key}`" data-vv-as="Preço" v-validate="'min_value:0,01'" :class="['form-control form-control-sm', {'is-invalid': errors.has(`price_${key}`)},`${errorsRequest[`details_sales.${key}.price`] ? `is-invalid` : ``}`]" :value="detalheVenda.price" @change="getProducts(detalheVenda.price,key),calculateLineTotal(detalheVenda)"  v-bind="money" class="form-control form-control-sm" readonly></money>
+                    <money v-model="detalheVenda.price" :name="`price_${key}`" data-vv-as="Preço" v-validate="'min_value:0.01'" :class="['form-control form-control-sm', {'is-invalid': errors.has(`price_${key}`)},`${errorsRequest[`details_sales.${key}.price`] ? `is-invalid` : ``}`]" :value="detalheVenda.price" @change="getProducts(detalheVenda.price,key),calculateLineTotal(detalheVenda)"  v-bind="money" class="form-control form-control-sm" readonly></money>
                     <span v-show="errors.has(`price_${key}`)" class="invalid-feedback">{{ errors.first(`price_${key}`) }}</span>
                       <span class="invalid-feedback">
                         {{ `${errorsRequest[`details_sales.${key}.price`] ? errorsRequest[`details_sales.${key}.price`] : `` }` }}<br>
@@ -93,12 +96,16 @@
           </div>
         </div>
       </div>
+         </div>
       <br>
-      <div class="form-row">
-        <div class="card m-2" v-if="total >  0">
-          <div class="card-header pl-3 pb-0 m-0">
+
+      <div class=" border border-black" v-if="total >  0">
+         <div class="border border-black p-2" style="background-color:GhostWhite	">
             <span><strong>Pagamento</strong></span>
           </div>
+      <div class="form-row">
+        <div >
+         
           <div class="card-body m-0">
             <div class="form-row">
               <div class="form-group m-2">
@@ -228,8 +235,11 @@ export default {
             total:this.total,
             details_sales:this.details_sales,
             formapagamento:this.formapagamento
+            
         }).then((res) => {
           let usuario = res.data.resultado.user_id
+          let indexCliente = this.client_id - 1
+          this.submitContaReceber(indexCliente)
           this.$noty.success("Cadastrado com sucesso!!")
           if(usuario === 1) {
             return this.$router.push('/sales')
@@ -237,11 +247,12 @@ export default {
           return  this.$router.push('/vendas')
           }
         
-        }).catch(error => {
-            if (error.response.status === 422) {
-              this.errorsRequest = error.response.data.errors;
-            }
-          });
+        })
+        .catch(error => {
+       if (error.response.status === 422) {
+          this.errorsRequest = error.response.data.errors;
+        }
+       });
         }else {
     //         
         }
@@ -300,15 +311,24 @@ export default {
     valorCreditoFunction(parcelas){
       this.formapagamento.parcelas = parcelas
     },
+    submitContaReceber(indexCliente){
+      axios.post(`http://localhost:8000/api/billstoreceive`,{
+        descricao:this.clients[indexCliente].name,
+        valor:this.total,
+        situacao_id:1,
+      }) .then(() => {
+
+      })
+    }
   },
   computed:{
     ...mapState('Client',{clients:state => state.clients}),
     ...mapState('Product',{products:state => state.products}),
 
     totalizar() {
-        return  this.details_sales.reduce((total,detalheVenda) => {
-            return this.total =  parseFloat(total) + parseFloat(detalheVenda.subtotal) || 0
-        },0)
+      return  this.details_sales.reduce((total,detalheVenda) => {
+          return this.total =  parseFloat(total) + parseFloat(detalheVenda.subtotal) || 0
+      },0)
     },
     parcelamento(){
       return this.total / this.formapagamento.parcelas || 0

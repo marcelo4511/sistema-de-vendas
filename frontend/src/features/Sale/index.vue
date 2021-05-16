@@ -7,22 +7,38 @@
                 <li class="breadcrumb-item active" aria-current="page">Vendas</li>
             </ol>
         </nav>
-        <router-link to="/sales/create" tag="span"><button class="btn btn-sm btn-primary">Cadastrar</button></router-link>
-     <input class="form-control form-control-sm col-md-3 mb-3" type="search" style="float: right;" name="nome" placeholder="Buscar" v-model="search">
-  
-  <table class="table table-sm">
-      <thead class="text-center">
-          <tr>
-              <th scope="col">Nome do Cliente</th>
-              <th scope="col">Data da venda</th>
-              <th scope="col">Total da venda</th>
-              <th scope="col">Situação</th>
-              <th scope="col">Tipo Usuario</th>
-              <th scope="col">Ações</th>
-          </tr>
-      </thead>
-      <tbody class="text-center">
-          <tr v-for="(sale,k) in sales" :key="k" >
+        <div class="form-row mb-4">
+            <input type="text" class="form-control form-control-sm col-3 mr-1">
+            <input type="text" class="form-control form-control-sm col-3 mr-1">
+            <button class="btn btn-sm btn-success  mb-2 mr-1">Limpar</button>
+            <router-link to="/sales/create" tag="span"><button class="btn btn-sm btn-primary mb-2"><i class="fa fa-plus"></i> Cadastrar</button></router-link>
+        </div>
+    
+    <div class=" border border-black" >
+        <div class="col-12 d-flex-justify-content-between m-2">
+            <select name="" id="" class="form-control form-control-sm col-md-1" style="float:left;">
+                <option value=""></option>
+                <option value="">10</option>
+                <option value="">50</option>
+                <option value="">100</option>
+            </select>
+            <input class="form-control form-control-sm col-md-2" style="float:right;" type="search" name="nome" placeholder="Buscar" v-model="search">
+        </div>
+    <div class="table-responsive">
+
+    <table class="table table-sm">
+        <thead class="text-center">
+            <tr>
+                <th scope="col" class="col-form-label col-form-label-sm">Nome do Cliente</th>
+                <th scope="col" class="col-form-label col-form-label-sm">Data da venda</th>
+                <th scope="col" class="col-form-label col-form-label-sm">Total da venda</th>
+                <th scope="col" class="col-form-label col-form-label-sm">Situação</th>
+                <th scope="col" class="col-form-label col-form-label-sm">Tipo Usuario</th>
+                <th scope="col" class="col-form-label col-form-label-sm">Ações</th>
+            </tr>
+        </thead>
+        <tbody class="text-center">
+            <tr v-for="(sale,k) in sales" :key="k" >
                 <td>{{sale.clients && sale.clients.name ? sale.clients.name : 'NI'}}</td>
                 <td>{{sale.dataVenda | formatDate}}</td>
                 <td>{{sale.total | formatPrice}}</td>
@@ -40,14 +56,16 @@
                         <button  class="btn btn-sm btn-dark"  @click="relatorioVenda(sale)"><i class="fa fa-file-pdf"></i></button>
                     </div>
                 </td>
-          </tr>
-      </tbody>
-  </table>
+            </tr>
+        </tbody>
+    </table>
+    </div>
   
-  <div v-show="sale">
-    <button class="btn btn-sm btn-success mr-2" @click="relatorioExcel">Baixar relatório total <i class="fa fa-file-excel"></i></button>
-    <button class="btn btn-sm btn-danger" @click="relatorioPdf">Baixar relatório total <i class="fa fa-print"></i></button>
-  </div>
+    </div>
+        <div v-show="sale" class="mt-3">
+            <button class="btn btn-sm btn-success mr-2" @click="relatorioExcel">Baixar relatório total <i class="fa fa-file-excel"></i></button>
+            <button class="btn btn-sm btn-danger" @click="relatorioPdf">Baixar relatório total <i class="fa fa-print"></i></button>
+        </div>
 </div>
 </template>
 

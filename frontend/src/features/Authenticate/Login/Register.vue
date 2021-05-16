@@ -1,79 +1,77 @@
 
 
 <template>
+<div class="d-flex justify-content-center">
+   <div class="card">
+    <div class="card-body">
+      <div class="text-center">
+        <h4><i class="fa fa-user">  </i> Sistema de vendas </h4>
+      </div>
+        <form @submit.prevent="register">
+          <div class="form-row">
+            <div class="form-group col-md-4">
+              <label class="col-form-label col-form-label-sm">Nome</label>
+              <input type="text" name="name" v-model="form.name" required class=" form-control form-control-sm ">
+            </div>
 
-   <div>
-    <fieldset class="form-group">
-      <h4 class="titulo"><i class="fa fa-user">  </i> Sistema de vendas </h4>
-    <form @submit.prevent="register">
+            <div class="form-group col-md-4">
+              <label class="col-form-label col-form-label-sm">Email</label>
+              <input type="email" name="email" v-model="form.email" required class=" form-control form-control-sm ">
+            </div>
 
-      <div class="form-row m-1">
-        <div class="form-group col-md-4">
-          <label>Nome</label>
-          <input type="text" name="name" v-model="form.name" required class="form-control col-md-auto ">
-        </div>
+            <div class="form-group col-md-4">
+                  <label class="col-form-label col-form-label-sm">TIpo de usuário</label>
+                  <select class=" form-control form-control-sm col-12" v-model="form.type_user_id">
+                      <option selected disabled value=null>Selecione</option>
+                      <option  v-for="(category, key) in typeuser" :key="key" :value="category.id">{{category.descricao}}</option>
+                  </select>
+                </div>
+          </div>
 
-        <div class="form-group col-md-4">
-          <label>Email</label>
-          <input type="email" name="email" v-model="form.email" required class="form-control col-md-auto ">
-        </div>
+              <div class="form-row">
+                <div class="form-group col-md-4">
+                  <label class="col-form-label col-form-label-sm">Senha</label>
+                  <input type="password" name="password" v-model="form.password" required class=" form-control form-control-sm">
+                </div>
 
-        <div class="form-group col-md-4">
-              <label for="">TIpo de usuário</label>
-                <select class="form-control col-12" v-model="form.type_user_id">
+                <div class="form-group col-md-4">
+                    <label class="col-form-label col-form-label-sm">Confirmação senha</label>
+                    <input type="password" name="password_conformation" v-model="form.password_conformation" required class=" form-control form-control-sm">
+                </div>
+                <div class="form-group col-md-4"> 
+                <label class="col-form-label col-form-label-sm">Data de nascimento</label>
+                <input type="date" name="date" v-model="form.data_nasc" required class=" form-control form-control-sm ">
+              </div>
+                
+              </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label class="col-form-label col-form-label-sm">Gênero</label>
+                <select class=" form-control form-control-sm col-12" v-model="form.gender">
                     <option selected disabled value=null>Selecione</option>
-                    <option  v-for="(category, key) in typeuser" :key="key" :value="category.id">{{category.descricao}}</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Feminino">Feminino</option>
                 </select>
+              </div>
+
+              <div class="form-group col-md-6">
+                <label class="col-form-label col-form-label-sm">Telefone</label>
+                <input type="text" name="email" v-model="form.phone" required class=" form-control form-control-sm ">
+              </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <label class="col-form-label col-form-label-sm">Sobre</label>
+              <textarea type="text" name="name" v-model="form.about" required class=" form-control form-control-sm "></textarea>
             </div>
+          </div>
+            <button class="btn btn-sm btn-primary">Entrar</button><br><br>
+        </form>
       </div>
-
-          <div class="form-row m-1">
-
-            <div class="form-group col-md-4">
-              <label>Senha</label>
-              <input type="password" name="password" v-model="form.password" required class="form-control">
-            </div>
-
-            <div class="form-group col-md-4">
-                <label>Confirmação senha</label>
-                <input type="password" name="password_conformation" v-model="form.password_conformation" required class="form-control">
-            </div>
-             <div class="form-group col-md-4"> 
-            <label>Data de nascimento</label>
-            <input type="date" name="date" v-model="form.data_nasc" required class="form-control col-md-auto ">
-          </div>
-             
-          </div>
-
-        <div class="form-row m-1">
-
-          <div class="form-group col-md-6">
-            <label>Gênero</label>
-            <select class="form-control col-12" v-model="form.gender">
-                <option selected disabled value=null>Selecione</option>
-                <option value="Masculino">Masculino</option>
-                <option value="Feminino">Feminino</option>
-            </select>
-          </div>
-
-          <div class="form-group col-md-6">
-            <label>Telefone</label>
-            <input type="text" name="email" v-model="form.phone" required class="form-control col-md-auto ">
-          </div>
-      </div>
-
-      <div class="form-row m-1">
-        <div class="form-group col-md-12">
-          <label>Sobre</label>
-          <textarea type="text" name="name" v-model="form.about" required class="form-control col-md-auto "></textarea>
-        </div>
-
-        
-      </div>
-        <button class="btn btn-primary m-2">Entrar</button><br><br>
-    </form>
-      </fieldset>
   </div>
+</div>
 </template>
 
 <script>
@@ -117,21 +115,5 @@ export default {
 </script>
 
 <style>
-  div .plano-de-fundo{
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
-    margin-left: 150px;
-  }
-  div .plano-de-fundo p{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  div .titulo{
-    display: flex;
-    align-items: center;
-    margin: 20px;
-    justify-content: center;
-  }
+ 
 </style>

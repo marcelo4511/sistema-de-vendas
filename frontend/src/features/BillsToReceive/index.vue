@@ -24,10 +24,11 @@
                 </tr>
             </thead>
             <tbody class="text-center">
-                <tr v-for="(provider,k) in pesquisar" :key="k" >
+                <tr v-for="(provider,k) in providers" :key="k" >
                     <td>{{provider.descricao}}</td>
                     <td>{{provider.valor | money}}</td>
-                    <td>{{provider.dt_vencimento | momentDate}}</td>
+                    <td v-if="provider.dt_vencimento">{{provider.dt_vencimento | momentDate}}</td>
+                    <td v-else><b class="text-danger">Prencha a data</b> </td>
                     <td>{{provider.user.name}}</td>
                     <td>{{provider.Comprovante}}</td>
                    <td>{{provider.situacao.descricao}}</td>
@@ -109,19 +110,23 @@ export default {
                return  this.postMovimentacao(provider)
         },
         aprovar(provider){
-            swal({
-            title: "Tela de venda para aprovação",
+            if(provider.dt_vencimento == null) {
+                return this.$noty.error("Por favor preencha a data de vencimento!")
+            } else {
+
+                swal({
+                    title: "Tela de venda para aprovação",
             text: "Depois de aprovado, você não será capaz de modificar essa venda!",
             icon: "warning",
             buttons: true,
             dangerMode: true,
             })
             .then((willDelete) => {
-            if (willDelete) {
-                axios.post(`${API_BASE_URL}/billstoreceive/aprovar/${provider.id}`)
+                if (willDelete) {
+                    axios.post(`${API_BASE_URL}/billstoreceive/aprovar/${provider.id}`)
             .then(() => {
                 swal("Venda aprovada!", {
-                icon: "success",
+                    icon: "success",
                 });
                 return location.reload()
             })
@@ -130,16 +135,10 @@ export default {
             }
             });
             return  this.postMovimentacao(provider)
+            }
         },
     },
-    computed:{
-     //   ...mapState('Provider',{providers:state => state.providers}),
-        pesquisar:function(){
-           return this.providers.filter(providers => {
-                return providers.descricao.includes(this.buscar)
-            })
-        }
-    },
+  
     filters:{
         money(value){
             if(value){

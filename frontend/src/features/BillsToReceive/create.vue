@@ -66,6 +66,7 @@ export default {
         onSubmit(){
                 this.$store.dispatch('BillsToReceive/postProvider',this.provider).then((() => {
                 this.$noty.success("Cadastrado com sucesso!!")
+                return this.$router.push('/billstoReceive')
             }))
         },
     },

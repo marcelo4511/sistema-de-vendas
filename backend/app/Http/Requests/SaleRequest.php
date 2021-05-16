@@ -29,7 +29,7 @@ class SaleRequest extends FormRequest
             "details_sales" => "required|array",
             
             'details_sales.*.product_id' => 'required',
-            'details_sales.*.price' => 'required|numeric|between:0.00,99.99',
+            'details_sales.*.price' => 'required',
             'details_sales.*.quantidade' => 'required',
             'details_sales.*.subtotal' => 'required',
         ];

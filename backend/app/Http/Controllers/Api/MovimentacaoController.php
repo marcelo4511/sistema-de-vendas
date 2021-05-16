@@ -22,6 +22,7 @@ class MovimentacaoController extends Controller
                                     $query->orderBy('id','desc');
                                 }])
                                 ->whereRaw('Date(dt_vencimento) = CURDATE()')
+                                ->orderBy('created_at','asc')
                                 ->get();
         return response()->json($clients);
     }

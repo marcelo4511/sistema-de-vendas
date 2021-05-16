@@ -11,7 +11,7 @@ class ClientController extends Controller
     public function index() 
     {
         $clients = Client::all();
-        return response()->json($clients);
+        return response()->json($clients,200 );
     }
 
     public function show($id) 

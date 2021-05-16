@@ -54,9 +54,8 @@ export default {
         }
       
     },
-     created () {
-    this.getBlogById(this.$route.params.id)
-    //this.$store.dispatch('Category/showList',this.category)
+    created () {
+      this.getBlogById(this.$route.params.id)
     },
     computed:{
         ...mapState(['list']),

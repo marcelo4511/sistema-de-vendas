@@ -149,41 +149,41 @@ export default {
                 this.movimentacoes = res.data
             
                 this.movimentacoespagar = res.data
-                let produtosEletrodomestico = this.movimentacoespagar.filter(produto => produto.tipo_movimentacao_id == 2);
+                let contasPagarFiltro = this.movimentacoespagar.filter(contasPagar => contasPagar.tipo_movimentacao_id == 2);
                 
-                let teste = produtosEletrodomestico.map(produto => { 
-                    return produto.valor
+                let contasPagarValor = contasPagarFiltro.map(contasPagar => { 
+                    return contasPagar.valor
                 });
-                this.movimentacoespagar = teste
+                this.movimentacoespagar = contasPagarValor
 
                 this.movimentacoesreceber = res.data
-                let produtosEletrodomesticoteste = this.movimentacoesreceber.filter(produto => produto.tipo_movimentacao_id == 1);
+                let contasReceberFiltro = this.movimentacoesreceber.filter(contasReceber => contasReceber.tipo_movimentacao_id == 1);
                 
-                let teste1 = produtosEletrodomesticoteste.map(produto => { 
-                    return produto.valor
+                let contasReceberValor = contasReceberFiltro.map(contasReceber => { 
+                    return contasReceber.valor
                 });
-                this.movimentacoesreceber = teste1
+                this.movimentacoesreceber = contasReceberValor
             })
         },
         index(){
             axios.get(`${API_BASE_URL}/movimentacao/lista`).then(res => {
                 this.movimentacoes = res.data
-                
+            
                 this.movimentacoespagar = res.data
-                let produtosEletrodomestico = this.movimentacoespagar.filter(produto => produto.tipo_movimentacao_id == 2);
+                let contasPagarFiltro = this.movimentacoespagar.filter(contasPagar => contasPagar.tipo_movimentacao_id == 2);
                 
-                let teste = produtosEletrodomestico.map(produto => { 
-                    return produto.valor
+                let contasPagarValor = contasPagarFiltro.map(contasPagar => { 
+                    return contasPagar.valor
                 });
-                this.movimentacoespagar = teste
+                this.movimentacoespagar = contasPagarValor
 
                 this.movimentacoesreceber = res.data
-                let produtosEletrodomesticoteste = this.movimentacoesreceber.filter(produto => produto.tipo_movimentacao_id == 1);
+                let contasReceberFiltro = this.movimentacoesreceber.filter(contasReceber => contasReceber.tipo_movimentacao_id == 1);
                 
-                let teste1 = produtosEletrodomesticoteste.map(produto => { 
-                    return produto.valor
+                let contasReceberValor = contasReceberFiltro.map(contasReceber => { 
+                    return contasReceber.valor
                 });
-                this.movimentacoesreceber = teste1
+                this.movimentacoesreceber = contasReceberValor
             })
         },
         getTipo(){

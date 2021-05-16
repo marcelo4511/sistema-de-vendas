@@ -8,7 +8,7 @@
             </ol>
         </nav>
     <router-link to="/billstopaystore" tag="span"><button class="btn btn-sm btn-primary">Cadastrar</button></router-link>
-    <input class="form-control form-control-sm col-md-3 mb-3" type="search" style="float: right;" name="nome" placeholder="Buscar" v-model="buscar">
+    <input class="form-control form-control-sm col-md-3 mb-3" type="search" style="float: right;" name="nome" placeholder="Buscar">
   
    <div class="table table-responsive">
         <table class="table table-sm">
@@ -24,7 +24,7 @@
                 </tr>
             </thead>
             <tbody class="text-center">
-                <tr v-for="(provider,k) in pesquisar" :key="k" >
+                <tr v-for="(provider,k) in providers" :key="k" >
                     <td>{{provider.descricao}}</td>
                     <td>{{provider.valor | money}}</td>
                     <td>{{provider.dt_vencimento | momentDate}}</td>
@@ -34,9 +34,31 @@
 
                     <td class="align-middle" width="20%">   
                     <div v-show="provider.situacao_id == 1">
-                        <router-link :to="`/provideredit/${provider.id}/edit`" class="btn btn-sm btn-warning  m-1"><i class="fa fa-pen"></i></router-link>
+                        <button class="btn btn-sm btn-warning m-1"  data-toggle="modal" :data-target="`#pagar${provider.id}`" ><i class="fa fa-pen"></i></button>
                         <button  class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>  
                         <button  class="btn btn-sm btn-success m-1" @click="aprovar(provider)"><i class="fa fa-check "></i></button>
+
+                        <modal :title="`Atualizar Registro`" :name="`pagar${provider.id}` ">
+                            <div class="modal-body text-left" >
+                                <div class="form-group mb-3">
+                                    <label>Descrição</label>
+                                    <input name="descricao" :data-vv-scope="`pagar-${provider.id}`" v-model="provider.descricao" :disabled="loading" data-vv-as="Data de Pagamento" v-validate="'required'" :class="['form-control form-control-sm', {'is-invalid': errors.has(`dataNota`)}]"  type="text">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label>Valor</label>
+                                    <input name="descricao" :data-vv-scope="`pagar-${provider.id}`" v-model="provider.valor" :disabled="loading" data-vv-as="Data de Pagamento" v-validate="'required'" :class="['form-control form-control-sm', {'is-invalid': errors.has(`dataNota`)}]"  type="text">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label>Data Pagamento</label>
+                                    <input name="dataNota" :data-vv-scope="`pagar-${provider.id}`" v-model="provider.dt_vencimento" :disabled="loading" data-vv-as="Data de Pagamento" v-validate="'required'" :class="['form-control form-control-sm', {'is-invalid': errors.has(`dataNota`)}]"  type="date">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="">Comprovante</label>
+                                    <input type="file" class="form-control form-control-sm" required>
+                                </div>
+                            <button class="btn btn-sm btn-success" @click="getAtualizaProvider(provider.id)">Atualizar</button>
+                            </div>
+                        </modal>
                     </div>
                     <div v-show="provider.situacao_id == 2">
                         <span class="text-success"><b>Baixado</b> </span>
@@ -57,20 +79,24 @@ import axios from 'axios'
 import {mapActions} from 'vuex' 
 import swal from 'sweetalert'
 export default {
+    components:{
+        Modal: () => import('../Modal/modal.vue')
+    },
     data(){
         return {
+            loading:false,
             provider:{
                 descricao:'',
                 valor:'',
                 dt_vencimento:'',
             },
         providers:[],
-            buscar:[]
         }
     },
     created(){
         this.$store.dispatch('Provider/getProvider')
         this.getProvider()
+        this.get(this.$route.params.id)
     },
     
     methods:{
@@ -79,6 +105,20 @@ export default {
             axios.get(`${API_BASE_URL}/billstopay`).then(res => {
                 this.providers = res.data
             })
+        },
+        getAtualizaProvider(id){
+            axios.put(`${API_BASE_URL}/billstopay/${id}`).then(res => {
+                this.providers.push(res.data)
+            })
+                return this.$forceUpdate();  
+        },
+        get(id) {
+            axios.get(`${API_BASE_URL}/billstopay/${id}`)
+            .then((response) => {
+              this.provider = response.data
+            })
+            .catch(() => {
+          })
         },
         removeClient(provider){
             swal({
@@ -90,7 +130,7 @@ export default {
             })
             .then((willDelete) => {
             if (willDelete) {
-                axios.delete(`http://localhost:8000/api/fornecedores/${provider.id}`)
+                axios.delete(`${API_BASE_URL}/fornecedores/${provider.id}`)
             .then(res => {
                 this.providers.splice(res.data.id,1)
                 swal("Fornecedor deletado com sucesso!", {
@@ -132,7 +172,6 @@ export default {
         },
     },
     computed:{
-     //   ...mapState('Provider',{providers:state => state.providers}),
         pesquisar(){
            return this.providers.filter(providers => {
                 return providers.descricao.includes(this.buscar)

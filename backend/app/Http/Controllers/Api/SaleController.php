@@ -191,7 +191,7 @@ class SaleController extends Controller
         $assunto = Carbon::parse($venda['dataVenda'])->format('d/m/Y');
         $total = number_format($venda['total'],2,',','.') ;
         $emails = [];
-        array_push($emails,'marcelowert@gmail.com');
+        array_push($emails,'marcelobs96@bol.com.br');
         $pdf = $this->relatorioexcel();
         try {
             Mail::send('teste.clientMail', $venda->toArray(),function ($message) use($total,$assunto,$emails,$pdf) {
