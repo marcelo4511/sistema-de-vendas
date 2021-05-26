@@ -137,9 +137,9 @@ export default {
                 icon: "success",
                 });
             })
-            } else {
-                swal("seu dado está a salvo");
-            }
+                } else {
+                    swal("seu dado está a salvo");
+                }
             });
                
         },

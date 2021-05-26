@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 use App\User;
+use Illuminate\Support\Facades\Log;
 use PDF;
 
 class SaleController extends Controller
@@ -95,22 +96,13 @@ class SaleController extends Controller
                 ]);
             }
 
-            $validate = Validator::make($request->all(),[
-                'details_sales.*.sale_id' => 'required',
-                'details_sales.*.product_id' => 'required',
-                'details_sales.*.subtotal' => 'required',
-                'details_sales.*.quantidade' => 'required',
-                'details_sales.*.price' => 'required',
-                ]);
-    
-                if($validate->fails()){
-                    response()->json(['errors' => $validate->errors()]);
-                }
-                
-                //$this->sendMail($venda->id);
-                return response()->json(['success' => 'OK','resultado' => $data],200);
-        }catch(Exception $e){
-            return response()->json(['err' => $e->getMessage(), 'status' => true]);
+            //$this->sendMail($venda->id);
+            Log::info('Usuário: '. Auth::user()->name . ' | ' . __METHOD__ . ' | ' . json_encode($request->all()) . $request->ip());
+            return response()->json(['success' => 'OK','resultado' => $data],200);
+        }catch(Exception $exception){
+            $exception_message = !empty($exception->getMessage()) ? trim($exception->getMessage()) : 'App Error Exception';
+            Log::error($exception_message. " in file " .$exception->getFile(). " on line " .$exception->getLine());
+            return response()->json(['err' => $exception->getMessage(), 'status' => true]);
         }           
     }
 
@@ -136,7 +128,7 @@ class SaleController extends Controller
             $venda->update($data);
             
             if(!empty($data['details_sales'])){
-                foreach($request->details_sales as $detalhes){
+                foreach($data['details_sales'] as $detalhes){
                    
                     // $detalhesupdate = DB::table('details_sales')->where('id',$detalhes['id']);
                     Detail::where('id',$detalhes['id'])->updateOrCreate(

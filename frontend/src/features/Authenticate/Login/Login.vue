@@ -35,9 +35,7 @@ export default {
   methods: {
     login () {
       this.loading = true
-      
-      this.$store
-        .dispatch('User/login', {
+      this.$store.dispatch('User/login', {
           email: this.email,
           password: this.password
         })

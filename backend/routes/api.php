@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Route;
             Route::post('/products','ProductController@save');
             Route::put('/products/{id}','ProductController@update');
             Route::delete('/products/{id}','ProductController@delete');
+            Route::delete('/productdeletefoto/{id}','ProductController@deleteFoto');
             Route::post('/filtro', 'ProductController@filtro');
             
             Route::get('/categories','CategoryController@index');

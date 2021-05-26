@@ -28,8 +28,8 @@
           </div>
         </div>
       
-      <div class=" border border-black">
-        <div class="form-row d-flex-justify-content-around mt-2 ml-2" style="height:18px;" >
+      <div class=" border border-black shadow p-3 mb-5 bg-white rounded">
+        <div class="form-row d-flex-justify-content-around mb-4 ml-2" style="height:10px;" >
                 <span class="col-10 "><b>Produtos</b> </span>
                 <button type='button' class="btn btn-sm btn-info mr-1" @click="adiciona">
                   <i class="fas fa-plus"></i>
@@ -39,9 +39,7 @@
               <hr>
         <div class="form-row">   
           <div class="card-body">
-            
             <div class="table table-sm" > 
-              
             <div class="text-center">
               <div class="form-row" v-for="(detalheVenda,key) of details_sales" :key="key">
                   <div class="col-2">

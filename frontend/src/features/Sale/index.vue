@@ -7,15 +7,33 @@
                 <li class="breadcrumb-item active" aria-current="page">Vendas</li>
             </ol>
         </nav>
-        <div class="form-row mb-4">
-            <input type="text" class="form-control form-control-sm col-3 mr-1">
-            <input type="text" class="form-control form-control-sm col-3 mr-1">
-            <button class="btn btn-sm btn-success  mb-2 mr-1">Limpar</button>
-            <router-link to="/sales/create" tag="span"><button class="btn btn-sm btn-primary mb-2"><i class="fa fa-plus"></i> Cadastrar</button></router-link>
+        <div class="row mb-2">
+            <div class="col-md-3 ">
+                <label class="col-form-label col-form-label-sm">Cliente</label>
+                <select name="" id="" class="form-control form-control-sm">
+                    <option selected disabled value="">selecione</option>
+                    <option v-for="(client,indexClient) in clientes" :value="client.id" :key="indexClient">{{client.name}}</option>
+                </select>
+            </div>
+            <div class="col-md-3 ">
+                <label class="col-form-label col-form-label-sm">De</label>
+                <input type="date" class="form-control form-control-sm ">
+            </div>
+            <div class="col-md-3 mr-1">
+                <label class="col-form-label col-form-label-sm">Até</label>
+                <input type="date" class="form-control form-control-sm ">
+            </div>
+           
+            <div style="float:right;margin-top:6px;">
+                <div class="form-group mt-4">
+                    <router-link to="/sales/create" tag="span"><button class="btn btn-sm btn-primary col-12"><i class="fa fa-plus"></i> Cadastrar</button></router-link>
+                </div>
+            </div>
         </div>
+        
     
-    <div class=" border border-black" >
-        <div class="col-12 d-flex-justify-content-between m-2">
+    <div class=" border border-black shadow p-3 mb-5 bg-white rounded" >
+        <div class="col-12 d-flex-justify-content-between">
             <select name="" id="" class="form-control form-control-sm col-md-1" style="float:left;">
                 <option value=""></option>
                 <option value="">10</option>
@@ -25,9 +43,8 @@
             <input class="form-control form-control-sm col-md-2" style="float:right;" type="search" name="nome" placeholder="Buscar" v-model="search">
         </div>
     <div class="table-responsive">
-
-    <table class="table table-sm">
-        <thead class="text-center">
+    <table class="table table-hover table-bordered table-sm">
+        <thead class="thead-light text-center">
             <tr>
                 <th scope="col" class="col-form-label col-form-label-sm">Nome do Cliente</th>
                 <th scope="col" class="col-form-label col-form-label-sm">Data da venda</th>
@@ -38,13 +55,13 @@
             </tr>
         </thead>
         <tbody class="text-center">
-            <tr v-for="(sale,k) in sales" :key="k" >
-                <td>{{sale.clients && sale.clients.name ? sale.clients.name : 'NI'}}</td>
-                <td>{{sale.dataVenda | formatDate}}</td>
-                <td>{{sale.total | formatPrice}}</td>
-                <td>{{sale.situacao.descricao}}</td>
-                <td>{{sale.user.tipo_usuario.descricao}}</td>
-                <td class="align-middle" width="20%">   
+            <tr v-for="(sale,k) in sales" :key="k" style="height:10px;" >
+                <td class="align-middle" style="font-size: 1em; height:10px;" >{{sale.clients && sale.clients.name ? sale.clients.name : 'NI'}}</td>
+                <td class="align-middle" style="font-size: 1em; height:10px;">{{sale.dataVenda | formatDate}}</td>
+                <td class="align-middle" style="font-size: 1em; height:10px;">{{sale.total | formatPrice}}</td>
+                <td class="align-middle" style="font-size: 1em; height:10px;">{{sale.situacao.descricao}}</td>
+                <td class="align-middle" style="font-size: 1em; height:10px;">{{sale.user.tipo_usuario.descricao}}</td>
+                <td class="align-middle" style="font-size: 1em; height:10px;" width="20%">   
                     <div v-show="sale.situacao_id == 1">
                         <button  class="btn btn-sm btn-success m-1" @click="aprovar(sale)"><i class="fa fa-check "></i></button>
                         <router-link :to="`/salesedit/${sale.id}/edit`" class="btn btn-sm btn-warning m-1"><i class="fa fa-pen"></i></router-link>
@@ -73,6 +90,7 @@
 import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
 import axios from 'axios'
 import {mapGetters, mapState} from 'vuex'
+import {API_BASE_URL} from '../../config/Api'
 import jsPDF from 'jspdf'
 import swal from 'sweetalert'
 import 'jspdf-autotable' 
@@ -80,6 +98,7 @@ import 'jspdf-autotable'
 export default {
     data(){
         return {
+            clientes:[],
             sale:{
                 id:'',
                 dataVenda:'',
@@ -90,9 +109,15 @@ export default {
         }
     },
     created(){
+        this.getClients()
         this.$store.dispatch('Sale/getSales')
         },
     methods:{
+        getClients(){
+            axios.get(`${API_BASE_URL}/clients/`).then(res => {
+                this.clientes = res.data
+            })
+        },
           removeSale(sale){
             swal({
             title: "Você está certo disso ?",
@@ -103,7 +128,7 @@ export default {
             })
             .then((willDelete) => {
             if (willDelete) {
-                axios.delete(`http://localhost:8000/api/sales/${sale.id}`)
+                axios.delete(`${API_BASE_URL}/sales/${sale.id}`)
             .then(res => {
                 this.sales.splice(res.data.id,-1)
                 swal("Venda deletada com sucesso!", {
@@ -119,7 +144,7 @@ export default {
         
         exportPdf(){
        
-            axios.get("http://localhost:8000/api/sales")
+            axios.get("${API_BASE_URL}/sales")
             .then(function(res){
             console.log(res.data)
             })
@@ -138,7 +163,7 @@ export default {
         },
 
         relatorioExcel() {
-            axios.get(`http://localhost:8000/api/relatorioexcel`).then(res => {
+            axios.get(`${API_BASE_URL}/relatorioexcel`).then(res => {
                 if (res.status === 200) {
                     let blob = new Blob([res.data], {
                         type: "application/vnd.ms-excel"
@@ -153,7 +178,7 @@ export default {
             });
         },
         relatorioPdf(){
-            axios.get('http://localhost:8000/api/relatoriopdf',{
+            axios.get('${API_BASE_URL}/relatoriopdf',{
             responseType: 'blob'
             }).then((response) => {
             const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -165,7 +190,7 @@ export default {
             });
         },
         relatorioVenda(sale){
-            axios.get(`http://localhost:8000/api/relatoriopdfdetalhes/${sale.id}`,{
+            axios.get(`${API_BASE_URL}/relatoriopdfdetalhes/${sale.id}`,{
             responseType: 'blob'
             }).then((response) => {
             const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -186,7 +211,7 @@ export default {
             })
             .then((willDelete) => {
             if (willDelete) {
-                axios.post(`http://localhost:8000/api/aprovar/${sale.id}`)
+                axios.post(`${API_BASE_URL}/aprovar/${sale.id}`)
             .then(res => {
                 console.log(res.data)
                

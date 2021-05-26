@@ -50,7 +50,7 @@
             <span class="badge badge-success p-1"><strong> Contas a receber : R$ {{formatarMoeda(totalizarreceber)}}</strong> </span>
         </div>
 
-        <div class=" border border-black">
+        <div class=" border border-black shadow p-3 mb-4 bg-white rounded">
             <div class="form-row d-flex justify-content-between m-2 ">
                 <select name="" id="" class="form-control form-control-sm col-md-1">
                     <option value=""></option>
@@ -62,8 +62,8 @@
             </div>
             <div class="form-row m-2" >
                     <div class="table table-responsive">
-                        <table class="table table-hover table-sm">
-                            <thead class="text-center" >
+                        <table class="table table-hover table-bordered table-sm">
+                            <thead class="thead-light text-center">
                                 <tr>
                                     <th scope="col" class="col-form-label col-form-label-sm">Descrição</th>
                                     <th scope="col" class="col-form-label col-form-label-sm">Valor a pagar</th>
@@ -74,23 +74,23 @@
                             </thead>
                             <tbody class="text-center">
                                 <tr v-for="(provider,k) in movimentacoes" :key="k"  v-show="provider.tipo_movimentacao_id == 2">
-                                    <td>{{provider.descricao}}</td>
-                                    <td>{{provider.valor | money}}</td>
-                                    <td>{{provider.dt_vencimento | momentDate}}</td>
-                                    <td>{{provider.user.name}}</td>
-                                    <td><span class="text-danger"><b>{{provider.tipo_movimentacao.descricao}}</b> </span></td>
+                                    <td class="align-middle" style="font-size: 1em; ">{{provider.descricao}}</td>
+                                    <td class="align-middle" style="font-size: 1em; ">{{provider.valor | money}}</td>
+                                    <td class="align-middle" style="font-size: 1em; ">{{provider.dt_vencimento | momentDate}}</td>
+                                    <td class="align-middle" style="font-size: 1em; ">{{provider.user.name}}</td>
+                                    <td class="align-middle" style="font-size: 1em; "><span class="text-danger"><b>{{provider.tipo_movimentacao.descricao}}</b> </span></td>
                                 </tr>
                                 <tr v-for="(provider,k) in movimentacoes" :key="'y'+ k" v-show="provider.tipo_movimentacao_id == 1">
-                                    <td>{{provider.descricao}}</td>
-                                    <td>{{provider.valor | money}}</td>
-                                    <td>{{provider.dt_vencimento | momentDate}}</td>
-                                    <td>{{provider.user.name}}</td>
-                                    <td><span class="text-success"><b>{{provider.tipo_movimentacao.descricao}}</b> </span></td>
+                                    <td class="align-middle" style="font-size: 1em; ">{{provider.descricao}}</td>
+                                    <td class="align-middle" style="font-size: 1em; ">{{provider.valor | money}}</td>
+                                    <td class="align-middle" style="font-size: 1em; ">{{provider.dt_vencimento | momentDate}}</td>
+                                    <td class="align-middle" style="font-size: 1em; ">{{provider.user.name}}</td>
+                                    <td class="align-middle" style="font-size: 1em; "><span class="text-success"><b>{{provider.tipo_movimentacao.descricao}}</b> </span></td>
                                 </tr>
                             </tbody>
                         </table>
                         <div v-show="movimentacoes == 0">
-                            <div style="text-align:center;"><span class="col-form-label col-form-label-sm">Nenhum registro encontrado.</span> </div>
+                            <div style="text-align:center;"><label class="col-form-label col-form-label-sm">Nenhum registro encontrado.</label> </div>
                         </div>
                     </div>
                 </div>

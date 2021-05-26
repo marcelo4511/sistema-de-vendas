@@ -10,48 +10,73 @@
   </nav>
   <form @submit.prevent="onSubmit">
       <div class="row ">
-          <div class="form-group col-md-3">
-            <label for="">Nome</label>
-            <input class="form-control col-md-auto " type="text" name="name " required v-model="product.name" @input="product.name = $event.target.value.toUpperCase()">
+          <div class="form-group col-md-6">
+            <label class="col-form-label col-form-label-sm">Nome</label>
+            <input class="form-control form-control-sm col-md-auto " type="text" name="name " required v-model="product.name" @input="product.name = $event.target.value.toUpperCase()">
           </div>
-          <div class="form-group col-md-3">
-            <label for="">Descrição</label>
-            <input type="text" name="description" class="form-control col-md-auto" required v-model="product.description">
+          <div class="form-group col-md-6">
+            <label class="col-form-label col-form-label-sm">Descrição</label>
+            <input type="text" name="description" class="form-control form-control-sm col-md-auto" required v-model="product.description">
           </div>     
-          <div class="form-group col-md-3">
-            <label for="">Categorias</label>
-            <select  v-model="product.category_id" required class="form-control col-md-auto">
-                    <option  disabled selected value="">selecione</option>
-                    <option  v-for="(category, key) in list" v-show="category.status == 'Ativo'" :key="key" :value="category.id">{{category.name}}</option>
+          <div class="form-group col-md-6">
+            <label class="col-form-label col-form-label-sm">Categorias</label>
+            <select v-model="product.category_id" required class="form-control form-control-sm col-md-auto">
+              <option  disabled selected value="">selecione</option>
+              <option  v-for="(category, key) in list" v-show="category.status == 'Ativo'" :key="key" :value="category.id">{{category.name}}</option>
             </select>
           </div> 
-        <div class="form-group col-md-3">
-          <label for="">Imagem</label>
-          <input type="url" name="imagem" class="form-control col-md-auto" required  v-model="product.imagem">
+        <div class="form-group col-md-4">
+          <label class="col-form-label col-form-label-sm">Imagem</label>
+          <input type="file" name="imagem" class="form-control form-control-sm" v-on:change="uploadImagem" >
         </div>  
+
+        <div class="form-group col-md-2" style="margin-top:30px;" v-if="product.imagem !== null">
+          <a class="btn btn-sm btn-primary text-white mr-1 iframe" data-toggle="modal" :data-target="`#mostrar_imagem_${product.id}`"><i class="fa fa-camera"></i></a>
+          <modal  :name="`mostrar_imagem_${product.id}` ">
+              <div class="modal-body row text-left">
+                  <div class="mx-auto">
+                    <img style="height:300px;width:300px;"  :src="product.imagem" frameborder="0">
+                  </div>
+              </div>
+          </modal>
+          <button class="btn btn-sm btn-danger" type="button" data-toggle="modal" :data-target="`#deletar_imagem_${product.id}`"><i class="fas fa-trash"></i></button>
+          <modal :title="'Deseja realizar a operação ?'" :name="`deletar_imagem_${product.id}` ">
+              <div class="modal-body row text-left">
+                  <div class="mx-auto">
+                      <button  type="button" :class="['btn btn-sm btn-danger mr-1',{'disabled' : loading}]" @click="deleteFoto(product.id)">
+                          <i v-if="loading" class="spinner-border spinner-border-sm spinner" role="status" aria-hidden="true"></i>
+                          <i v-else class="fas fa-trash mr-2"></i>Deletar
+                      </button>
+                      <button class="btn btn-sm btn-primary" data-dismiss="modal"><i class="fas fa-times"></i> Cancelar</button>
+                  </div>
+              </div>
+          </modal>
+        </div>
       </div>
         
       <div class="row"> 
-        <div class="form-group col-md-3">
-         <label for="">Preço</label>
-         <input type="text" name="price" v-money="money" class="form-control col-md-auto" required v-model="product.price">
+        <div class="form-group col-md-4">
+         <label class="col-form-label col-form-label-sm">Preço</label>
+         <money v-model="product.price" v-bind="money" class="form-control form-control-sm col-md-auto"></money>
         </div>  
 
         <div class="form-group col-md-4">
-         <label for="">Estoque</label>
-         <input type="number" name="estoque"  class="form-control col-md-auto" required  v-model="product.estoque">
+         <label class="col-form-label col-form-label-sm">Estoque</label>
+         <input type="number" name="estoque"  class="form-control form-control-sm col-md-auto" required  v-model="product.estoque">
         </div>  
 
-       <div class="form-group col-md-3">
-          <label for="">Status</label>
-          <select class="form-control col-12" v-model="product.status">
+       <div class="form-group col-md-4">
+          <label class="col-form-label col-form-label-sm">Status</label>
+          <select class="form-control form-control-sm col-12" v-model="product.status">
               <option selected disabled value=null>Selecione</option>
               <option value=Ativo>Ativo</option>
               <option value=Inativo>Inativo</option>
           </select>
         </div>
       </div>
-      <button type="submit" class="btn btn-sm btn-info">Atualizar</button>
+      <button type="submit" class="btn btn-sm btn-info" :disabled="loading"> 
+        <i v-if="loading" class="spinner-border spinner-border-sm spinner" role="status" aria-hidden="true"></i>Atualizar
+      </button>
     </form>
     </main>
 </template>
@@ -59,9 +84,13 @@
 import {mapState,mapActions} from 'vuex'
 import axios from 'axios'
 import {VMoney} from 'v-money'
+import {API_BASE_URL} from '../../config/Api'
 import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
 import '../../estilos/styles.css'
 export default {
+   components:{
+      Modal: () => import('../Modal/modal.vue')
+    },
     name:'product',
     data(){
         return {
@@ -69,11 +98,12 @@ export default {
                 category_id:'',
                 name:'',
                 description:'',
-                image:'',
+                imagem:'',
                 price:'',
                 estoque:'',
                 status:''
             },
+            loading:false,
             produtos:[],
             categories:[],
             update:{},
@@ -85,7 +115,6 @@ export default {
             money: {
             decimal: ',',
             thousands: '.',
-            //prefix: 'R$ ',
             precision: 2,
             masked: false 
         },
@@ -101,31 +130,53 @@ export default {
     methods:{
         ...mapActions('Product',['postProducts']),
 
-         getProduct(){
-            axios.get(`http://localhost:8000/api/products/${this.$route.params.product}`)
-            .then(res => {
-              this.product = res.data
-            })
+        getProduct(){
+          axios.get(`${API_BASE_URL}/products/${this.$route.params.product}`)
+          .then(res => {
+            this.product = res.data
+          })
         },
-
+        deleteFoto(id){
+          this.loading = true
+          axios.delete(`${API_BASE_URL}/productdeletefoto/${id}`).then(res => {
+            this.loading = false
+            if(res.data.success) {
+              this.$noty.success("Imagem deletada com sucesso!!") 
+              document.location.reload(true);
+            }else if (res.data.error) {
+              this.$noty.info("Houve um problema com o seu formulário. Por favor, tente novamente.");
+                this.$forceUpdate();  
+            }
+          })
+        },
+        uploadImagem(e) {
+          let arquivo = e.target.files ?? e.dataTransfer.files
+          if(!arquivo.length){
+            return
+          }
+          let reader = new FileReader()
+          reader.onload = (e) => {
+            this.product.imagem = e.target.result
+          }
+         return reader.readAsDataURL(arquivo[0])
+        },
         onSubmit(){
-          axios.put(`http://localhost:8000/api/products/${this.$route.params.product}`,this.product)
-              .then(() => {
-                  this.$noty.success("Atualizado com sucesso!!") 
-                  setTimeout(() => {
-                      this.$router.push('/products')
-                  },3000)
-              }).catch(() => {
-                  this.$noty.info("Houve um problema com o seu formulério. Por favor, tente novamente.");
-              })
-          },
-        
+          this.loading = true
+          axios.put(`${API_BASE_URL}/products/${this.$route.params.product}`,this.product).then(() => {
+            this.$noty.success("Atualizado com sucesso!!") 
+             setTimeout(() => {
+              this.$router.push('/products')
+            },3000)
+              this.loading = false
+            }).catch(() => {
+              this.$noty.info("Houve um problema com o seu formulário. Por favor, tente novamente.");
+          })
+        },
     },
     
-    
     computed:{
-        ...mapState('Product',{products:state => state.products}),
-        ...mapState('Category',{list:state => state.list.data}),
+      ...mapState('Product',{products:state => state.products}),
+      ...mapState('Category',{list:state => state.list.data}),
     },
     
 }
