@@ -11,16 +11,16 @@
     <div class="row">
         <div class="col-md-12 d-flex justify-content-between">
             <div class="row">
-                <div class="form-group mr-2 col-12 col-md-3">
+                <div class="form-group col-12 col-md-3">
                     <label class="col-form-label col-form-label-sm">Nome</label>
-                    <input type="text" class="form-control form-control-sm col-12 mr-3" v-model="filtro.name" @keyup="filter">
+                    <input type="text" class="form-control form-control-sm col-12" v-model="filtro.name" @keyup="filter">
                 </div>
 
                 <div class="form-group col-12 col-md-3">
                     <label class="col-form-label col-form-label-sm">Categoria</label>
                     <select name="category_id" id="category_id" class="form-control form-control-sm" style="margin-right:600px;" v-model="filtro.category_id" @change="filter">
-                        <option selected disabled value="0">selecione</option>
-                        <option v-for="l in categories" :value="l.id" :key="l.id">{{l.name}}</option>
+                        <option selected :value="0">Todos</option>
+                        <option v-for="categoria in categories" :value="categoria.id" :key="categoria.id">{{categoria.name}}</option>
                     </select>
                 </div>
             </div>
@@ -55,12 +55,12 @@
                 </thead>
                 <tbody class="text-center">
                     <tr v-for="product of produtos" :key="product.id">
-                        <td>{{product.name}}</td>
-                        <td>{{product.description}}</td>
-                        <td>{{product.categories.name}}</td>
-                        <td>{{product.price | formatPrice}}</td>
-                        <td>{{product.estoque}}</td>
-                        <td>{{product.status}}</td>
+                        <td class="align-middle" style="font-size: 1em; height:10px;">{{product.name}}</td>
+                        <td class="align-middle" style="font-size: 1em; height:10px;">{{product.description}}</td>
+                        <td class="align-middle" style="font-size: 1em; height:10px;">{{product.categories.name}}</td>
+                        <td class="align-middle" style="font-size: 1em; height:10px;">{{product.price | formatPrice}}</td>
+                        <td class="align-middle" style="font-size: 1em; height:10px;">{{product.estoque}}</td>
+                        <td class="align-middle" style="font-size: 1em; height:10px;">{{product.status}}</td>
                         <td>
                             <div>
                                 <router-link :to="`/products/${product.id}/edit`" class="btn btn-sm btn-warning m-1"><i class="fa fa-pen"></i></router-link>
@@ -70,7 +70,7 @@
                     </tr>
                 </tbody>
             </table> 
-            <div v-show="produtos.length == 0" style="text-align:center;"><label class="col-form-label col-form-label-sm">Nenhum registro encontrado.</label> </div>
+            <div v-show="loading && produtos.length == 0" style="text-align:center;"><label class="col-form-label col-form-label-sm">Nenhum registro encontrado.</label> </div>
         </div>
     </div>
 </main>
@@ -87,8 +87,9 @@ export default {
     name:'product',
     data(){
         return {
+            loading:false,
             product:{
-                category_id:'',
+                category_id:0,
                 name:'',
                 description:'',
                 image:'',
@@ -98,7 +99,7 @@ export default {
             },
             filtro:{
                 name:null,
-                category_id:null,
+                category_id:0,
             },
         produtos:[],
         categories:[],
@@ -153,6 +154,7 @@ export default {
             })
         },
         filter(){
+            this.loading = true
             axios.post(`${API_BASE_URL}/filtro`,this.filtro).then(res => {
                 this.produtos = res.data
             })

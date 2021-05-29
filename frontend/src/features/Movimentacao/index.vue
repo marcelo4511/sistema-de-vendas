@@ -45,13 +45,13 @@
                 </div>
             </div>
         </div>
-         <div class="form-row d-flex justify-content-between mt-4  mb-2" >
-            <span class="badge badge-danger p-1"><strong> Contas a pagar : R$ {{formatarMoeda(totalizarpagar)}}</strong> </span>
-            <span class="badge badge-success p-1"><strong> Contas a receber : R$ {{formatarMoeda(totalizarreceber)}}</strong> </span>
+         <div class="col-12 d-flex justify-content-between" >
+            <span class="alert alert-danger p-1"><strong> Contas a pagar : R$ {{formatarMoeda(totalizarpagar)}}</strong> </span>
+            <span class="alert alert-success p-1"><strong> Contas a receber : R$ {{formatarMoeda(totalizarreceber)}}</strong> </span>
         </div>
 
-        <div class=" border border-black shadow p-3 mb-4 bg-white rounded">
-            <div class="form-row d-flex justify-content-between m-2 ">
+        <div class=" border border-black shadow p-3 mb-2 bg-white rounded">
+            <div class="form-row d-flex justify-content-between m-1 ">
                 <select name="" id="" class="form-control form-control-sm col-md-1">
                     <option value=""></option>
                     <option value="">10</option>
@@ -73,19 +73,13 @@
                                 </tr>
                             </thead>
                             <tbody class="text-center">
-                                <tr v-for="(provider,k) in movimentacoes" :key="k"  v-show="provider.tipo_movimentacao_id == 2">
+                                <tr v-for="(provider,k) in movimentacoes" :key="k"  >
                                     <td class="align-middle" style="font-size: 1em; ">{{provider.descricao}}</td>
                                     <td class="align-middle" style="font-size: 1em; ">{{provider.valor | money}}</td>
                                     <td class="align-middle" style="font-size: 1em; ">{{provider.dt_vencimento | momentDate}}</td>
                                     <td class="align-middle" style="font-size: 1em; ">{{provider.user.name}}</td>
-                                    <td class="align-middle" style="font-size: 1em; "><span class="text-danger"><b>{{provider.tipo_movimentacao.descricao}}</b> </span></td>
-                                </tr>
-                                <tr v-for="(provider,k) in movimentacoes" :key="'y'+ k" v-show="provider.tipo_movimentacao_id == 1">
-                                    <td class="align-middle" style="font-size: 1em; ">{{provider.descricao}}</td>
-                                    <td class="align-middle" style="font-size: 1em; ">{{provider.valor | money}}</td>
-                                    <td class="align-middle" style="font-size: 1em; ">{{provider.dt_vencimento | momentDate}}</td>
-                                    <td class="align-middle" style="font-size: 1em; ">{{provider.user.name}}</td>
-                                    <td class="align-middle" style="font-size: 1em; "><span class="text-success"><b>{{provider.tipo_movimentacao.descricao}}</b> </span></td>
+                                    <td class="align-middle" v-show="provider.tipo_movimentacao_id == 2" style="font-size: 1em; "><span class="text-danger"><b>{{provider.tipo_movimentacao.descricao}}</b> </span></td>
+                                    <td class="align-middle" v-show="provider.tipo_movimentacao_id == 1"><span class="text-success"><b>{{provider.tipo_movimentacao.descricao}}</b> </span></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -96,7 +90,8 @@
                 </div>
             </div>
         <div>
-            <span class="text-black mt-3"><b> Saldo :</b> R$ {{formatarMoeda(saldo)}}</span>
+            <span v-if="saldo < 0" class="text-danger mt-3"><b> Saldo : R$ {{formatarMoeda(saldo)}} </b></span>
+            <span v-if="saldo >= 0" class="text-success mt-3"><b> Saldo : R$ {{formatarMoeda(saldo)}} </b></span>
         </div>
     </div>
 </template>
@@ -114,7 +109,6 @@ export default {
                 descricao:'',
                 valor:'',
                 dt_vencimento:'',
-              
             },
             filtro:{
                 tipo_movimentacao_id:0,
@@ -127,7 +121,8 @@ export default {
             movimentacoespagar:[],
             movimentacoesreceber:[],
             buscar:[],
-            total: [],
+            totalApagar: [],
+            totalReceber:[],
             tipos:[]
         }
     },
@@ -136,7 +131,6 @@ export default {
         this.index()
         this.getTipo()
     },
-    
     methods:{
         ...mapActions('Provider',['getProvider']),
         formatarMoeda(moeda){
@@ -195,16 +189,20 @@ export default {
     computed:{
         totalizarpagar(){
             return this.movimentacoespagar.reduce((acumulador,valor) => {
-                return this.total = parseFloat(acumulador) + parseFloat(valor)
+                return this.totalApagar = parseFloat(acumulador) + parseFloat(valor)
             },0) 
         },
         totalizarreceber(){
             return this.movimentacoesreceber.reduce((acumulador,valor) => {
-                return this.total = parseFloat(acumulador) + parseFloat(valor)
+                return this.totalReceber = parseFloat(acumulador) + parseFloat(valor)
             },0) 
         },
         saldo(){
-            return parseFloat(this.movimentacoesreceber) - parseFloat(this.movimentacoespagar) || 0
+            if(this.movimentacoespagar == 0 && this.movimentacoesreceber == 0) {
+                return 0
+            }else {
+                return parseFloat(this.totalReceber) - parseFloat(this.totalApagar) || 0
+            }
         }
     },
      filters:{

@@ -12,19 +12,22 @@
         <div class="row">  
             <div class="form-group col-md-6 col-lg-3">
                 <label for="">Descrição</label>
-                <input type="text" class="form-control form-control-sm" v-model="provider.descricao" required>
+                <input type="text" class="form-control form-control-sm" v-model="provider.descricao" >
             </div>
             <div class="form-grouṕ col-md-6 col-lg-3">
                 <label for="">Valor</label>
-                <input type="text" class="form-control form-control-sm" v-money="money" v-model="provider.valor"  required>
+                <input type="text" class="form-control form-control-sm" v-money="money" v-model="provider.valor"  >
             </div>
             <div class="form-group col-md-6 col-lg-3">
                 <label for="">Data do vencimento</label>
-                <input type="date" class="form-control form-control-sm" v-model="provider.dt_vencimento" required>
+                <input type="date" class="form-control form-control-sm" v-model="provider.dt_vencimento" >
             </div>
             <div class="form-group col-md-6 col-lg-3">
                 <label for="">Comprovante</label>
-                <input type="file" class="form-control form-control-sm" required>
+                <input type="file" name="comprovante" data-vv-as="Comprovante" v-validate="'image'" :class="['form-control form-control-sm form-control form-control-sm-sm', { 'is-invalid':errors.has('comprovante')}]">
+                 <span v-show="errors.has('comprovante')" class="invalid-feedback">
+                    {{ errors.first('comprovante') }}
+                </span>
             </div>
         </div>
         <div class="row">
@@ -65,9 +68,13 @@ export default {
     methods:{
         ...mapActions('BillsToPay',['postProvider']),
         onSubmit(){
-            this.$store.dispatch('BillsToPay/postProvider',this.provider).then((() => {
-            this.$noty.success("Cadastrado com sucesso!!")
-            }))
+            this.$validator.validate().then(res=>{
+                if(res) {
+                    this.$store.dispatch('BillsToPay/postProvider',this.provider).then((() => {
+                    this.$noty.success("Cadastrado com sucesso!!")
+                    }))
+                }
+            })
         },
     },
     computed:{

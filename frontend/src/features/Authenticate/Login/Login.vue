@@ -1,8 +1,8 @@
 
 
 <template>
-<div class="d-flex justify-content-md-center">
-   <div class="card">
+<div class="d-flex align-itens-center">
+   <div class="card border border-black shadow-lg p-3 mb-2 bg-white rounded" style="width: 50rem;height:20rem">
     <div class="card-body">
       <div class="text-center">
         <h4><i class="fa fa-user"></i> Sistema de vendas </h4>
@@ -14,7 +14,7 @@
             <label>Senha</label>
             <input type="password" name="password" v-model="password" required class="form-control form-control-sm"><br>
             <button class="btn btn-sm btn-primary" :disabled="loading">Entrar</button><br><br>
-            <p>Se você ainda não é um usuário <router-link to="/register">Registrar</router-link></p>
+            <p>Se você ainda não é um usuário <router-link to="/register"><span class="ml-3">Registrar</span> </router-link></p>
           </div>
         </form>
       </div>

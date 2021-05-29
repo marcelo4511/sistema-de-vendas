@@ -16,8 +16,20 @@ class CategoryController extends Controller
     }
    
     public function index(Request $request) 
-    {
-        $categories = $this->category->orderBy("id","ASC")->paginate(10); 
+    {  
+        $search = $request->get('search');
+        $categories = $this->category->when($request->search,function($query) use($search) {
+            $query->Where('name','LIKE',"$search%")
+            ->orWhere('status','LIKE',"$search%");
+        })
+        ->when($request->name,function($query) use ($request) {
+            $query->where('name','LIKE', '%'. $request->name . '%');
+
+        })
+        ->when($request->status,function($query) use ($request) {
+            $query->where('status','LIKE',"%$request->status%");
+        })
+        ->orderBy("id","ASC")->paginate(10); 
         return response()->json($categories);
     }
 

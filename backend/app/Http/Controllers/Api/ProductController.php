@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProductRequest;
 use Illuminate\Http\Request;
 use App\Product;
 use Exception;
@@ -29,13 +30,13 @@ class ProductController extends Controller
     public function filtro(Request $request)
     {
         $products = Product::select('id','name','description','price','estoque','category_id','status')->with('categories:id,name')
-        ->when($request['name'],function($query) use($request) {
-            $query->whereName($request['name']);
-        })
-        ->when($request['category_id'], function ($query) use ($request) {
-            $query->whereCategoryId($request['category_id']);
-        })
-        ->get();
+                            ->when($request['name'],function($query) use($request) {
+                                $query->whereName($request['name']);
+                            })
+                            ->when($request['category_id'], function ($query) use ($request) {
+                                $query->whereCategoryId($request['category_id']);
+                            })
+                            ->get();
 
         return $products;
     }
@@ -45,7 +46,7 @@ class ProductController extends Controller
         return response()->json($product);
     }
 
-    public function save(Request $request)
+    public function save(ProductRequest $request)
     {
         try{
             $product = $request->all();
@@ -54,10 +55,11 @@ class ProductController extends Controller
             }
             if($request->hasFile($product['imagem'])) {
                 $base64_image = $product['imagem'];
-                @list( $file_data) = explode(';', $base64_image);
-                @list(, $file_data) = explode(',', $file_data); 
-                $imageName = Str::random(10).'.'.'png';   
-                Storage::disk('public')->put($imageName, base64_decode($file_data));
+                $base = base64_decode($base64_image);  
+                $base64 = time().'.' . explode('/', explode(':', substr($base64_image, 0, strpos($base64_image, ';')))[1])[1];
+                $destinationPath = public_path() . "/" . $base64;             
+                file_put_contents($destinationPath, $base);
+                Storage::disk('public')->put($base64, base64_decode($destinationPath));
             }
             Product::create($product);
             Log::info('Usuário: '. Auth::user()->name . ' | ' . __METHOD__ . ' | ' . json_encode($request->except('imagem')) . $request->ip());
@@ -69,7 +71,7 @@ class ProductController extends Controller
         }
     } 
 
-    public function update(Request $request,$id) 
+    public function update(ProductRequest $request,$id) 
     {
         try{
 
@@ -77,10 +79,11 @@ class ProductController extends Controller
             $product = $this->product->find($id);
             if($request->hasFile($product['imagem'])) {
                 $base64_image = $product['imagem']; 
-                @list( $file_data) = explode(';', $base64_image);
-                @list(, $file_data) = explode(',', $file_data); 
-                $imageName = Str::random(10).'.'.'png';   
-                Storage::disk('public')->put($imageName, base64_decode($file_data));
+                $base = base64_decode($base64_image);  
+                $base64 = time().'.' . explode('/', explode(':', substr($base64_image, 0, strpos($base64_image, ';')))[1])[1];
+                $destinationPath = public_path() . "/" . $base64;             
+                file_put_contents($destinationPath, $base);
+                Storage::disk('public')->put($base64, base64_decode($destinationPath));
             }
             $product->update($data);
             Log::info('Usuário: '. Auth::user()->name . ' | ' . __METHOD__ . ' | ' . json_encode($request->all()) . $request->ip());
@@ -108,11 +111,12 @@ class ProductController extends Controller
     {
         try{
             $product = $this->product->find($id);
-            $base64_image = $product['imagem']; 
-            @list( $file_data) = explode(';', $base64_image);
-            @list(, $file_data) = explode(',', $file_data); 
-            $imageName = Str::random(10).'.'.'png';   
-            Storage::disk('public')->delete($imageName, base64_decode($file_data));
+            if($product['imagem'] != null) {
+                $base64_image = $product['imagem']; 
+                $base64 = time().'.' . explode('/', explode(':', substr($base64_image, 0, strpos($base64_image, ';')))[1])[1];  
+                $destinationPath = public_path() . "/" . $base64;    
+                Storage::disk('public')->delete($base64, base64_decode($destinationPath));
+            }
             $product->imagem = null;
             $product->save();
             return response()->json(['success' => true],200);

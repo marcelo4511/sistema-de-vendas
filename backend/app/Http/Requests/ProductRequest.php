@@ -27,7 +27,7 @@ class ProductRequest extends FormRequest
             'name'          => 'required',
             'price'         => 'required',
             'description'   => 'required',
-            'imagem'        => 'required'
+            'imagem'        => "required|mimes:pdf|max:10000"
         ];
     }
 }

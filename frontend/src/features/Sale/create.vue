@@ -3,14 +3,14 @@
     <h4 cabecalho="product_id">Vendas</h4>
       <nav aria-label="breadcrumb mb-4">
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
-           <li class="breadcrumb-item"><router-link to="/sales">Vendas</router-link></li>
-          <li class="breadcrumb-item active" aria-current="page">Criar</li>
+            <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
+            <li class="breadcrumb-item"><router-link to="/sales">Vendas</router-link></li>
+            <li class="breadcrumb-item active" aria-current="page">Criar</li>
         </ol>
       </nav>
       <div class="form-row">  
-        <div @submit.prevent="abc" class="form-group col-md-6">
-          <label for="">Clientes</label>
+        <div class="form-group col-md-6">
+          <label  class="col-form-label col-form-label-sm">Clientes</label>
             <select class="form-control form-control-sm" required v-model="client_id" name="client_id" v-validate = "'required'" data-vv-as="Cliente" :class="['form-control form-control-sm form-control form-control-sm-sm', {'is-invalid': errors.has('client_id')},`${errorsRequest.client_id  ? `is-invalid` : ``}`]">
               <option selected disabled value="">selecione</option>
               <option v-for="(client,indexCliente) in clients" v-show="client.status == 'Ativo'" :key="indexCliente"  :value="client.id">{{client.name}}</option>
@@ -19,24 +19,23 @@
           <div class="text-danger" v-if="errorsRequest.client_id">{{ errorsRequest.client_id[0] }}</div>
         </div>
         
-          
           <div class="form-group col-md-6">
-            <label for="">Data da Venda</label>
+            <label  class="col-form-label col-form-label-sm">Data da Venda</label>
             <input type="date" name="datavenda" v-validate = "'required'" data-vv-as="Data Venda" required v-model="datavenda" class="form-control form-control-sm" :class="['form-control form-control-sm form-control form-control-sm-sm', {'is-invalid': errors.has('datavenda')},`${errorsRequest.dataVenda ? `is-invalid` : ``}`]" />
             <div v-if="submitted && errors.has('datavenda')" class="invalid-feedback">{{ errors.first('datavenda') }}</div>
             <div class="text-danger" v-if="errorsRequest.dataVenda">{{ errorsRequest.dataVenda[0] }}</div>
           </div>
         </div>
       
-      <div class=" border border-black shadow p-3 mb-5 bg-white rounded">
-        <div class="form-row d-flex-justify-content-around mb-4 ml-2" style="height:10px;" >
-                <span class="col-10 "><b>Produtos</b> </span>
-                <button type='button' class="btn btn-sm btn-info mr-1" @click="adiciona">
-                  <i class="fas fa-plus"></i>
-                </button>
-                <button  class="btn btn-sm btn-danger" @click="remova" ><i class="fa fa-times"></i></button>
-              </div>
-              <hr>
+      <div class="border border-black shadow p-3 bg-white rounded">
+        <div class="form-row d-flex-justify-content-around mb-2 ml-2" style="height:10px;" >
+          <span class="col-10 "><b>Produtos</b> </span>
+          <button type='button' class="btn btn-sm btn-info mr-1" @click="adiciona">
+            <i class="fas fa-plus"></i>
+          </button>
+          <button  class="btn btn-sm btn-danger" @click="remova" ><i class="fa fa-times"></i></button>
+
+        </div>
         <div class="form-row">   
           <div class="card-body">
             <div class="table table-sm" > 
@@ -87,23 +86,19 @@
             </div>
           </div>
          
-         <div class="form-row mb-2 ml-2">
-            <div>
-              <span class="text-black p-1"><strong> Total da Venda : R$ {{formatarMoeda(totalizar)}}</strong> </span>
-            </div>
+         <div class="form-row">
+              <span class="alert alert-primary text-black p-1"><strong> Total da Venda : R$ {{formatarMoeda(totalizar)}}</strong> </span>
           </div>
         </div>
       </div>
-         </div>
-      <br>
+      </div>
 
-      <div class=" border border-black" v-if="total >  0">
+      <div class="border border-black shadow mb- bg-white rounded" v-if="total >  0">
          <div class="border border-black p-2" style="background-color:GhostWhite	">
             <span><strong>Pagamento</strong></span>
           </div>
       <div class="form-row">
-        <div >
-         
+        <div>
           <div class="card-body m-0">
             <div class="form-row">
               <div class="form-group m-2">

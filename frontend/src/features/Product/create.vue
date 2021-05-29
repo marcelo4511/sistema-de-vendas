@@ -36,7 +36,7 @@
       <div class="row">
         <div class="form-group col-md-4">
           <strong>Imagem</strong>
-          <input type="file" name="imagem" v-validate="'image'" data-vv-as="Imagem"  :class="['form-control form-control-sm form-control form-control-sm-sm', { 'is-invalid':errors.has('imagem')}]" class="form-control form-control-sm col-md-auto" id="imagem" v-on:change="uploadImagem">
+          <input type="file" name="imagem" v-validate="'required|mimes:pdf'" data-vv-as="Imagem"  :class="['form-control form-control-sm form-control form-control-sm-sm', { 'is-invalid':errors.has('imagem')}]" class="form-control form-control-sm col-md-auto" id="imagem" v-on:change="uploadImagem">
           <span v-show="errors.has('imagem')" class="invalid-feedback">
             {{ errors.first('imagem') }}
           </span>

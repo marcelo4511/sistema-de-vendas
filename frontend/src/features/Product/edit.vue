@@ -31,13 +31,13 @@
         </div>  
 
         <div class="form-group col-md-2" style="margin-top:30px;" v-if="product.imagem !== null">
-          <a class="btn btn-sm btn-primary text-white mr-1 iframe" data-toggle="modal" :data-target="`#mostrar_imagem_${product.id}`"><i class="fa fa-camera"></i></a>
+          <a class="btn btn-sm btn-primary text-white mr-1" data-toggle="modal" :data-target="`#mostrar_imagem_${product.id}`"><i class="fa fa-camera"></i></a>
           <modal  :name="`mostrar_imagem_${product.id}` ">
-              <div class="modal-body row text-left">
-                  <div class="mx-auto">
-                    <img style="height:300px;width:300px;"  :src="product.imagem" frameborder="0">
-                  </div>
+            <div class="modal-body"  align="center" width="400px;">
+              <div class="mx-auto">
+                <embed  style="height:450px;width:450px;border: none;"  :src="product.imagem"/>
               </div>
+            </div>
           </modal>
           <button class="btn btn-sm btn-danger" type="button" data-toggle="modal" :data-target="`#deletar_imagem_${product.id}`"><i class="fas fa-trash"></i></button>
           <modal :title="'Deseja realizar a operação ?'" :name="`deletar_imagem_${product.id}` ">
@@ -158,6 +158,7 @@ export default {
           reader.onload = (e) => {
             this.product.imagem = e.target.result
           }
+           console.log(reader)
          return reader.readAsDataURL(arquivo[0])
         },
         onSubmit(){

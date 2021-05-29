@@ -1,8 +1,8 @@
 
 
 <template>
-<div class="d-flex justify-content-center">
-   <div class="card">
+<div class="d-flex align-itens-center">
+   <div class="card border border-black shadow-lg p-3 mb-2 bg-white rounded" style="width: 50rem;height:30rem">
     <div class="card-body">
       <div class="text-center">
         <h4><i class="fa fa-user">  </i> Sistema de vendas </h4>

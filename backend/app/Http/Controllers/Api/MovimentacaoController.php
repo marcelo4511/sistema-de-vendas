@@ -22,7 +22,7 @@ class MovimentacaoController extends Controller
                                     $query->orderBy('id','desc');
                                 }])
                                 ->whereRaw('Date(dt_vencimento) = CURDATE()')
-                                ->orderBy('created_at','asc')
+                                ->orderBy('dt_vencimento','desc')
                                 ->get();
         return response()->json($clients);
     }
@@ -48,7 +48,7 @@ class MovimentacaoController extends Controller
                                 ->when($request->mes, function ($query) use ($request) {
                                     $query->whereMonth('dt_vencimento',$request->mes);
                                 })
-                                ->orderBy('created_at','asc')
+                                ->orderBy('dt_vencimento','desc')
                                 ->get();
         return response()->json($clients);
     }
