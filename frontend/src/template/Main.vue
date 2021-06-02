@@ -1,5 +1,5 @@
 <template>
-    <div class="main contentcontainer-fluid">
+    <div class="main content container-fluid">
     <router-view></router-view>
     <router-link to="/login" v-show="isMenuVisible"></router-link>
     </div>
@@ -17,6 +17,5 @@ export default {
         grid-area: main;
         background-color: #fff;
         padding: 20px;
-        overflow:auto;
     }
 </style>

@@ -1,15 +1,17 @@
 <template>
-<div>
-  <apexchart width="100%" type="bar" :height="height" :options="options" :series="series"></apexchart>
+<div v-if="loading" class="text-center">
+  <div><span><i  class="mt-2 spinner-border spinner-border spinner text-primary"></i></span></div>
 </div>
+<apexchart v-else width="100%" type="bar" :height="height" :options="options" :series="series"></apexchart>
 </template>
 
 <script>
 import axios from 'axios'
 export default {
 
-  data: function() {
+  data() {
     return {
+      loading:false,
       height:220,
       options: {
         colors: ['#FFFF00'],
@@ -111,10 +113,12 @@ export default {
       this.get()
   },methods:{
       get() {
+        this.loading = true
         this.height = 220;
-          axios.get('http://localhost:8000/api/bi/grafico/mensal').then(res => {
+          axios.post('http://localhost:8000/api/bi/grafico/mensal').then(res => {
               this.options.xaxis.categories = res.data.categories
               this.series = [{ 'name': 'Vendas','data': res.data.series }]
+              this.loading = false
           }).then(() => {
             this.height = 219;
           })

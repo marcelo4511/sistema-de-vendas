@@ -9,38 +9,41 @@
     </nav>
     <div class=" border border-black shadow p-3 bg-white rounded" >
         <div class="form-row d-flex justify-content-between">
-          <button class="btn btn-sm btn-primary"><router-link tag="span" @click="loadingCreate == true" :disabled="loadingCreate" to="categories/create"><i class="fa fa-plus"></i>Cadastrar</router-link></button>
-           <select name="" id="" class="form-control form-control-sm col-3" v-model="status" @change="get">
+          <button class="btn btn-sm btn-primary mb-1"><router-link tag="span" @click="loadingCreate == true" :disabled="loadingCreate" to="categories/create"><i class="fa fa-plus mr-1"></i>Cadastrar</router-link></button>
+           <select name="" id="" class="form-control form-control-sm col-12 col-md-4 mb-1" v-model="status" @change="get">
             <option selected value="">Status</option>
             <option value="Ativo">Ativo</option>
             <option value="Inativo">Inativo</option>
           </select>
-            <input type="text" placeholder="Nome" class="form-control form-control-sm col-3" v-model="name" @keyup="get">
-            <input class="form-control form-control-sm col-md-2" style="float:right;" type="search" name="nome" placeholder="Buscar" v-model="search" @input="get">
+            <input type="text" placeholder="Nome" class="form-control form-control-sm col-12 col-md-4 mb-1" v-model="name" @keyup="buscar">
+            <input class="form-control form-control-sm col-12 col-md-2 mb-1" type="search" name="nome" placeholder="Buscar" v-model="search" @input="buscar">
         </div>
-        <div class="table-responsive scroll" id="infinite-list" ref="scroll" style="overflow-y:auto;height:300px;margin-top:3vh;">
+        <div class="table-responsive scroll" id="infinite-list" style="overflow-y:auto;height:300px;margin-top:3vh;">
             <table class="table table-hover table-bordered table-sm" > 
                 <thead class="thead-light text-center">
                     <tr>
-                        <th scope="col" class="col-form-label col-form-label-sm">Nome</th>
-                        <th scope="col" class="col-form-label col-form-label-sm">Status</th>
-                        <th scope="col" class="col-form-label col-form-label-sm">Ações</th>
+                        <th v-for="column in columns" :key="column" @click="sortByColumn(column)"
+                          scope="col" class="col-form-label col-form-label-sm">
+                        {{ column | columnHead }}
+                        <span v-if="column === sortedColumn">
+                          <i v-if="order == 'asc'" class="fa fa-sort"></i>
+                          <i v-else class="fa fa-arrow-down"></i>
+                        </span>
+                      </th>
+                      <th scope="col" class="col-form-label col-form-label-sm">Ações</th>
                     </tr>
                 </thead>
                 <tbody class="text-center">
                     <tr v-for="category of categories" :key="category.id">
                         <td class="align-middle" style="font-size: 1em; height:10px;">{{category.name}}</td>
                         <td class="align-middle" style="font-size: 1em; height:10px;">{{category.status}}</td>
-                      
                         <td>
-                            <div>
-                                <router-link :to="`/categoryedit/${category.id}/edit`" class="btn btn-sm btn-warning"><i class="fa fa-pen"></i></router-link>
-                                <button @click="removeList(category)" class="btn btn-sm btn-danger ml-2"><i class="fa fa-trash"></i></button>
-                            </div>
+                          <router-link :to="`/categoryedit/${category.id}/edit`" class="btn btn-sm btn-warning"><i class="fa fa-pen"></i></router-link>
+                          <button @click="removeList(category)" class="btn btn-sm btn-danger ml-2"><i class="fa fa-trash"></i></button>
                         </td>
                     </tr>
-                    <tr><td colspan="3" align="center" ><i v-if="loading" class="mt-2 spinner-border spinner-border spinner text-primary" role="status" aria-hidden="true"></i></td></tr>
-                    <tr><td colspan="3" v-if="loading == false && categories.length == 0" align="center" style="border:0;margim-bottom:2px;"><label class="col-form-label col-form-label-sm">Nenhum registro encontrado.</label></td></tr>
+                    <tr v-if="loading"><td colspan="3" align="center" ><i  class="mt-2 spinner-border spinner-border spinner text-primary" role="status" aria-hidden="true"></i></td></tr>
+                    <tr v-if="loading == false && categories.length == 0"><td colspan="3"  align="center" style="border:0;margim-bottom:2px;"><label class="col-form-label col-form-label-sm">Nenhum registro encontrado.</label></td></tr>
                 </tbody>
             </table> 
         </div>
@@ -67,10 +70,12 @@ export default {
       status:'',
       search:'',
       lastPage: 0,
+      columns:['name','status'],
+      sortedColumn:['name'],
+      order: 'asc',
     }
   },
   mounted() {
-    this.getCategories()
     this.get()
     const listaCategorias = document.querySelector('#infinite-list');
     listaCategorias.addEventListener('scroll', () => {
@@ -81,32 +86,43 @@ export default {
   },
  methods:{
    ...mapActions('Category',['postList','setList','updateList','removeList']),
-
         getCategories(){
           this.loading = false;
           setTimeout(() => {
-              axios.get(`${API_BASE_URL}/categories?page=${this.page+1}&search=${this.search}&name=${this.name}&status=${this.status}`).then(res => {
+              axios.get(`${API_BASE_URL}/categories?page=${this.page+1}&search=${this.search}&name=${this.name}&status=${this.status}&column=${this.sortedColumn}&order=${this.order}`).then(res => {
                 const toFilter = [...this.categories, ...res.data.data]
                 const filtered = toFilter.reduce((items, current) => {
                     const x = items.find(item => item.id === current.id);
                     return !x ? items.concat([current]) : items
                 }, []);
-                  this.categories = filtered
-                 this.page = res.data.current_page
-                  console.log(res.data)
+                this.categories = filtered
+                this.page = res.data.current_page
               })
             }, 1000);
            this.loading = true
         },
-        
+        buscar(){
+          this.page = null,
+          this.categories = []
+          this.get()
+        },
         get(){
-          axios.get(`${API_BASE_URL}/categories?page=${this.page+1}&search=${this.search}&name=${this.name}&status=${this.status}`).then(res => {
-              document.getElementById('infinite-list').scrollTop = 0
-                this.categories = res.data.data
-                this.page = res.data.current_page
-                this.totalPages = res.data.last_page
-                this.loading = false
-              })
+          axios.get(`${API_BASE_URL}/categories?page=${this.page}&search=${this.search}&name=${this.name}&status=${this.status}&column=${this.sortedColumn}&order=${this.order}`).then(res => {
+            document.getElementById('infinite-list').scrollTop = 0
+            this.categories = res.data.data
+            this.page = res.data.current_page
+            this.totalPages = res.data.last_page
+            this.loading = false
+          })
+        },
+        sortByColumn(column) {
+          if (column === this.sortedColumn) {
+            this.order = (this.order == 'asc') ? 'desc' : 'asc'
+          }else{
+            this.sortedColumn = column
+            this.order = 'asc'
+          }
+          this.get()
         },
         removeList(category){
            swal({
@@ -128,11 +144,20 @@ export default {
           })
         }  
       },
- 
- 
   computed: {
     ...mapState('Category',{list:state => state.list}),
-  }
+  },
+  filters: {
+      columnHead(value) {
+
+      if(value == 'name') {
+        value = 'Nome'
+      }if(value == ''){
+        value = 'Ações'
+      }
+        return value.split('_').join(' ')
+      },
+  },
 }
 </script>
 

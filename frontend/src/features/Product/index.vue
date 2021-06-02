@@ -8,39 +8,17 @@
             <li class="breadcrumb-item active" aria-current="page">Produtos</li>
         </ol>
     </nav>
-    <div class="row">
-        <div class="col-md-12 d-flex justify-content-between">
-            <div class="row">
-                <div class="form-group col-12 col-md-3">
-                    <label class="col-form-label col-form-label-sm">Nome</label>
-                    <input type="text" class="form-control form-control-sm col-12" v-model="filtro.name" @keyup="filter">
-                </div>
-
-                <div class="form-group col-12 col-md-3">
-                    <label class="col-form-label col-form-label-sm">Categoria</label>
-                    <select name="category_id" id="category_id" class="form-control form-control-sm" style="margin-right:600px;" v-model="filtro.category_id" @change="filter">
-                        <option selected :value="0">Todos</option>
-                        <option v-for="categoria in categories" :value="categoria.id" :key="categoria.id">{{categoria.name}}</option>
-                    </select>
-                </div>
-            </div>
-            <div style="margin-top:30px;">
-                <button class="btn btn-sm btn-primary "><router-link tag="span" to="products/create">Cadastrar</router-link></button>
-            </div>
-        </div>
-    </div>
-
-    <div class=" border border-black shadow p-3 mb-2 bg-white rounded" >
-        <div class="col-12 d-flex-justify-content-between">
-            <select name="" id="" class="form-control form-control-sm col-md-1" style="float:left;">
-                <option value=""></option>
-                <option value="">10</option>
-                <option value="">50</option>
-                <option value="">100</option>
+    <div class=" border border-black shadow p-3 mb-2 bg-white rounded">
+        <div class="form-row d-flex justify-content-between">
+            <button class="btn btn-sm btn-primary "><router-link tag="span" to="products/create"><i class="fa fa-plus mr-2"></i> Cadastrar</router-link></button>
+            <input type="text" class="form-control form-control-sm col-4" placeholder="Nome" v-model="filtro.name" @keyup="filter">
+            <select name="category_id" id="category_id" class="form-control form-control-sm col-4" v-model="filtro.category_id" @change="filter">
+                <option selected :value="0">Categorias</option>
+                <option v-for="categoria in categories" :value="categoria.id" :key="categoria.id">{{categoria.name}}</option>
             </select>
-            <input class="form-control form-control-sm col-md-2" style="float:right;" type="search" name="nome" placeholder="Buscar">
+            <input class="form-control form-control-sm col-md-2" type="search" name="nome" placeholder="Buscar">
         </div>
-        <div class="table-responsive">
+        <div class="table-responsive scroll" ref="scroll" style="overflow-y:auto;height:300px;margin-top:1vh;">
             <table class="table table-hover table-bordered table-sm"> 
                 <thead class="thead-light text-center">
                     <tr>

@@ -22,9 +22,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::with('tipo_usuario','profile')->get();
-
         return response()->json($users,200);
-
     }
 
     /**

@@ -1,88 +1,66 @@
 <template>
 <div>
     <h4 cabecalho="Produto">Vendas</h4>
-        <nav aria-label="breadcrumb mb-4">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
-                <li class="breadcrumb-item active" aria-current="page">Vendas</li>
-            </ol>
-        </nav>
-        <div class="row mb-2">
-            <div class="col-md-3 ">
-                <label class="col-form-label col-form-label-sm">Cliente</label>
+    <nav aria-label="breadcrumb mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
+            <li class="breadcrumb-item active" aria-current="page">Vendas</li>
+        </ol>
+    </nav>
+    
+    <div class=" border border-black shadow p-3 mb-1 bg-white rounded" >
+        <div class="form-row d-flex justify-content-between">
+            <router-link to="/sales/create" tag="span"><button class="btn btn-sm btn-primary col-12"><i class="fa fa-plus"></i> Cadastrar</button></router-link>
+            <div class="col-md-4 ">
                 <select name="" id="" class="form-control form-control-sm">
                     <option selected disabled value="">selecione</option>
                     <option v-for="(client,indexClient) in clientes" :value="client.id" :key="indexClient">{{client.name}}</option>
                 </select>
             </div>
-            <div class="col-md-3 ">
-                <label class="col-form-label col-form-label-sm">De</label>
+            <div class="col-md-2 ">
                 <input type="date" class="form-control form-control-sm ">
             </div>
-            <div class="col-md-3 mr-1">
-                <label class="col-form-label col-form-label-sm">Até</label>
+            <div class="col-md-2">
                 <input type="date" class="form-control form-control-sm ">
             </div>
-           
-            <div style="float:right;margin-top:6px;">
-                <div class="form-group mt-4">
-                    <router-link to="/sales/create" tag="span"><button class="btn btn-sm btn-primary col-12"><i class="fa fa-plus"></i> Cadastrar</button></router-link>
-                </div>
-            </div>
+            <input class="form-control form-control-sm col-md-2" type="search" name="nome" placeholder="Buscar" v-model="search">
         </div>
-        
-    
-    <div class=" border border-black shadow p-3 mb-5 bg-white rounded" >
-        <div class="col-12 d-flex-justify-content-between">
-            <select name="" id="" class="form-control form-control-sm col-md-1" style="float:left;">
-                <option value=""></option>
-                <option value="">10</option>
-                <option value="">50</option>
-                <option value="">100</option>
-            </select>
-            <input class="form-control form-control-sm col-md-2" style="float:right;" type="search" name="nome" placeholder="Buscar" v-model="search">
-        </div>
-    <div class="table-responsive">
-    <table class="table table-hover table-bordered table-sm">
-        <thead class="thead-light text-center">
-            <tr>
-                <th scope="col" class="col-form-label col-form-label-sm">Nome do Cliente</th>
-                <th scope="col" class="col-form-label col-form-label-sm">Data da venda</th>
-                <th scope="col" class="col-form-label col-form-label-sm">Total da venda</th>
-                <th scope="col" class="col-form-label col-form-label-sm">Situação</th>
-                <th scope="col" class="col-form-label col-form-label-sm">Tipo Usuario</th>
-                <th scope="col" class="col-form-label col-form-label-sm">Ações</th>
-            </tr>
-        </thead>
-        <tbody class="text-center">
-            <tr v-for="(sale,k) in sales" :key="k" style="height:10px;" >
-                <td class="align-middle" style="font-size: 1em; height:10px;" >{{sale.clients && sale.clients.name ? sale.clients.name : 'NI'}}</td>
-                <td class="align-middle" style="font-size: 1em; height:10px;">{{sale.dataVenda | formatDate}}</td>
-                <td class="align-middle" style="font-size: 1em; height:10px;">{{sale.total | formatPrice}}</td>
-                <td class="align-middle" style="font-size: 1em; height:10px;">{{sale.situacao.descricao}}</td>
-                <td class="align-middle" style="font-size: 1em; height:10px;">{{sale.user.tipo_usuario.descricao}}</td>
-                <td class="align-middle" style="font-size: 1em; height:10px;" width="20%">   
-                    <div v-show="sale.situacao_id == 1">
-                        <button  class="btn btn-sm btn-success m-1" @click="aprovar(sale)"><i class="fa fa-check "></i></button>
-                        <router-link :to="`/salesedit/${sale.id}/edit`" class="btn btn-sm btn-warning m-1"><i class="fa fa-pen"></i></router-link>
-                        <button  class="btn btn-sm btn-danger"  @click="removeSale(sale)"><i class="fa fa-trash"></i></button>  
-                    </div>
+        <div class="table-responsive scroll" ref="scroll" style="overflow-y:auto;height:300px;margin-top:3vh;">
+            <table class="table table-hover table-bordered table-sm">
+                <thead class="thead-light text-center">
+                    <tr>
+                        <th scope="col" class="col-form-label col-form-label-sm">Nome do Cliente</th>
+                        <th scope="col" class="col-form-label col-form-label-sm">Data da venda</th>
+                        <th scope="col" class="col-form-label col-form-label-sm">Total da venda</th>
+                        <th scope="col" class="col-form-label col-form-label-sm">Situação</th>
+                        <th scope="col" class="col-form-label col-form-label-sm">Tipo Usuario</th>
+                        <th scope="col" class="col-form-label col-form-label-sm">Ações</th>
+                    </tr>
+                </thead>
+                <tbody class="text-center">
+                    <tr v-for="(sale,k) in sales" :key="k" style="height:10px;" >
+                        <td class="align-middle" style="font-size: 1em; height:10px;" >{{sale.clients && sale.clients.name ? sale.clients.name : 'NI'}}</td>
+                        <td class="align-middle" style="font-size: 1em; height:10px;">{{sale.dataVenda | formatDate}}</td>
+                        <td class="align-middle" style="font-size: 1em; height:10px;">{{sale.total | formatPrice}}</td>
+                        <td class="align-middle" style="font-size: 1em; height:10px;">{{sale.situacao.descricao}}</td>
+                        <td class="align-middle" style="font-size: 1em; height:10px;">{{sale.user.tipo_usuario.descricao}}</td>
+                        <td class="align-middle" style="font-size: 1em; height:10px;" width="20%">   
+                            <div v-show="sale.situacao_id == 1">
+                                <button  class="btn btn-sm btn-success m-1" @click="aprovar(sale)"><i class="fa fa-check "></i></button>
+                                <router-link :to="`/salesedit/${sale.id}/edit`" class="btn btn-sm btn-warning m-1"><i class="fa fa-pen"></i></router-link>
+                                <button  class="btn btn-sm btn-danger"  @click="removeSale(sale)"><i class="fa fa-trash"></i></button>  
+                            </div>
 
-                    <div v-show="sale.situacao_id == 2">
-                        <router-link :to="`/salesshow/${sale.id}/show`" class="btn btn-sm btn-info m-1"><i class="fa fa-eye"></i></router-link>  
-                        <button  class="btn btn-sm btn-dark"  @click="relatorioVenda(sale)"><i class="fa fa-file-pdf"></i></button>
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    </div>
-  
-    </div>
-        <div v-show="sale" class="mt-3">
-            <button class="btn btn-sm btn-success mr-2" @click="relatorioExcel">Baixar relatório total <i class="fa fa-file-excel"></i></button>
-            <button class="btn btn-sm btn-danger" @click="relatorioPdf">Baixar relatório total <i class="fa fa-print"></i></button>
+                            <div v-show="sale.situacao_id == 2">
+                                <router-link :to="`/salesshow/${sale.id}/show`" class="btn btn-sm btn-info m-1"><i class="fa fa-eye"></i></router-link>  
+                                <button  class="btn btn-sm btn-dark"  @click="relatorioVenda(sale)"><i class="fa fa-file-pdf"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
+    </div>
 </div>
 </template>
 

@@ -1,15 +1,14 @@
 <template>
 <div class="form-row">
 
-   <div class="card border border-black shadow-lg p-3 bg-white rounded" style="width: 100rem;height:30rem">
+   <div class="card border border-black shadow-lg p-2 bg-white rounded" style="width: 70rem;height:30rem">
     <div class="card-body" v-for="(u,k) in perfil" :key="k"> 
       <div class="col-12 d-flex justify-content-between">
         <p class="font-weight-bold">{{u.user.name}}</p>
         <p >Data da criação: {{u.user.created_at | formatDateTime}}</p>
       </div>
       <div class="col-12 d-flex justify-content-between"> 
-        <img lass="img-thumbnail" dth="304" height="236" src=".././assets/logo.png" alt="Card image cap">
-
+        <img class="img-thumbnail" width="400" height="auto" src=".././assets/logo.png" alt="Card image cap">
         <div class="ml-5">
           <div class="form-row">
             <div class="form-group col-4">
@@ -44,15 +43,34 @@
       <div class="form-row">
         <h4 class="col-form-label col-form-label-sm font-weight-bold">Estatisticas :</h4>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="col-form-label col-form-label-sm" ><b>Vendas</b> </label><br/>
-          <span class="alert alert-primary"><b>{{realizadas}}</b> </span> <span class="alert alert-warning"><b>{{andamento}}</b> </span> <span><b class="alert alert-success">{{concluidas}}</b> </span>
+
+      <div class="form-row border border-black p-2 mb-2">
+        <div class="form-group col-12 col-md-4 col-lg-4">
+          <label class="col-form-label col-form-label-sm" ><b>Vendas</b> </label><br/><br/>
+          <span class="alert alert-dark mr-2" style="color:black;"><b>{{realizadas}}</b></span>
+          <span class="alert alert-danger mr-2" style="color:red;"><b>{{andamento}}</b></span>
+          <span class="alert alert-success" style="color:green;"><b >{{concluidas}}</b></span>
+        </div>
+
+        <div class="form-group col-12 col-md-4 col-lg-4">
+          <label class="col-form-label col-form-label-sm" ><b>Compras</b> </label><br/><br/>
+          <span class="alert alert-dark mr-2" style="color:black;"><b>{{realizadas}}</b></span>
+          <span class="alert alert-danger mr-2" style="color:red;"><b>{{andamento}}</b></span>
+          <span class="alert alert-success" style="color:green;"><b >{{concluidas}}</b></span>
+        </div>
+
+        <div class="form-group col-12 col-md-4 col-lg-4">
+          <label class="col-form-label col-form-label-sm" ><b>Lucro</b> </label><br/><br/>
+          <span class="alert alert-dark mr-2" style="color:black;"><b>{{realizadas}}</b></span>
+          <span class="alert alert-danger mr-2" style="color:red;"><b>{{andamento}}</b></span>
+          <span class="alert alert-success" style="color:green;"><b >{{concluidas}}</b></span>
         </div>
       </div>
 
       <div class="form-row">
-        <span class="alert alert-primary mr-2"><b>Realizadas</b> </span> <span class="alert alert-warning mr-3"><b>Em andamento</b> </span> <span class="alert alert-success"><b>Concluidas</b> </span>
+        <span class="alert alert-light mr-2"  style="color:black;"><b>Realizadas</b></span> 
+        <span class="alert alert-light mr-2" style="color:red;"><b>Em andamento</b></span> 
+        <span class="alert alert-light" style="color:green;"><b>Concluidas</b></span>
       </div>
     </div>
    </div>

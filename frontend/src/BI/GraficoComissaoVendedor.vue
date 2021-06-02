@@ -1,16 +1,29 @@
 <template>
-<div>
-  <apexchart width="100%" type="bar" :height="height" :options="options" :series="series"></apexchart>
+<div v-if="loading" class="text-center">
+  <div><span><i  class="mt-2 spinner-border spinner-border spinner text-primary"></i></span></div>
 </div>
+<apexchart v-else width="100%" type="bar" :height="height" :options="options" :series="series"></apexchart>
 </template>
 
 <script>
+import moment from  'moment'
 import axios from 'axios'
+import dashboard from '../features/BI/dashboard'
 export default {
+  componentes:{
+    dashboard
+  },
 
-  data: function() {
+  data() {
     return {
+      loading:false,
       height:220,
+      payload: {
+        mes: moment().month(),
+        ano: moment().year(),
+        clients: 0,
+        vendedor:0
+      },
       options: {
         colors: ['#4169E1'],
         title: {
@@ -108,17 +121,29 @@ export default {
     }
   },
   created(){
+    this.get();
+    this.$root.$on('selecionar' ,(payload) => {
+      this.payload.clients = payload.clients
+      this.payload.vendedor = payload.vendedor
+      this.payload.mes = payload.mes
+      this.payload.ano = payload.ano
       this.get()
-  },methods:{
+    })      
+  },
+  methods:{
       get() {
+        this.loading = true
         this.height = 220;
-          axios.get('http://localhost:8000/api/bi/grafico/comissao/vendedor').then(res => {
+          axios.post(`http://localhost:8000/api/bi/grafico/comissao/vendedor`,{payload:this.payload}).then(res => {
+            console.log(this.payload);
+            this.loading = false
               this.options.xaxis.categories = res.data.categories
               this.series = [{ 'name': 'Commissão','data': res.data.series }]
           }).then(() => {
             this.height = 219;
           })
-      }
+      },
+       
   }
 }
 </script>

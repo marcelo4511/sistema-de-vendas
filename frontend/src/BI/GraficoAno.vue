@@ -1,126 +1,50 @@
 <template>
-<div>
-  <apexchart width="100%" type="bar" :height="height" :options="options" :series="series"></apexchart>
+<div class="card col-4 mr-1 shadow p-1 bg-white rounded mb-2">
+  <div class="card-body ">
+    <span v-if="!loading">TOTAL DE VENDAS ANUAIS : <b>R$ {{formatarMoeda(series)}}</b> </span>  
+    <span v-else class="text-center"><i class="spinner-border spinner-border spinner text-primary"></i></span>
+  </div>
 </div>
 </template>
 
 <script>
 import axios from 'axios'
+import moment from 'moment'
 export default {
 
   data: function() {
     return {
+      loading:false,
       height:220,
-      options: {
-        colors: ['#228B22'],
-        title: {
-          text: 'Total de vendas (Ano)',
-          align: 'left',
-          margin: 10,
-          offsetX: 0,
-          offsetY: 20,
-          floating: false,
-          style: {
-            fontSize: '14px',
-            fontWeight: 'bold',
-            color: '#263238',
-          },
-        },
-        subtitle: {
-          text: 'Por Produtos',
-          align: 'left',
-          margin: 10,
-          offsetX: 0,
-          offsetY: 40,
-          style: {
-            fontSize: '12px',
-            fontWeight: 'normal',
-            color: '#9699a2',
-          },
-        },
-        chart: {
-          type: 'bar',
-         
-          toolbar: {
-            show: true,
-            tools: {
-              download: true,
-              selection: false,
-              pan: false,
-            
-            },
-          },
-          zoom: {
-            enabled: false,
-          },
-        },
-        plotOptions: {
-          bar: {
-            columnWidth: '80%',
-            dataLabels: {
-              position: 'top',
-              hideOverflowingLabels: true,
-            },
-          },
-        },
-        grid: {
-          borderColor: '#e7e7e7',
-          row: {
-            colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-            opacity: 0.5,
-          },
-        },
-        dataLabels: {
-          style: {
-            colors: ['#333'],
-          },
-          formatter: function (val) {
-            return parseFloat(val).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-          },
-          enabled: true,
-          offsetY: -20,
-          hideOverflowingLabels: false,
-        },
-        markers: {
-          size: 1,
-        },
-        xaxis: {
-          categories: [],
-          labels: {
-            rotate: 0,
-            show: true,
-            align: 'left',
-            trim: true,
-            hideOverlappingLabels: false,
-          },
-        },
-        tooltip: {
-          shared: true,
-          intersect: false,
-          y: {
-         formatter: function (val) {
-            return parseFloat(val).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-          },
-          },
-        },
+      series: 0,
+       payload: {
+        ano: moment().year(),
       },
-      series: [{
-          data:[]
-      }]
     }
   },
   created(){
       this.get()
-  },methods:{
+      this.$root.$on('selecionar' ,(payload) => {
+      this.payload.ano = payload.ano
+      this.get()
+    }) 
+  },
+  methods:{
       get() {
+        this.loading = true
         this.height = 220;
-          axios.get('http://localhost:8000/api/bi/grafico/anual').then(res => {
-              this.options.xaxis.categories = res.data.categories
-              this.series = [{ 'name': 'Vendas','data': res.data.series }]
+          axios.post('http://localhost:8000/api/bi/grafico/anual',{payload:this.payload}).then(res => {
+              this.series =res.data
+              this.loading = false
           }).then(() => {
             this.height = 219;
           })
-      }
+      },
+       formatarMoeda(moeda){
+            moeda = parseFloat(moeda);
+            moeda = moeda.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+,)/g, "$1.");
+            return moeda;
+        },
   }
 }
 </script>

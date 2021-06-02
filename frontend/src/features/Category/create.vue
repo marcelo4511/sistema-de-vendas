@@ -4,8 +4,8 @@
 <nav aria-label="breadcrumb mb-4">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
-    <li class="breadcrumb-item active" aria-current="page">Categorias</li>
-    <li class="breadcrumb-item"><router-link to="/categories/create">Criar</router-link></li>
+     <li class="breadcrumb-item"><router-link to="/categories">Categorias</router-link></li>
+    <li class="breadcrumb-item">Criar</li>
   </ol>
 </nav>
 
@@ -14,12 +14,12 @@
     <form class="form-group"  @submit.prevent="onSubmit">
       <div class="row">
         <div class="form-group col-6">
-          <label for="" class="label label-default">Nome da Categoria</label>
-          <input type="text" class="form-control form-control-sm col-md-12 mr-5" name="name" v-model="category.name">
+          <label class="col-form-label col-form-label-sm">Nome da Categoria</label>
+          <input type="text" class="form-control form-control-sm col-md-12" name="name" v-model="category.name">
         </div>
   
         <div class="form-group col-4">
-          <label for="">Status</label>
+          <label class="col-form-label col-form-label-sm">Status</label>
             <select class="form-control form-control-sm" v-model="category.status">
               <option selected disabled value=null>Selecione</option>
               <option value=Ativo>Ativo</option>
@@ -29,7 +29,7 @@
               
         </div>
           <div class="form-group">
-            <button type="submit" class="btn btn-sm btn-success  mt-4">Salvar</button>
+            <button type="submit" class="btn btn-sm btn-success">Salvar</button>
           </div>
     </form>
   </div>

@@ -62,12 +62,12 @@ use Illuminate\Support\Facades\Route;
             Route::get('product/{id}','SaleController@product');
 
             //gráficos
-            Route::get('bi/grafico/mensal','DashboardController@graficoMensal');
-            Route::get('bi/grafico/anual','DashboardController@graficoAnual');
-            Route::get('bi/grafico/comissao/vendedor','DashboardController@graficoComissaoVendedores');
-            Route::get('bi/grafico/quantidade/total','DashboardController@GraficoQuantidadeTotalVendedor');
-            Route::get('bi/grafico/clientes/compra','DashboardController@GraficoClienteCompra');   
-            Route::get('bi/grafico/quantidade/produtos/vendidos','DashboardController@GraficoQuantidadeProdutoVendido');
+            Route::post('bi/grafico/mensal','DashboardController@graficoMensal');
+            Route::post('bi/grafico/anual','DashboardController@graficoAnual');
+            Route::post('bi/grafico/comissao/vendedor','DashboardController@graficoComissaoVendedores');
+            Route::post('bi/grafico/quantidade/total','DashboardController@GraficoQuantidadeTotalVendedor');
+            Route::post('bi/grafico/clientes/compra','DashboardController@GraficoClienteCompra');   
+            Route::post('bi/grafico/quantidade/produtos/vendidos','DashboardController@GraficoQuantidadeProdutoVendido');
         });
 
         //caixa

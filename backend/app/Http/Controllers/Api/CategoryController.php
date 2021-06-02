@@ -24,12 +24,14 @@ class CategoryController extends Controller
         })
         ->when($request->name,function($query) use ($request) {
             $query->where('name','LIKE', '%'. $request->name . '%');
-
         })
         ->when($request->status,function($query) use ($request) {
             $query->where('status','LIKE',"%$request->status%");
         })
-        ->orderBy("id","ASC")->paginate(10); 
+        ->when($request->column,function($query) use($request) {
+            $query->orderBy($request->column, $request->order);
+        })
+       ->paginate(10); 
         return response()->json($categories);
     }
 
@@ -41,7 +43,6 @@ class CategoryController extends Controller
 
     public function save( Request $request)
     {
-
         $category = new Category();
         $category->name = $request->input('name');
         $category->status = $request->input('status');

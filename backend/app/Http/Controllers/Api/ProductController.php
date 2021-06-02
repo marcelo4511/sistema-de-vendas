@@ -37,7 +37,6 @@ class ProductController extends Controller
                                 $query->whereCategoryId($request['category_id']);
                             })
                             ->get();
-
         return $products;
     }
     public function show($id) 
@@ -74,7 +73,6 @@ class ProductController extends Controller
     public function update(ProductRequest $request,$id) 
     {
         try{
-
             $data = $request->all();
             $product = $this->product->find($id);
             if($request->hasFile($product['imagem'])) {

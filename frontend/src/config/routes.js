@@ -10,6 +10,7 @@ import Product from '../features/Product/index'
 import ProductCreate from '../features/Product/create'
 import ProductEdit from '../features/Product/edit'
 import Home from '../template/Home'
+import BI from '../features/BI/dashboard'
 import Category from '../features/Category/index'
 import CategoryEdit from '../features/Category/edit'
 import CategoryCreate from '../features/Category/create'
@@ -160,6 +161,13 @@ const routes = [
     name:'home',
     path:'/home',                                                                                                                                                                                                                       
     component:Home,
+    meta: {
+        auth: true
+    },
+},{
+    name:'dashboard',
+    path:'/dashboard',                                                                                                                                                                                                                       
+    component:BI,
     meta: {
         auth: true
     },

@@ -6,14 +6,10 @@
           <span style="color:white;" v-for="(u,k) in user" :key="k">{{u.name}}</span>
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" >
-          <div v-for="(u,k) in user" :key="k">
-            <div v-show="u.type_user_id === 1">
-              <router-link to="/home" class="d-flex justify-content-beetween dropdown-item m-0">Home</router-link> 
-            </div>
-          </div>
+          <router-link class="dropdown-item" to="/home" ><i class="fa fa-home"></i> Home</router-link>
+          <router-link  class="dropdown-item" to="/perfil"><i class="fa fa-id-card" aria-hidden="true"></i> Perfil</router-link> 
           <router-link to="/" class="d-flex justify-content-beetween dropdown-item" v-if="!isLogged">Login</router-link>
-          <span class="d-flex justify-content-beetween dropdown-item" @click="sair()">Sair
-          </span>
+          <span class="dropdown-item" @click="sair()"><i class="fa fa-times-circle"></i> Sair</span>
         </div>
       </div>
     </div>
@@ -51,10 +47,10 @@ export default {
       align-items: center;
       font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     }
-      .drops{
-          background-color: linear-gradient(to right, #1e469a, #49a7c1);
-          font-style: inherit;
-      }
+    .drops{
+        background-color: linear-gradient(to right, #1e469a, #49a7c1);
+        font-style: inherit;
+    }
     p{
       height: 70px;
     }

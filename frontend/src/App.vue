@@ -75,32 +75,21 @@ footer .footer {
 
 @media(max-width: 768px){
   #app {
-    grid-template-rows:
-    50px
-    1fr;
-
+    grid-template-rows:50px 1fr 50px;
     grid-template-columns:  1fr;
     grid-template-areas: 
-    "header header"
-    "lado main"
-    "lado footer"
-    ;
+    "header""main ";
   }
 }
 
 @media(max-width:576px){
   #app {
-    grid-auto-rows: 100;
-    grid-template-rows:50px 2fr;
-
+    grid-auto-rows: 50px 1fr;
+    
     grid-template-columns:  1fr;
-
-    grid-template-areas: 
-    "header "
-    "main "
-  
-    ;
+    grid-template-areas: "header" "main" "footer";
   }
+  
 }
 
 </style> 

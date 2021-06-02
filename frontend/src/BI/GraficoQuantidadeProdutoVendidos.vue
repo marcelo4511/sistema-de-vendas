@@ -1,16 +1,23 @@
 <template>
-<div>
-  <apexchart width="100%" type="bar" :height="height" :options="options" :series="series"></apexchart>
+<div v-if="loading" class="text-center">
+  <div><span><i  class="mt-2 spinner-border spinner-border spinner text-primary"></i></span></div>
 </div>
+<apexchart v-else width="100%" type="bar" :height="height" :options="options" :series="series"></apexchart>
 </template>
 
 <script>
 import axios from 'axios'
+import moment from 'moment'
 export default {
 
   data: function() {
     return {
+      loading:false,
       height:220,
+      payload: {
+        mes: moment().month(),
+        ano: moment().year(),
+      },
       options: {
         colors: ['#800080'],
         title: {
@@ -102,13 +109,21 @@ export default {
     }
   },
   created(){
+    this.get();
+    this.$root.$on('selecionar' ,(payload) => {
+      this.payload.mes = payload.mes
+      this.payload.ano = payload.ano
       this.get()
-  },methods:{
+    }) 
+  },
+  methods:{
       get() {
+        this.loading = true
         this.height = 220;
-          axios.get('http://localhost:8000/api/bi/grafico/quantidade/produtos/vendidos').then(res => {
+          axios.post('http://localhost:8000/api/bi/grafico/quantidade/produtos/vendidos',{payload:this.payload}).then(res => {
               this.options.xaxis.categories = res.data.categories
               this.series = [{ 'name': 'Vendas','data': res.data.series }]
+              this.loading = false
           }).then(() => {
             this.height = 219;
           })

@@ -1,13 +1,13 @@
 <template>
 <div>
-  <h4 cabecalho="Produto">Home</h4>
-  <nav aria-label="breadcrumb mb-4">
+  <h4 >Home</h4>
+  <nav aria-label="breadcrumb mb-2">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
     </ol>
   </nav>
-  <div class="row painel">
-    <div class="card text-white bg-primary ml-3 " style="width:300px;height:250px">
+  <div class="col-12 d-flex justify-content-between mb-2">
+    <div class="card text-white bg-primary  " style="width:300px;height:80px">
        <div class="card-header">
           <div class="row">
             <h5>Vendas <i class="fa fa-shopping-cart"></i></h5>
@@ -15,7 +15,7 @@
           </div>
         </div>
       </div>
-      <div class="card text-white bg-secondary ml-3" style="width:300px;height:250px">
+      <div class="card text-white bg-secondary" style="width:300px;height:80px">
         <div class="card-header">
           <div class="row">
             <h5>Produtos <i class="fa fa-folder"></i></h5>
@@ -23,7 +23,7 @@
           </div>
         </div>
     </div>
-      <div class="card text-white bg-success ml-3" style="width:300px;height:250px">
+      <div class="card text-white bg-success" style="width:300px;height:80px">
          <div class="card-header">
           <div class="row">
             <h5>Clientes <i class="fa fa-user"></i></h5>
@@ -33,49 +33,7 @@
       </div>
     </div>
 
-  <div class="d-flex justify-content-between">    
-    <div class="card col-12">
-      <div class="card-body">
-         <grafico-ano></grafico-ano>
-      </div>
-    </div>
-  </div>
-      
-  <div class="d-flex justify-content-between">
-    <div class="card col-12 col-lg-6">
-      <div class="card-body">
-        <grafico-comissao-vendedor></grafico-comissao-vendedor>
-      </div>
-    </div>
-
-    <div class="card col-12 col-lg-6">
-      <div class="card-body">
-        <grafico-total></grafico-total>
-      </div>
-    </div>
-  </div>
-
-  <div class="d-flex justify-content-between">
-    <div class="card col-12 col-lg-6">
-      <div class="card-body">
-        <grafico-mes></grafico-mes>
-      </div>
-    </div>
-
-    <div class="card col-12 col-lg-6">
-      <div class="card-body">
-        <grafico-quantidade-produto-vendidos></grafico-quantidade-produto-vendidos>
-      </div>
-    </div>
-  </div>       
-      
-  <div class="d-flex justify-content-between">
-    <div class="card col-12">
-      <div class="card-body">
-        <grafico-cliente-compra></grafico-cliente-compra>
-      </div>
-    </div>
-  </div>       
+       
 </div>
 
 </template>
@@ -86,16 +44,9 @@ import { mapGetters} from 'vuex'
 
 import '../config/filterData'
 import { } from "chartjs-plugin-datalabels";
-import GraficoQuantidadeProdutoVendidos from './../BI/GraficoQuantidadeProdutoVendidos.vue'
-import GraficoComissaoVendedor from './../BI/GraficoComissaoVendedor.vue'
-import GraficoTotal from './../BI/GraficoTotal.vue'
-import GraficoMes from './../BI/GraficoMes.vue'
-import GraficoAno from './../BI/GraficoAno.vue'
-import GraficoClienteCompra from './../BI/GraficoClienteCompra'
 export default {
     
 name: 'LineChartContainer',
-  components: { GraficoQuantidadeProdutoVendidos,GraficoComissaoVendedor,GraficoClienteCompra, GraficoTotal, GraficoMes, GraficoAno },
     data() {
       return{
         testando1:null,
@@ -125,48 +76,5 @@ name: 'LineChartContainer',
 </script>
 
 <style>
-  div.abc{
-    width: 640px;
-    display: flex;
-    flex-direction: row;
-    justify-content:center;
-    align-items: center;
-    margin-top: 13px;
-    margin-left: 100px;
-  }
 
-div.teste{
-  width: 599px;
-    display: flex;
-    flex-direction: row;
-    justify-content:center;
-    align-items: center;
-    margin-top: 200px;
-    margin-left: 100px;
-}
-  div .painel{
-    display: flex;
-    flex-direction: column;
-    justify-content:flex-start;
-    align-items: center;
-    height: 100px;
-  }
-
-  div.abc h4{
-    color: black;
-  }
-
-  div .card{
-    
-    width: 600px;
-    height: 360px;
-    margin: 10px;
-  }
-
-  div .card p{
-    color:gray;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
 </style>

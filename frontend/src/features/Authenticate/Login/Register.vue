@@ -67,7 +67,7 @@
               <textarea type="text" name="name" v-model="form.about" required class=" form-control form-control-sm "></textarea>
             </div>
           </div>
-            <button class="btn btn-sm btn-primary">Entrar</button><br><br>
+            <button class="btn btn-sm btn-primary">Registrar</button><br><br>
         </form>
       </div>
   </div>
