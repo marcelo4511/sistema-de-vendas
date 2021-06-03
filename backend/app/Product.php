@@ -18,6 +18,11 @@ class Product extends Model
         'status',
         'category_id'
     ];
+
+    public function details_sales()
+    {
+        return $this->hasOne(Product::class);
+    }
     
     public function categories()
     {

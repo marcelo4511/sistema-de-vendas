@@ -18,7 +18,7 @@
             </select>
             <input class="form-control form-control-sm col-md-2" type="search" name="nome" placeholder="Buscar">
         </div>
-        <div class="table-responsive scroll" ref="scroll" style="overflow-y:auto;height:300px;margin-top:1vh;">
+        <div class="table-responsive scroll" style="overflow-y:auto;height:300px;margin-top:1vh;">
             <table class="table table-hover table-bordered table-sm"> 
                 <thead class="thead-light text-center">
                     <tr>
@@ -46,9 +46,10 @@
                             </div>
                         </td>
                     </tr>
+                    <tr v-if="loading"><td colspan="7" align="center" ><i  class="mt-2 spinner-border spinner-border spinner text-primary" role="status" aria-hidden="true"></i></td></tr>
+                    <tr v-if="loading == false && produtos.length == 0"><td colspan="7"  align="center" style="border:0;margim-bottom:2px;"><label class="col-form-label col-form-label-sm">Nenhum registro encontrado.</label></td></tr>
                 </tbody>
             </table> 
-            <div v-show="loading && produtos.length == 0" style="text-align:center;"><label class="col-form-label col-form-label-sm">Nenhum registro encontrado.</label> </div>
         </div>
     </div>
 </main>

@@ -29,7 +29,8 @@
                     <td>{{provider.valor | money}}</td>
                     <td>{{provider.dt_vencimento | momentDate}}</td>
                     <td>{{provider.user.name}}</td>
-                    <td>{{provider.Comprovante}}</td>
+                    <td v-if="provider.comprovante"><button class="btn btn-sm btn-primary"><i class="fa fa-camera"></i></button></td>
+                    <td v-else></td>
                    <td>{{provider.situacao.descricao}}</td>
 
                     <td class="align-middle" width="20%">   
@@ -54,7 +55,7 @@
                                 </div>
                                 <div class="form-group mb-3">
                                     <label for="">Comprovante</label>
-                                    <input type="file" class="form-control form-control-sm" required>
+                                    <input type="file" class="form-control form-control-sm" v-on:change="uploadImagem">
                                 </div>
                             <button class="btn btn-sm btn-success" @click="getAtualizaProvider(provider.id)">Atualizar</button>
                             </div>
@@ -147,6 +148,19 @@ export default {
             provider.tipo_movimentacao_id = 2
             axios.post(`${API_BASE_URL}/movimentacao/`,provider).then(() => {
             })
+        },
+        uploadImagem(e) {
+          let arquivo = e.target.files ?? e.dataTransfer.files
+          if(!arquivo.length){
+            return
+          }
+
+          let reader = new FileReader()
+          reader.onload = (e) => {
+            this.provider.comprovante = e.target.result
+          }
+          console.log(reader)
+         return reader.readAsDataURL(arquivo[0])
         },
         aprovar(provider){
             swal({

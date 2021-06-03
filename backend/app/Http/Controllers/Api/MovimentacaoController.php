@@ -12,21 +12,6 @@ use Illuminate\Support\Facades\Auth;
 
 class MovimentacaoController extends Controller
 {
-    public function index() 
-    {
-        $clients = Movimentacao::select('id','dt_vencimento','comprovante','valor','descricao','user_id','tipo_movimentacao_id')
-                                ->with(['user'=> function($query) {
-                                    $query->orderBy('id','asc');
-                                }])
-                                ->with(['tipo_movimentacao'=> function($query) {
-                                    $query->orderBy('id','desc');
-                                }])
-                                ->whereRaw('Date(dt_vencimento) = CURDATE()')
-                                ->orderBy('dt_vencimento','desc')
-                                ->get();
-        return response()->json($clients);
-    }
-
     public function filter(Request $request) 
     {
         $clients = Movimentacao::select('id','dt_vencimento','comprovante','valor','descricao','user_id','tipo_movimentacao_id')

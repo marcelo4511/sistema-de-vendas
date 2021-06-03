@@ -89,7 +89,6 @@ class BillsToPayController extends Controller
     public function update(Request $request,$id) 
     {
        try{
-
            $data = $request->all();
            $billstopay = BillsToPay::find($id);
            if($request->hasFile($data['comprovante'])) {

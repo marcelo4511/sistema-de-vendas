@@ -6,13 +6,20 @@
 </template>
 
 <script>
+import moment from 'moment'
 import axios from 'axios'
+import {API_BASE_URL} from '../config/Api'
 export default {
 
   data() {
     return {
       loading:false,
       height:220,
+       payload: {
+        ano: moment().year(),
+        clients:0,
+        vendedor:0
+      },
       options: {
         colors: ['#FFFF00'],
         title: {
@@ -110,12 +117,19 @@ export default {
     }
   },
   created(){
+    this.get();
+    this.$root.$on('selecionar' ,(payload) => {
+      this.payload.ano = payload.ano
+      this.payload.clients = payload.clients
+      this.payload.vendedor = payload.vendedor
       this.get()
-  },methods:{
+    }) 
+  },
+  methods:{
       get() {
         this.loading = true
         this.height = 220;
-          axios.post('http://localhost:8000/api/bi/grafico/mensal').then(res => {
+          axios.post(`${API_BASE_URL}/bi/grafico/mensal`,{payload:this.payload}).then(res => {
               this.options.xaxis.categories = res.data.categories
               this.series = [{ 'name': 'Vendas','data': res.data.series }]
               this.loading = false

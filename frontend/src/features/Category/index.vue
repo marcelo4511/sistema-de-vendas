@@ -10,7 +10,7 @@
     <div class=" border border-black shadow p-3 bg-white rounded" >
         <div class="form-row d-flex justify-content-between">
           <button class="btn btn-sm btn-primary mb-1"><router-link tag="span" @click="loadingCreate == true" :disabled="loadingCreate" to="categories/create"><i class="fa fa-plus mr-1"></i>Cadastrar</router-link></button>
-           <select name="" id="" class="form-control form-control-sm col-12 col-md-4 mb-1" v-model="status" @change="get">
+           <select name="" id="" class="form-control form-control-sm col-12 col-md-4 mb-1" v-model="status" @change="buscar">
             <option selected value="">Status</option>
             <option value="Ativo">Ativo</option>
             <option value="Inativo">Inativo</option>
@@ -35,12 +35,12 @@
                 </thead>
                 <tbody class="text-center">
                     <tr v-for="category of categories" :key="category.id">
-                        <td class="align-middle" style="font-size: 1em; height:10px;">{{category.name}}</td>
-                        <td class="align-middle" style="font-size: 1em; height:10px;">{{category.status}}</td>
-                        <td>
-                          <router-link :to="`/categoryedit/${category.id}/edit`" class="btn btn-sm btn-warning"><i class="fa fa-pen"></i></router-link>
-                          <button @click="removeList(category)" class="btn btn-sm btn-danger ml-2"><i class="fa fa-trash"></i></button>
-                        </td>
+                      <td class="align-middle" style="font-size: 1em; height:10px;">{{category.name}}</td>
+                      <td class="align-middle" style="font-size: 1em; height:10px;">{{category.status}}</td>
+                      <td>
+                        <router-link :to="`/categoryedit/${category.id}/edit`" class="btn btn-sm btn-warning"><i class="fa fa-pen"></i></router-link>
+                        <button @click="removeList(category)" class="btn btn-sm btn-danger ml-1"><i class="fa fa-trash"></i></button>
+                      </td>
                     </tr>
                     <tr v-if="loading"><td colspan="3" align="center" ><i  class="mt-2 spinner-border spinner-border spinner text-primary" role="status" aria-hidden="true"></i></td></tr>
                     <tr v-if="loading == false && categories.length == 0"><td colspan="3"  align="center" style="border:0;margim-bottom:2px;"><label class="col-form-label col-form-label-sm">Nenhum registro encontrado.</label></td></tr>

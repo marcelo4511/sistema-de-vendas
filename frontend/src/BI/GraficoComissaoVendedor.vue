@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import {API_BASE_URL} from '../config/Api'
 import moment from  'moment'
 import axios from 'axios'
 import dashboard from '../features/BI/dashboard'
@@ -134,8 +135,7 @@ export default {
       get() {
         this.loading = true
         this.height = 220;
-          axios.post(`http://localhost:8000/api/bi/grafico/comissao/vendedor`,{payload:this.payload}).then(res => {
-            console.log(this.payload);
+          axios.post(`${API_BASE_URL}/bi/grafico/comissao/vendedor`,{payload:this.payload}).then(res => {
             this.loading = false
               this.options.xaxis.categories = res.data.categories
               this.series = [{ 'name': 'Commissão','data': res.data.series }]

@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import {API_BASE_URL} from '../config/Api'
 import moment from 'moment'
 import axios from 'axios'
 export default {
@@ -16,6 +17,8 @@ export default {
        payload: {
         mes: moment().month(),
         ano: moment().year(),
+        clients:0,
+        vendedor:0
       },
       height:220,
       options: {
@@ -63,14 +66,22 @@ export default {
         },
         plotOptions: {
           bar: {
-               horizontal: false,
+            horizontal: false,
             columnWidth: '80%',
-            dataLabels: {
-              position: 'top',
-              hideOverflowingLabels: true,
-            },
+            
           },
         },
+        dataLabels: {
+              style: {
+                fontSize: '12px',
+                fontFamily: 'Helvetica, Arial, sans-serif',
+                fontWeight: 'bold',
+                colors: ['black'],  
+              },              
+              formatter: val => {
+                return parseFloat(val).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
+              },
+            },
         grid: {
           borderColor: '#e7e7e7',
           row: {
@@ -94,10 +105,10 @@ export default {
           },
         },
         tooltip: {
-          shared: true,
-          intersect: false,
           y: {
-    
+            formatter: function (val) {
+              return parseFloat(val).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
+            },
           },
         },
       },
@@ -117,6 +128,8 @@ export default {
     this.$root.$on('selecionar' ,(payload) => {
       this.payload.mes = payload.mes
       this.payload.ano = payload.ano
+      this.payload.clients = payload.clients
+      this.payload.vendedor = payload.vendedor
       this.get()
     }) 
   },
@@ -124,7 +137,7 @@ export default {
       get() {
         this.loading = true
         this.height = 220;
-          axios.post('http://localhost:8000/api/bi/grafico/quantidade/total',{payload:this.payload}).then(res => {
+          axios.post(`${API_BASE_URL}/bi/grafico/quantidade/total`,{payload:this.payload}).then(res => {
             
                 this.options.xaxis.categories = res.data.categories
             

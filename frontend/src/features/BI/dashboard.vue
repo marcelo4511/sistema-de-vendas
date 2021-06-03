@@ -44,35 +44,35 @@
     <grafico-ano></grafico-ano> 
   </div>
   <div class="col-12 d-flex mb-2 ">
-    <div class="card col-11 col-md-6 mr-2">
+    <div class="card col-12 col-md-6 mr-1">
       <div class="card-body">
         <grafico-comissao-vendedor></grafico-comissao-vendedor>
       </div>
     </div>
 
-    <div class="card col-11 col-md-5">
+    <div class="card col-12 col-md-6">
       <div class="card-body">
         <grafico-total></grafico-total>
       </div>
     </div>
   </div>
 
-  <div class="d-flex mb-2">
+  <div class="col-12 d-flex mb-2">
     <div class="card col-12 col-md-6 mr-2">
       <div class="card-body">
         <grafico-mes></grafico-mes>
       </div>
     </div>
 
-    <div class="card col-11 col-md-5">
+    <div class="card col-12 col-md-6">
       <div class="card-body">
         <grafico-quantidade-produto-vendidos></grafico-quantidade-produto-vendidos>
       </div>
     </div>
   </div>       
       
-  <div class=" mb-2">
-    <div class="card col-11">
+  <div class="col-12 mb-2">
+    <div class="card col-12">
       <div class="card-body">
         <grafico-cliente-compra></grafico-cliente-compra>
       </div>
@@ -83,7 +83,7 @@
 </template>
 
 <script>
-
+import {API_BASE_URL} from '../../config/Api'
 import { mapGetters} from 'vuex'
 import axios from 'axios'
 import '../../config/filterData'
@@ -124,10 +124,10 @@ name: 'bi',
     this.getVendedor()
   },
    mounted(){
-       axios.get(`http://localhost:8000/api/clients`).then(res => {
+       axios.get(`${API_BASE_URL}/clients`).then(res => {
             this.clients = res.data
         })
-        axios.get(`http://localhost:8000/api/users`).then(res => {
+        axios.get(`${API_BASE_URL}/users`).then(res => {
             this.users = res.data
             let vendedorFiltro = this.users.filter(contasPagar => contasPagar.type_user_id == 1 || contasPagar.type_user_id == 3);
             this.users = vendedorFiltro

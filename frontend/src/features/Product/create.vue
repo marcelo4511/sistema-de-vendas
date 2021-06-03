@@ -15,19 +15,22 @@
       <div class="row ">
         <div class="form-group col-md-4">
           <label class="col-form-label col-form-label-sm">Nome</label>
-          <input type="text" name="name" v-model="product.name" @input="product.name = $event.target.value.toUpperCase()" v-validate = "'required'" data-vv-as="Name" :class="['form-control form-control-sm', {'is-invalid': errors.has('name')}]">
+          <input type="text" name="name" v-model="product.name" @input="product.name = $event.target.value.toUpperCase()"
+           v-validate = "'required'" data-vv-as="Nome" :class="['form-control form-control-sm', {'is-invalid': errors.has('name')}]">
           <div v-show="errors.has('name')" class="invalid-feedback">{{ errors.first('name') }}</div>
         </div>
         <div class="form-group col-md-4">
           <label class="col-form-label col-form-label-sm">Descrição</label>
-          <input type="text" name="description" v-model="product.description"  v-validate = "'required'" data-vv-as="Descrição" :class="['form-control form-control-sm', {'is-invalid': errors.has('description')}]">
+          <input type="text" name="description" v-model="product.description"  v-validate = "'required'" data-vv-as="Descrição"
+           :class="['form-control form-control-sm', {'is-invalid': errors.has('description')}]">
           <div v-show="errors.has('description')" class="invalid-feedback">{{ errors.first('description') }}</div>
         </div>     
         <div class="form-group col-md-4">
           <label class="col-form-label col-form-label-sm">Categorias</label>
-          <select  v-model="product.category_id"  name="category_id" v-validate = "'required'" data-vv-as="Categoria" :class="['form-control form-control-sm', {'is-invalid': errors.has('category_id')}]">
-                  <option  disabled selected value="">selecione</option>
-                  <option  v-for="(category, key) in list" v-show="category.status == 'Ativo'" :key="key" :value="category.id">{{category.name}}</option>
+          <select  v-model="product.category_id"  name="category_id" v-validate = "'required'" data-vv-as="Categoria" 
+          :class="['form-control form-control-sm', {'is-invalid': errors.has('category_id')}]">
+            <option  disabled selected value="">selecione</option>
+            <option  v-for="(category, key) in list" v-show="category.status == 'Ativo'" :key="key" :value="category.id">{{category.name}}</option>
           </select>
           <div v-show="errors.has('category_id')" class="invalid-feedback">{{ errors.first('category_id') }}</div>
         </div> 
@@ -36,7 +39,7 @@
       <div class="row">
         <div class="form-group col-md-4">
           <strong>Imagem</strong>
-          <input type="file" name="imagem" v-validate="'required|mimes:pdf'" data-vv-as="Imagem"  :class="['form-control form-control-sm form-control form-control-sm-sm', { 'is-invalid':errors.has('imagem')}]" class="form-control form-control-sm col-md-auto" id="imagem" v-on:change="uploadImagem">
+          <input type="file" name="imagem" v-validate="'required'" data-vv-as="Imagem"  :class="['form-control form-control-sm form-control form-control-sm-sm', { 'is-invalid':errors.has('imagem')}]" class="form-control form-control-sm col-md-auto" id="imagem" v-on:change="uploadImagem">
           <span v-show="errors.has('imagem')" class="invalid-feedback">
             {{ errors.first('imagem') }}
           </span>
@@ -63,7 +66,7 @@
           <div v-show="errors.has('status_id')" class="invalid-feedback">{{ errors.first('status_id') }}</div>
       </div>
     </div>
-    <button type="submit" class="btn btn-sm btn-info" :disabled="loading">Cadastrar</button>
+    <button type="submit" class="btn btn-sm btn-info" :disabled="loading"><i v-if="loading" class="spinner-border spinner-border-sm spinner" role="status" aria-hidden="true"></i>Cadastrar</button>
   </form>
 </main>
 </template>
@@ -92,7 +95,6 @@ export default {
             pesquisa:[], 
             total:0,
             count:0,
-
             money: {
             decimal: ',',
             thousands: '.',
@@ -115,7 +117,6 @@ export default {
           if(!arquivo.length){
             return
           }
-
           let reader = new FileReader()
           reader.onload = (e) => {
             this.product.imagem = e.target.result
@@ -123,15 +124,15 @@ export default {
          return reader.readAsDataURL(arquivo[0])
         },
         onSubmit(){
-          this.loading = true
-           this.$validator.validate().then(res=> {
-              if(res) {   
+          this.$validator.validate().then(res=> {
+            if(res) {   
+                this.loading = true
                 this.$store.dispatch('Product/postProducts',this.product).then(() => {
                 this.loading = false
                 this.$noty.success("Cadastrado com sucesso!!") 
                 this.$router.push('/products')
                 }).catch(() => {
-                  this.$noty.info("Houve um problema com o seu formulério. Por favor, tente novamente.");
+                  this.$noty.info("Houve um problema com o seu formulário. Por favor, tente novamente.");
                 })
               }
             }) 

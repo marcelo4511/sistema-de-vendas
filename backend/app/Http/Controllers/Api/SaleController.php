@@ -63,31 +63,27 @@ class SaleController extends Controller
         
         try{
             $data = $request->all();
-            //$data['dataVenda'] = Carbon::parse($data['dataVenda'])->format('d/m/Y');
             $data['situacao_id'] = 1;
             $data['user_id'] = Auth::user()->id;
             $venda = Sale::create($data);
-            
-           if(!empty($data['details_sales'])){
 
-               foreach($data['details_sales'] as $detalhes) {
-                    Detail::create([
-                       'sale_id' => $venda->id,
-                       'product_id' => $detalhes['product_id'],
-                       'subtotal' => $detalhes['subtotal'],
-                       'price' => $detalhes['price'],
-                       'estoque' => $detalhes['estoque'],
-                       'quantidade' => $detalhes['quantidade'],
+            foreach($data['details_sales'] as $detalhes) {
+                Detail::create([
+                    'sale_id' => $venda->id,
+                    'product_id' => $detalhes['product_id'],
+                    'subtotal' => $detalhes['subtotal'],
+                    'price' => $detalhes['price'],
+                    'estoque' => $detalhes['estoque'],
+                    'quantidade' => $detalhes['quantidade'],
+                ]);
+                if(!empty($detalhes['estoque'])){
+                    $produto = Product::select('id','estoque')->find($detalhes['product_id']);
+                    $produto->update([
+                        'estoque' => $detalhes['estoque'],
                     ]);
-                    if(!empty($detalhes['estoque'])){
-                        $produto = Product::select('id','estoque')->find($detalhes['product_id']);
-                        $produto->update([
-                            'estoque' => $detalhes['estoque'],
-                        ]);
-                    }
-                } 
-            }
-
+                }
+            } 
+            
             if($data['formapagamento']) {
                 FormaPagamento::create([
                     'sale_id' => $venda->id,
@@ -110,7 +106,7 @@ class SaleController extends Controller
     public function show($id)
     {
         try{
-            $venda = Sale::with('details_sales','formaPagamento','situacao','clients')->find($id);
+            $venda = Sale::with('details_sales.products','formaPagamento','situacao','clients')->find($id);
             return response()->json($venda,200);
 
         }catch(Exception $e){
@@ -127,30 +123,23 @@ class SaleController extends Controller
             $data['situacao_id'] = 1;
             $data['user_id'] = Auth::user()->id;
             $venda->update($data);
-            
-            if($data['details_sales']){
+            $venda->details_sales()->delete();
                 foreach($data['details_sales'] as $detalhes){
-                    if(isset($detalhes['id'])){
-
-                        Detail::updateOrCreate(
-                            ['id' => $detalhes['id'] ?? null],
-                            [
-                                'id' => $detalhes['id'],
-                                'sale_id' => $venda->id,
-                                'product_id' => $detalhes['product_id'],
-                                'subtotal' => $detalhes['subtotal'],
-                                'quantidade' => $detalhes['quantidade'],
-                                'price' => $detalhes['price'],
-                                ]);
-                            }
-                           // $venda->details_sales()->sync($data['details_sales']);
-                   // if(!empty($detalhes['estoque'])){
-                    //    $produto = Product::select('id','estoque')->find($detalhes['product_id']);
-                    //    $produto->update([
-                    //        'estoque' => $detalhes['estoque'],
-                    //    ]);
-                    //}
+                    Detail::create([
+                        'sale_id' => $venda->id,
+                        'product_id' => $detalhes['product_id'],
+                        'subtotal' => $detalhes['subtotal'],
+                        'quantidade' => $detalhes['quantidade'],
+                        'price' => $detalhes['price'],
+                    ]);
+                        
+                if(!empty($detalhes['products']['estoque'])){
+                    $produto = Product::select('id','estoque')->find($detalhes['product_id']);
+                    $produto->update([
+                        'estoque' => $detalhes['products']['estoque'],
+                    ]);
                 }
+                
             } 
 
             if($data['forma_pagamento']) {
@@ -163,7 +152,7 @@ class SaleController extends Controller
                 ]);
             }
            // $this->sendMail($venda->id);
-            Log::info('Usuário: '. Auth::user()->name . ' | ' . __METHOD__ . ' | ' . json_encode($request->all()) . $request->ip());
+            Log::info('Usuário: '. Auth::user()->name . ' | ' . __METHOD__ . ' | ' . json_encode($request->except('imagem')) . $request->ip());
             return response()->json(['success' => 'OK','resultado' => $data],200);
         }catch(Exception $exception){
             $exception_message = !empty($exception->getMessage()) ? trim($exception->getMessage()) : 'App Error Exception';
@@ -206,7 +195,7 @@ class SaleController extends Controller
     public function relatorioexcel() {
         header('Acess-Control-Allow-Origin:*');
         header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment; filename="file.xls"');
+        header('Content-Disposition: attachment; filename="vendas.xls"');
 
         $vendas = Sale::select('dataVenda','client_id','total')
                         ->with('clients',
@@ -318,8 +307,8 @@ class SaleController extends Controller
     public function deleteDetalhe($id)
     {
         try{
-            $teste = Detail::find($id); 
-           $teste->delete();
+            $produto = Detail::find($id); 
+            $produto->delete();
             return response()->json(['data' => ['msg' => 'Venda removida com sucesso'],'status' => 200]);
         }catch(Exception $e) {
             return response()->json(['error' => $e->getMessage()],400);

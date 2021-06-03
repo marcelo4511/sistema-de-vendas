@@ -19,27 +19,29 @@
           <div class="text-danger" v-if="errorsRequest.client_id">{{ errorsRequest.client_id[0] }}</div>
         </div>
         
-          <div class="form-group col-md-6">
-            <label  class="col-form-label col-form-label-sm">Data da Venda</label>
-            <input type="date" name="datavenda" v-validate = "'required'" data-vv-as="Data Venda" required v-model="datavenda" class="form-control form-control-sm" :class="['form-control form-control-sm form-control form-control-sm-sm', {'is-invalid': errors.has('datavenda')},`${errorsRequest.dataVenda ? `is-invalid` : ``}`]" />
-            <div v-if="submitted && errors.has('datavenda')" class="invalid-feedback">{{ errors.first('datavenda') }}</div>
-            <div class="text-danger" v-if="errorsRequest.dataVenda">{{ errorsRequest.dataVenda[0] }}</div>
-          </div>
+        <div class="form-group col-md-6">
+          <label  class="col-form-label col-form-label-sm">Data da Venda</label>
+          <input type="date" name="datavenda" v-validate = "'required'" data-vv-as="Data Venda" required v-model="datavenda" class="form-control form-control-sm" :class="['form-control form-control-sm form-control form-control-sm-sm', {'is-invalid': errors.has('datavenda')},`${errorsRequest.dataVenda ? `is-invalid` : ``}`]" />
+          <div v-if="submitted && errors.has('datavenda')" class="invalid-feedback">{{ errors.first('datavenda') }}</div>
+          <div class="text-danger" v-if="errorsRequest.dataVenda">{{ errorsRequest.dataVenda[0] }}</div>
         </div>
+      </div>
       
       <div class="border border-black shadow p-2 bg-white rounded">
-        <div class="form-row d-flex-justify-content-around mb-2 ml-2" style="height:10px;" >
-          <span class="col-10 "><b>Produtos</b> </span>
-          <button type='button' class="btn btn-sm btn-info mr-1" @click="adiciona">
-            <i class="fas fa-plus"></i>
-          </button>
-          <button  class="btn btn-sm btn-danger" @click="remova" ><i class="fa fa-times"></i></button>
+        <div class="form-row d-flex justify-content-between align-items-center mb-1" >
+          <span class="col-11"><b>Produtos</b> </span>
+          <div class="col-1">
+            <button type='button' class="btn btn-sm btn-info mr-1" @click="adiciona">
+              <i class="fas fa-plus"></i>
+            </button>
+            <button  class="btn btn-sm btn-danger" @click="remova" ><i class="fa fa-times"></i></button>
+          </div>
         </div>
+        <hr class="border shadow-lg border-black" style=" margin:0 !important;"/>
         <div class="form-row">   
           <div class="card-body">
             <div class="table table-sm" > 
-              <div class="text-center">
-                <div class="form-row" v-for="(detalheVenda,key) of details_sales" :key="key">
+                <div class="form-row d-flex justify-content-between" v-for="(detalheVenda,key) of details_sales" :key="key">
                     <div class="col-2">
                       <label class="col-form-label col-form-label-sm "><strong>Produto</strong></label>
                         <select class="form-control form-control-sm"  :name="`product_id_${key}`" data-vv-as="Produto" v-validate="'required'" :class="['form-control form-control-sm form-control form-control-sm-sm', {'is-invalid': errors.has(`product_id_${key}`)},`${errorsRequest[`details_sales.${key}.product_id`] ? `is-invalid` : ``}`]"  :disabled="disabled" required v-model="detalheVenda.product_id" @change="getProducts(detalheVenda.product_id,key), calculateEstoque(detalheVenda)">
@@ -64,14 +66,14 @@
                     </div>
                     <div class="col-2">
                       <label class="col-form-label col-form-label-sm"><strong>Quantidade</strong></label>
-                      <input  :disabled="loading" class="form-control form-control-sm"  :name="`quantidade${key}`" type="text" data-vv-as="Quantidade" v-validate="'required'" :class="['form-control form-control-sm form-control form-control-sm-sm', {'is-invalid': errors.has(`quantidade${key}`)},`${errorsRequest[`details_sales.${key}.quantidade`] ? `is-invalid` : ``}`]" v-model="detalheVenda.quantidade" @change="calculateLineTotal(detalheVenda)" @input="calculateEstoque(detalheVenda)">
+                      <input  :disabled="loading" class="form-control form-control-sm"  :name="`quantidade${key}`" type="text" data-vv-as="Quantidade" readonly v-validate="'required'" :class="['form-control form-control-sm form-control form-control-sm-sm', {'is-invalid': errors.has(`quantidade${key}`)},`${errorsRequest[`details_sales.${key}.quantidade`] ? `is-invalid` : ``}`]" v-model="detalheVenda.quantidade" @change="calculateLineTotal(detalheVenda)" @input="calculateEstoque(detalheVenda)">
                       <span v-show="errors.has(`quantidade${key}`)" class="invalid-feedback">{{ errors.first(`quantidade${key}`) }}</span>
                         <span class="invalid-feedback">
                           {{ `${errorsRequest[`details_sales.${key}.quantidade`] ? errorsRequest[`details_sales.${key}.quantidade`] : `` }` }}<br>
                         </span> 
                     </div>
                     <div >
-                      <div  style="margin-top:30px;" @click="inc(detalheVenda)">
+                      <div style="margin-top:30px;" @click="inc(detalheVenda)">
                         <b><i class="fa fa-sort-up"></i></b>
                       </div>
                       <div style="margin-top:-15px;" @click="dec(detalheVenda)">
@@ -83,7 +85,6 @@
                       <money readonly disabled :value="detalheVenda.subtotal" v-bind="money" name="totalPrejuizo" class="form-control form-control-sm"></money>
                     </div>
                 </div>
-              </div>
             </div>
           
             <div class="form-row">
@@ -147,7 +148,7 @@
         </div>
       </div>
       </div>
-    <button type="submit" @click="onSubmit" class="btn btn-sm btn-success mt-2">Cadastrar</button>
+    <button type="submit" @click="onSubmit" class="btn btn-sm btn-success mt-2" :disabled="loading"><i v-if="loading" class="spinner-border spinner-border-sm spinner" role="status" aria-hidden="true"></i>Cadastrar</button>
   </div>
 </template>
 
@@ -163,7 +164,7 @@ export default {
   data(){
     return {
       disabled:false,
-      loading:true,
+      loading:false,
       valorCreditoData:null,
       result: 0,
       details_sales:[{
@@ -221,6 +222,7 @@ export default {
     this.submitted = true;
     this.$validator.validate().then(res=>{
         if(res) {
+        this.loading = true
         axios.post('http://localhost:8000/api/sales',{
             client_id:this.client_id,
             dataVenda:this.datavenda,
@@ -229,10 +231,12 @@ export default {
             formapagamento:this.formapagamento
             
         }).then((res) => {
+          
           let usuario = res.data.resultado.user_id
           let indexCliente = this.client_id - 1
           this.submitContaReceber(indexCliente)
           this.$noty.success("Cadastrado com sucesso!!")
+          this.loading = false
           if(usuario === 1) {
             return this.$router.push('/sales')
           }else {
@@ -285,7 +289,6 @@ export default {
       detalheVenda.subtotal = total.toFixed(2) ? total.toFixed(2) : 0
     },
     calculateEstoque(detalheVenda) {
-     //  parseInt(detalheVenda.quantidade.replace(/\D/g, ''))
       setTimeout(function(){ 
         detalheVenda.estoque - 1
         detalheVenda.quantidade +  1

@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import {API_BASE_URL} from '../config/Api'
 import axios from 'axios'
 import moment from 'moment'
 export default {
@@ -17,6 +18,8 @@ export default {
       payload: {
         mes: moment().month(),
         ano: moment().year(),
+        clients:0,
+        vendedor:0
       },
       options: {
         colors: ['#800080'],
@@ -81,6 +84,9 @@ export default {
           style: {
             colors: ['#333'],
           },
+           formatter: function (val) {
+            return parseFloat(val).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
+          },
           enabled: true,
           offsetY: -20,
           hideOverflowingLabels: false,
@@ -99,9 +105,10 @@ export default {
           },
         },
         tooltip: {
-          shared: true,
-          intersect: false,
           y: {
+            formatter: function (val) {
+              return parseFloat(val).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
+            },
           },
         },
       },
@@ -113,20 +120,22 @@ export default {
     this.$root.$on('selecionar' ,(payload) => {
       this.payload.mes = payload.mes
       this.payload.ano = payload.ano
+      this.payload.vendedor = payload.vendedor
+      this.payload.clients = payload.clients
       this.get()
     }) 
   },
   methods:{
       get() {
-        this.loading = true
-        this.height = 220;
-          axios.post('http://localhost:8000/api/bi/grafico/quantidade/produtos/vendidos',{payload:this.payload}).then(res => {
-              this.options.xaxis.categories = res.data.categories
-              this.series = [{ 'name': 'Vendas','data': res.data.series }]
-              this.loading = false
-          }).then(() => {
-            this.height = 219;
-          })
+      this.loading = true
+      this.height = 220;
+        axios.post(`${API_BASE_URL}/bi/grafico/quantidade/produtos/vendidos`,{payload:this.payload}).then(res => {
+            this.options.xaxis.categories = res.data.categories
+            this.series = [{ 'name': 'Vendas','data': res.data.series }]
+            this.loading = false
+        }).then(() => {
+          this.height = 219;
+        })
       }
   }
 }

@@ -61,7 +61,7 @@
                         </tr>
                     </thead>
                     <tbody class="text-center">
-                        <tr v-for="(provider,k) in movimentacoes" :key="k"  >
+                        <tr v-for="(provider,k) in movimentacoes" :key="k">
                             <td class="align-middle" style="font-size: 1em; ">{{provider.descricao}}</td>
                             <td class="align-middle" style="font-size: 1em; ">{{provider.valor | money}}</td>
                             <td class="align-middle" style="font-size: 1em; ">{{provider.dt_vencimento | momentDate}}</td>
@@ -69,6 +69,8 @@
                             <td class="align-middle" v-show="provider.tipo_movimentacao_id == 2" style="font-size: 1em; "><span class="text-danger"><b>{{provider.tipo_movimentacao.descricao}}</b> </span></td>
                             <td class="align-middle" v-show="provider.tipo_movimentacao_id == 1"><span class="text-success"><b>{{provider.tipo_movimentacao.descricao}}</b> </span></td>
                         </tr>
+                        <tr v-if="loading"><td colspan="7" align="center" ><i  class="mt-2 spinner-border spinner-border spinner text-primary" role="status" aria-hidden="true"></i></td></tr>
+                        <tr v-if="loading == false && movimentacoes.length == 0"><td colspan="7"  align="center" style="border:0;margim-bottom:2px;"><label class="col-form-label col-form-label-sm">Nenhum registro encontrado.</label></td></tr>
                     </tbody>
                 </table>
                 <div v-show="movimentacoes == 0">
@@ -102,7 +104,7 @@ export default {
                 tipo_movimentacao_id:0,
                 de:null,
                 ate:null,
-                mes:0
+                mes:moment().format('M')
             },
             movimentacoes:[],
             movimentos:[],
@@ -116,8 +118,8 @@ export default {
     },
     created(){
         this.$store.dispatch('Provider/getProvider')
-        this.index()
         this.getTipo()
+        this.filter()
     },
     methods:{
         ...mapActions('Provider',['getProvider']),
@@ -128,27 +130,6 @@ export default {
         },
         filter(){
             axios.post(`${API_BASE_URL}/filtromovi`,this.filtro).then(res => {
-                this.movimentacoes = res.data
-            
-                this.movimentacoespagar = res.data
-                let contasPagarFiltro = this.movimentacoespagar.filter(contasPagar => contasPagar.tipo_movimentacao_id == 2);
-                
-                let contasPagarValor = contasPagarFiltro.map(contasPagar => { 
-                    return contasPagar.valor
-                });
-                this.movimentacoespagar = contasPagarValor
-
-                this.movimentacoesreceber = res.data
-                let contasReceberFiltro = this.movimentacoesreceber.filter(contasReceber => contasReceber.tipo_movimentacao_id == 1);
-                
-                let contasReceberValor = contasReceberFiltro.map(contasReceber => { 
-                    return contasReceber.valor
-                });
-                this.movimentacoesreceber = contasReceberValor
-            })
-        },
-        index(){
-            axios.get(`${API_BASE_URL}/movimentacao/lista`).then(res => {
                 this.movimentacoes = res.data
             
                 this.movimentacoespagar = res.data

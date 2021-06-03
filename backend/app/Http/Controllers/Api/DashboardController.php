@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    public function graficoMensal()
+    public function graficoMensal(Request $request)
     {
         try{
 
@@ -18,8 +18,17 @@ class DashboardController extends Controller
             $sales = Sale::whereHas('situacao',function($query) {
                 $query->whereSituacaoId(2);
             })
-            
             ->selectRaw('SUM(total) as teste,monthname (dataVenda) as mes')
+            ->when($request->payload['clients'], function ($query) use ($request) {
+                $query->whereHas('clients', function ($query) use ($request) {
+                    $query->whereId($request->payload['clients']);  
+                });
+            })
+            ->when($request->payload['vendedor'], function ($query) use ($request) {
+                $query->whereHas('user', function ($query) use ($request) {
+                    $query->whereTypeUserId($request->payload['vendedor']);  
+                });
+            })
             ->groupBy('mes')
             ->get();
 
@@ -80,6 +89,16 @@ class DashboardController extends Controller
                         ->when($request->payload['ano'], function ($query) use ($request) {
                             $query->whereYear('dataVenda',$request->payload['ano']);
                         })
+                        ->when($request->payload['clients'], function ($query) use ($request) {
+                            $query->whereHas('clients', function ($query) use ($request) {
+                                $query->whereId($request->payload['clients']);  
+                            });
+                        })
+                        ->when($request->payload['vendedor'], function ($query) use ($request) {
+                            $query->whereHas('user', function ($query) use ($request) {
+                                $query->whereTypeUserId($request->payload['vendedor']);  
+                            });
+                        })
                         ->groupBy('name')
                         ->get();
 
@@ -104,6 +123,16 @@ class DashboardController extends Controller
                         })
                         ->when($request->payload['ano'], function ($query) use ($request) {
                             $query->whereYear('dataVenda',$request->payload['ano']);
+                        })
+                        ->when($request->payload['clients'], function ($query) use ($request) {
+                            $query->whereHas('clients', function ($query) use ($request) {
+                                $query->whereId($request->payload['clients']);  
+                            });
+                        })
+                        ->when($request->payload['vendedor'], function ($query) use ($request) {
+                            $query->whereHas('user', function ($query) use ($request) {
+                                $query->whereTypeUserId($request->payload['vendedor']);  
+                            });
                         })
                         ->groupby('name')
                         ->get();
@@ -130,6 +159,16 @@ class DashboardController extends Controller
                         ->when($request->payload['ano'], function ($query) use ($request) {
                             $query->whereYear('dataVenda',$request->payload['ano']);
                         })
+                        ->when($request->payload['clients'], function ($query) use ($request) {
+                            $query->whereHas('clients', function ($query) use ($request) {
+                                $query->whereId($request->payload['clients']);  
+                            });
+                        })
+                        ->when($request->payload['vendedor'], function ($query) use ($request) {
+                            $query->whereHas('user', function ($query) use ($request) {
+                                $query->whereTypeUserId($request->payload['vendedor']);  
+                            });
+                        })
                         ->groupBy('name')
                         ->get();
 
@@ -144,7 +183,7 @@ class DashboardController extends Controller
     }
     public function graficoAnual(Request $request)
     {
-        $sales = Sale::whereHas('situacao',function($query) {
+       $sales =   Sale::whereHas('situacao',function($query) {
                             $query->whereSituacaoId(2);
                         })
                         ->selectRaw('SUM(total) as total,year (dataVenda) as ano')
@@ -159,5 +198,6 @@ class DashboardController extends Controller
                         }
 
                       return $arr;
+
     }
 }

@@ -16,6 +16,8 @@ export default {
       payload: {
         mes: moment().month(),
         ano: moment().year(),
+        clients:0,
+        vendedor:0
       },
       height:220,
       options: {
@@ -73,7 +75,7 @@ export default {
         grid: {
           borderColor: '#e7e7e7',
           row: {
-            colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+            colors: ['#f3f3f3', 'transparent'], 
             opacity: 0.5,
           },
         },
@@ -119,10 +121,12 @@ export default {
     this.$root.$on('selecionar' ,(payload) => {
       this.payload.mes = payload.mes
       this.payload.ano = payload.ano
+      this.payload.clients = payload.clients
+      this.payload.vendedor = payload.vendedor
       this.get()
     }) 
   },methods:{
-      get() {
+      get(){
         this.loading = true
         this.height = 220;
           axios.post('http://localhost:8000/api/bi/grafico/clientes/compra',{payload:this.payload}).then(res => {

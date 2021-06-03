@@ -115,7 +115,7 @@ export default {
             money: {
             decimal: ',',
             thousands: '.',
-            precision: 2,
+            //precision: 2,
             masked: false 
         },
       };

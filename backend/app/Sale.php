@@ -31,6 +31,7 @@ class Sale extends Model
     public function formapagamento()
     {
         return $this->hasOne(FormaPagamento::class);
+        
     }
 
     public function situacao()

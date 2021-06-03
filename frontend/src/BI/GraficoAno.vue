@@ -1,13 +1,14 @@
 <template>
 <div class="card col-4 mr-1 shadow p-1 bg-white rounded mb-2">
   <div class="card-body ">
-    <span v-if="!loading">TOTAL DE VENDAS ANUAIS : <b>R$ {{formatarMoeda(series)}}</b> </span>  
+    <span v-if="!loading">TOTAL DE VENDAS ANUAIS : <b>R$ {{formatarMoeda(total)}}</b> </span>  
     <span v-else class="text-center"><i class="spinner-border spinner-border spinner text-primary"></i></span>
   </div>
 </div>
 </template>
 
 <script>
+import {API_BASE_URL} from '../config/Api'
 import axios from 'axios'
 import moment from 'moment'
 export default {
@@ -16,7 +17,7 @@ export default {
     return {
       loading:false,
       height:220,
-      series: 0,
+      total: 0,
        payload: {
         ano: moment().year(),
       },
@@ -33,8 +34,8 @@ export default {
       get() {
         this.loading = true
         this.height = 220;
-          axios.post('http://localhost:8000/api/bi/grafico/anual',{payload:this.payload}).then(res => {
-              this.series =res.data
+          axios.post(`${API_BASE_URL}/bi/grafico/anual`,{payload:this.payload}).then(res => {
+              this.total  =res.data
               this.loading = false
           }).then(() => {
             this.height = 219;
