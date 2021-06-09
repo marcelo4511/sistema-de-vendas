@@ -43,10 +43,4 @@ class Sale extends Model
     {
         return $this->belongsTo(User::class,'user_id');
     }
-
-   // public function getTotalAttribute($total)
-//{
-//return $this->attributes['total'] = sprintf('R$ %s', number_format($this->attributes['total'], 2,",","."));
-//}
-
 }

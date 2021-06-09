@@ -1,16 +1,13 @@
 <template>
-
 <main>
   <h4 cabecalho="Produto">Produtos</h4>
   <nav aria-label="breadcrumb mb-4">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
-    
-      <li class="breadcrumb-item active" aria-current="page">Produtos</li>
+      <li class="breadcrumb-item"><router-link to="/products">Produtos</router-link></li>
+      <li class="breadcrumb-item active" aria-current="page">Criar</li>
     </ol>
   </nav>
-
-
   <form @submit.prevent="onSubmit">
       <div class="row ">
         <div class="form-group col-md-4">
@@ -30,7 +27,7 @@
           <select  v-model="product.category_id"  name="category_id" v-validate = "'required'" data-vv-as="Categoria" 
           :class="['form-control form-control-sm', {'is-invalid': errors.has('category_id')}]">
             <option  disabled selected value="">selecione</option>
-            <option  v-for="(category, key) in list" v-show="category.status == 'Ativo'" :key="key" :value="category.id">{{category.name}}</option>
+            <option  v-for="(category, key) in categories" v-show="category.status == 'Ativo'" :key="key" :value="category.id">{{category.name}}</option>
           </select>
           <div v-show="errors.has('category_id')" class="invalid-feedback">{{ errors.first('category_id') }}</div>
         </div> 
@@ -72,6 +69,8 @@
 </template>
 <script>
 import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
+import axios from 'axios'
+import {API_BASE_URL} from '../../config/Api'
 import {mapState,mapActions} from 'vuex'
 import {VMoney} from 'v-money'
 import '../../estilos/styles.css'
@@ -89,6 +88,7 @@ export default {
               status:''
             },
             produtos:[],
+            categories:[],
             loading:false,
             update:{},
             isEdit:false,
@@ -107,10 +107,16 @@ export default {
       directives: {money: VMoney},
 
     created(){
+        this.getCategorias()
         this.$store.dispatch('Category/setList')
         this.$store.dispatch('Product/getProducts')
     },
     methods:{
+      getCategorias(){
+            axios.get(`${API_BASE_URL}/get/categories`).then(res => {
+              this.categories = res.data
+            })
+        },
         ...mapActions('Product',['postProducts']),
         uploadImagem(e) {
           let arquivo = e.target.files ?? e.dataTransfer.files

@@ -21,25 +21,35 @@
         <div class="table-responsive scroll" id="infinite-list" style="overflow-y:auto;height:300px;margin-top:3vh;">
             <table class="table table-hover table-bordered table-sm" > 
                 <thead class="thead-light text-center">
-                    <tr>
+                   
                         <th v-for="column in columns" :key="column" @click="sortByColumn(column)"
                           scope="col" class="col-form-label col-form-label-sm">
-                        {{ column | columnHead }}
-                        <span v-if="column === sortedColumn">
-                          <i v-if="order == 'asc'" class="fa fa-sort"></i>
-                          <i v-else class="fa fa-arrow-down"></i>
-                        </span>
+                          {{ column | columnHead }}
+                          <span v-if="column == sortedColumn">
+                            <i v-show="order == 'asc'" class="fa fa-arrow-up"></i>
+                            <i v-show="order == 'desc'" class="fa fa-arrow-down"></i>
+                          </span>
                       </th>
                       <th scope="col" class="col-form-label col-form-label-sm">Ações</th>
-                    </tr>
+                    
                 </thead>
                 <tbody class="text-center">
-                    <tr v-for="category of categories" :key="category.id">
+                    <tr v-for="(category,indexCategoria) of categories" :key="category.id">
                       <td class="align-middle" style="font-size: 1em; height:10px;">{{category.name}}</td>
                       <td class="align-middle" style="font-size: 1em; height:10px;">{{category.status}}</td>
                       <td>
                         <router-link :to="`/categoryedit/${category.id}/edit`" class="btn btn-sm btn-warning"><i class="fa fa-pen"></i></router-link>
-                        <button @click="removeList(category)" class="btn btn-sm btn-danger ml-1"><i class="fa fa-trash"></i></button>
+                        <button class="btn btn-sm btn-danger ml-1" data-toggle="modal" :data-target="`#categoria${category.id}`"><i class="fa fa-trash"></i></button>
+                        <modal class="del" :title="`Deseja remover a Categoria`" :compl="`${category.name} ?`" :name="`categoria${category.id}` ">
+                          <div class="modal-body text-left" >
+                            <button class="btn btn-sm btn-primary mr-2" data-dismiss="modal"><i class="fas fa-times"></i> Cancelar</button>  
+                            <button class="btn btn-sm btn-danger" @click="removeCategory(category.id,indexCategoria)" :disabled="loading">
+                              <i v-if="loading" class="fa fa-trash"></i>
+                              <i v-else  class="spinner-border spinner-border-sm spinner" role="status" aria-hidden="true"></i>
+                              Deletar
+                            </button>
+                          </div>
+                        </modal>
                       </td>
                     </tr>
                     <tr v-if="loading"><td colspan="3" align="center" ><i  class="mt-2 spinner-border spinner-border spinner text-primary" role="status" aria-hidden="true"></i></td></tr>
@@ -47,8 +57,7 @@
                 </tbody>
             </table> 
         </div>
-    </div>
-    
+    </div>  
   </div>
 </template>
 
@@ -57,8 +66,11 @@ import {API_BASE_URL} from '../../config/Api'
 import axios from 'axios'
 import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
 import {mapState, mapActions} from 'vuex'
-import swal from 'sweetalert'
+import $ from 'jquery'
 export default {
+  components:{
+    Modal: () => import('../Modal/modal.vue')
+  },
  data(){
     return{
       loading: true,
@@ -71,7 +83,7 @@ export default {
       search:'',
       lastPage: 0,
       columns:['name','status'],
-      sortedColumn:['name'],
+      sortedColumn:'name',
       order: 'asc',
     }
   },
@@ -116,32 +128,31 @@ export default {
           })
         },
         sortByColumn(column) {
-          if (column === this.sortedColumn) {
+          if (column) {
+            this.sortedColumn = column
             this.order = (this.order == 'asc') ? 'desc' : 'asc'
+            console.log(this.order)
           }else{
             this.sortedColumn = column
             this.order = 'asc'
           }
+          this.page = null,
           this.get()
         },
-        removeList(category){
-           swal({
-            title: "Você está certo disso ?",
-            text: "Depois de excluído, você não será capaz de recuperar este arquivo!",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-            })
-            .then((willDelete) => {
-              if(willDelete) {
-                this.$store.dispatch('Category/removeList',category)
-                  swal("Cliente deletado com sucesso!", {
-                icon: "success",
-                });
+        removeCategory(category,indexCategoria){
+          if(category){
+            this.loading = true
+            axios.delete(`${API_BASE_URL}/categories/${category}`).then((res) => {
+              if(res.data.status){
+                this.$noty.success("Deletado com sucesso!!")
+                this.categories.splice(indexCategoria,1)
+                this.loading = false
+                $('.del').modal('hide');
               }else {
-                swal("seu dado está a salvo");
+                this.$noty.info("Houve erro na requisição!!")
               }
-          })
+            })
+          }
         }  
       },
   computed: {
@@ -149,12 +160,12 @@ export default {
   },
   filters: {
       columnHead(value) {
-
-      if(value == 'name') {
-        value = 'Nome'
-      }if(value == ''){
-        value = 'Ações'
-      }
+        if(value == 'name') {
+          value = 'Nome'
+        }
+        if(value == ''){
+          value = 'Ações'
+        }
         return value.split('_').join(' ')
       },
   },
@@ -166,13 +177,11 @@ export default {
     height: 10px;
     width: 10px;
   }
-
-.scroll::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-.scroll::-webkit-scrollbar-thumb {
-  background: linear-gradient(to right, #1e469a, #49a7c1);;
-  border-radius: 10px;
-}
+  .scroll::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  .scroll::-webkit-scrollbar-thumb {
+    background: linear-gradient(to right, #1e469a, #49a7c1);;
+    border-radius: 10px;
+  }
 </style>

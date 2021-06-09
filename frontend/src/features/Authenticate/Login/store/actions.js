@@ -8,9 +8,7 @@ const login =  ({ commit }, credentials) => {
       })
   },
 
-  
-
-   logout = ({ commit }) => {
+  logout = ({ commit }) => {
     commit('clearUserData')
   }
 

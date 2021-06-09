@@ -20,16 +20,16 @@ import ClientAtualiza from '../features/Client/edit'
 import Provider from '../features/Provider/index'
 import ProviderCadastro from '../features/Provider/create'
 import ProviderAtualiza from '../features/Provider/edit'
-
 import BillsToPay from '../features/BillsToPay/index'
 import BillsToPayCreate from '../features/BillsToPay/create'
 import Delay from '../features/BillsToPay/delay'
 import Today from '../features/BillsToPay/today'
-
 import BillsToReceive from '../features/BillsToReceive/index'
 import BillsToReceiveCreate from '../features/BillsToReceive/create'
-
 import Movimentacao from '../features/Movimentacao/index'
+import Compras from '../features/Compra/index'
+import ComprasCreate from '../features/Compra/store'
+import CompraEdit from '../features/Compra/edit'
 
 import Sales from '../features/Sale/index'
 import SalesCreate from '../features/Sale/create'
@@ -193,6 +193,28 @@ const routes = [
     meta: {
         auth: true
     },
+},{
+    name:'compras',
+    path:'/compras',
+    component:Compras,
+    meta: {
+        auth: true
+    },
+},{
+    name:'comprascreate',
+    path:'/compras/store',
+    component:ComprasCreate,
+    meta: {
+        auth: true
+    },
+},{
+    name:'comprasedit',
+    path:'/comprasedit/:id/edit',                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+    component:CompraEdit,
+    params:true,
+    meta: {
+        auth: true
+    },                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
 },{
     name:'sales',
     path:'/sales',

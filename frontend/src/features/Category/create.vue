@@ -18,6 +18,9 @@
               <input type="text" class="form-control form-control-sm col-md-12" name="name" v-model="category.name"
               v-validate = "'required'" data-vv-as="Nome" :class="['form-control form-control-sm', {'is-invalid': errors.has('name')}]">
               <div v-show="errors.has('name')" class="invalid-feedback">{{ errors.first('name') }}</div>
+              <span class="invalid-feedback" v-if="errorsBack.name">
+                {{ errorsBack.name[0]  }}<br>
+              </span> 
             </div>
       
             <div class="form-group col-4">
@@ -29,6 +32,9 @@
                   <option value=Inativo>Inativo</option>
                 </select>
                 <div v-show="errors.has('status')" class="invalid-feedback">{{ errors.first('status') }}</div>
+                <span class="invalid-feedback" v-if="errorsBack.status">
+                  {{  errorsBack.status[0]  }}<br>
+                </span> 
             </div>
           </div>
           <div class="form-group">
@@ -47,6 +53,7 @@ import {mapState,mapActions} from 'vuex'
 export default {
  data(){
       return{
+        errorsBack:[],
         loading:false,
         category:{
           name:'',
@@ -65,12 +72,17 @@ export default {
           this.$store.dispatch("Category/postList",this.category)
           try{
               this.$noty.success("Cadastrado com sucesso!!") 
-              setTimeout(() => {
-                this.$router.push('/categories')
-                this.loading = false
-              },3000)
-                }catch(e) {
-                  this.$noty.info("Houve um problema com o seu formulério. Por favor, tente novamente.",e);
+                setTimeout(() => {
+                  this.$router.push('/categories')
+                  this.loading = false
+                },3000)
+              }
+              catch(error){
+                  this.loading = false
+                    if(error.response.status == 422){
+                      return this.errorsBack = error.response.data.errors
+                    }
+                  this.$noty.info("Houve um problema com o seu formulário. Por favor, tente novamente.");
                 }
               }
             }) 

@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
     Route::namespace('Api')->middleware('auth:sanctum')->group(function(){
 
         Route::middleware('isAdmin')->group(function() {
+            //produtos
             Route::get('/products','ProductController@index');
             Route::get('/products/{id}','ProductController@show');
             Route::post('/products','ProductController@save');
@@ -25,18 +26,21 @@ use Illuminate\Support\Facades\Route;
             Route::delete('/productdeletefoto/{id}','ProductController@deleteFoto');
             Route::post('/filtro', 'ProductController@filtro');
             
+            //categories
             Route::get('/categories','CategoryController@index');
             Route::get('/categories/{id}','CategoryController@show');
             Route::post('/categories','CategoryController@save');
             Route::put('/categories/{id}','CategoryController@update');
             Route::delete('/categories/{id}','CategoryController@delete');
             
+            //clientes
             Route::resource('clients','ClientController');
             Route::get('/users','UserController@index');
             Route::get('/list','UserController@show');
             Route::put('/users','UserController@update');
             Route::get('/search','UserController@search');
             
+            //fornecedores
             Route::resource('fornecedores','FornecedorController');
 
             Route::resource('billstopay','BillsToPayController');
@@ -47,11 +51,13 @@ use Illuminate\Support\Facades\Route;
             Route::resource('billstoreceive','BillsToReceiveController');
             Route::post('billstoreceive/aprovar/{id}','BillsToReceiveController@aprovacao');
 
+            //movimentacoes
             Route::post('movimentacao','MovimentacaoController@store');
             Route::get('tipo','MovimentacaoController@tipo');
             Route::post('filtromovi','MovimentacaoController@filter');
             Route::get('movimentacao/lista','MovimentacaoController@index');
-
+            
+            //vendas
             Route::resource('sales','SaleController');
             Route::get('relatorioexcel','SaleController@relatorioexcel');
             Route::get('detalhesdelete/{id}','SaleController@deleteDetalhe');
@@ -61,6 +67,14 @@ use Illuminate\Support\Facades\Route;
             Route::get('filtrar','SaleController@filter');
             Route::get('product/{id}','SaleController@product');
 
+            //compras
+            Route::get('/compras','CompraController@index');
+            Route::post('/compras','CompraController@store');
+            Route::get('/compras/{id}','CompraController@show');
+            Route::put('/compras/{id}','CompraController@update');
+            Route::delete('/compras/{id}','CompraController@destroy');
+            Route::post('/comprasprodutos','CompraController@deleteProduct');
+            
             //gráficos
             Route::post('bi/grafico/mensal','DashboardController@graficoMensal');
             Route::post('bi/grafico/anual','DashboardController@graficoAnual');
@@ -68,6 +82,11 @@ use Illuminate\Support\Facades\Route;
             Route::post('bi/grafico/quantidade/total','DashboardController@GraficoQuantidadeTotalVendedor');
             Route::post('bi/grafico/clientes/compra','DashboardController@GraficoClienteCompra');   
             Route::post('bi/grafico/quantidade/produtos/vendidos','DashboardController@GraficoQuantidadeProdutoVendido');
+
+            //getters
+            Route::get('get/categories','getController@categories');
+            Route::get('get/products','getController@products');
+            Route::get('get/clients','getController@clients');
         });
 
         //caixa

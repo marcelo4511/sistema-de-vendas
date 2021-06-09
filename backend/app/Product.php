@@ -28,4 +28,9 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class,'category_id');
     }
+
+    public function compras()
+    {
+        return $this->belongsToMany(Compra::class,'compra_product');
+    }
 }

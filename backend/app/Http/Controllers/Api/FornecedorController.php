@@ -9,7 +9,9 @@ class FornecedorController extends Controller
 {
     public function index() 
     {
-        $fornecedores = Fornecedor::all();
+        $fornecedores = Fornecedor::select('id','name','cnpj_cpf','email','cep','street','number','complement','city',
+                                'state','heigthboard','fone','celular','status','responsavel' )
+                                ->get();
         return response()->json($fornecedores);
     }
 

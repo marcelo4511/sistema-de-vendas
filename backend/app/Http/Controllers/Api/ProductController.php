@@ -41,7 +41,7 @@ class ProductController extends Controller
     }
     public function show($id) 
     {
-        $product = $this->product->find($id);
+        $product = $this->product->findOrFail($id);
         return response()->json($product);
     }
 
@@ -98,11 +98,11 @@ class ProductController extends Controller
         try{
             $product = $this->product->find($id);
             $product->delete();
-            return response()->json(['data' => ['msg' => 'Produto removido com sucesso']]);
+            return response()->json(['data' => ['msg' => 'Produto removido com sucesso'],'status' => true]);
         }catch(Exception $exception) {
             $exception_message = !empty($exception->getMessage()) ? trim($exception->getMessage()) : 'App Error Exception';
             Log::error($exception_message. " in file " .$exception->getFile(). " on line " .$exception->getLine());
-            return response()->json(['err' => $exception->getMessage(), 'status' => true]);
+            return response()->json(['err' => $exception->getMessage(), 'status' => false]);
         }
     }
     public function deleteFoto($id)

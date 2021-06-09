@@ -14,16 +14,22 @@
         <div class="row">
           <div class="form-group col-6">
             <label class="col-form-label col-form-label-sm" >Nome da Categoria</label>
-            <input type="text" class="form-control form-control-sm col-md-12" name="name" v-model="category.name" :disabled="loading">
+            <input type="text" :class="errorsBack.name ? 'form-control form-control-sm is-invalid' : 'form-control form-control-sm'" name="name" v-model="category.name" :disabled="loading">
+            <span class="invalid-feedback" v-if="errorsBack.name">
+              {{  errorsBack.name[0]  }}<br>
+            </span> 
           </div>
           
           <div class="form-group col-4">
             <label class="col-form-label col-form-label-sm">Status</label>
-              <select class="form-control form-control-sm" v-model="category.status" :disabled="loading">
+              <select :class="errorsBack.name ? 'form-control form-control-sm is-invalid' : 'form-control form-control-sm'" v-model="category.status" :disabled="loading">
                 <option selected disabled value=null>Selecione</option>
                 <option value=Ativo>Ativo</option>
                 <option value=Inativo>Inativo</option>
               </select>
+              <span class="invalid-feedback" v-if="errorsBack.status">
+                {{  errorsBack.status[0]  }}<br>
+              </span> 
           </div>
           </div>
             <div class="form-group">
@@ -38,17 +44,19 @@
 
 <script>
 import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
+import { API_BASE_URL } from '../../config/Api'
 import {mapState} from 'vuex'
 import axios from 'axios'
 export default {
     data(){
       return{
+        errorsBack:[],
         loading:false,
         category:{}
       }
     },
     created () {
-      this.getBlogById(this.$route.params.id)
+      this.getCategories(this.$route.params.id)
     },
     computed:{
         ...mapState(['list']),
@@ -64,19 +72,20 @@ export default {
                       setTimeout(() => {
                           this.$router.push('/categories')
                       },3000)
-                  }).catch(() => {
-                      this.$noty.info("Houve um problema com o seu formulério. Por favor, tente novamente.");
+                  }).catch((error) => {
+                    this.loading = false
+                    if(error.response.status == 422){
+                      return this.errorsBack = error.response.data.errors
+                    }
+                  this.$noty.info("Houve um problema com o seu formulério. Por favor, tente novamente.");
                 })
               }
-           })
+          })
         },
       
-        getBlogById: function (id) {
-            axios.get('http://localhost:8000/api/categories/' + id)
-            .then((response) => {
-              this.category = response.data
-            })
-            .catch(() => {
+        getCategories(category) {
+          axios.get(`${API_BASE_URL}/categories/${category}`).then((response) => {
+            this.category = response.data
           })
         }
     }  

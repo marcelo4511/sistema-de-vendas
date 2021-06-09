@@ -28,9 +28,9 @@
       </div>
       
       <div class="border border-black shadow p-2 bg-white rounded">
-        <div class="form-row d-flex justify-content-between align-items-center mb-1" >
-          <span class="col-11"><b>Produtos</b> </span>
-          <div class="col-1">
+        <div class="form-row d-flex justify-content-between align-items-center m-1" >
+          <span><b>Produtos</b> </span>
+          <div>
             <button type='button' class="btn btn-sm btn-info mr-1" @click="adiciona">
               <i class="fas fa-plus"></i>
             </button>
@@ -54,7 +54,9 @@
                     </div>
                     <div class="col-2">
                       <label class="col-form-label col-form-label-sm"><strong>Preço</strong></label>
-                      <money v-model="detalheVenda.price" :name="`price_${key}`" data-vv-as="Preço" v-validate="'min_value:0.01'" :class="['form-control form-control-sm', {'is-invalid': errors.has(`price_${key}`)},`${errorsRequest[`details_sales.${key}.price`] ? `is-invalid` : ``}`]" :value="detalheVenda.price" @change="getProducts(detalheVenda.price,key),calculateLineTotal(detalheVenda)"  v-bind="money" class="form-control form-control-sm" readonly></money>
+                      <money v-model="detalheVenda.price" :name="`price_${key}`" data-vv-as="Preço" v-validate="'min_value:0.01'" 
+                      :class="['form-control form-control-sm', {'is-invalid': errors.has(`price_${key}`)},`${errorsRequest[`details_sales.${key}.price`] ? `is-invalid` : ``}`]" 
+                      :value="detalheVenda.price" @change="getProducts(detalheVenda.price,key),calculateLineTotal(detalheVenda)"  v-bind="money" class="form-control form-control-sm" readonly></money>
                       <span v-show="errors.has(`price_${key}`)" class="invalid-feedback">{{ errors.first(`price_${key}`) }}</span>
                         <span class="invalid-feedback">
                           {{ `${errorsRequest[`details_sales.${key}.price`] ? errorsRequest[`details_sales.${key}.price`] : `` }` }}<br>
@@ -66,13 +68,15 @@
                     </div>
                     <div class="col-2">
                       <label class="col-form-label col-form-label-sm"><strong>Quantidade</strong></label>
-                      <input  :disabled="loading" class="form-control form-control-sm"  :name="`quantidade${key}`" type="text" data-vv-as="Quantidade" readonly v-validate="'required'" :class="['form-control form-control-sm form-control form-control-sm-sm', {'is-invalid': errors.has(`quantidade${key}`)},`${errorsRequest[`details_sales.${key}.quantidade`] ? `is-invalid` : ``}`]" v-model="detalheVenda.quantidade" @change="calculateLineTotal(detalheVenda)" @input="calculateEstoque(detalheVenda)">
+                      <input  :disabled="loading" class="form-control form-control-sm"  :name="`quantidade${key}`" type="text" data-vv-as="Quantidade" readonly v-validate="'required'"
+                       :class="['form-control form-control-sm form-control form-control-sm-sm', {'is-invalid': errors.has(`quantidade${key}`)},`${errorsRequest[`details_sales.${key}.quantidade`] ? `is-invalid` : ``}`]"
+                        v-model="detalheVenda.quantidade" @change="calculateLineTotal(detalheVenda)" @input="calculateEstoque(detalheVenda)">
                       <span v-show="errors.has(`quantidade${key}`)" class="invalid-feedback">{{ errors.first(`quantidade${key}`) }}</span>
                         <span class="invalid-feedback">
                           {{ `${errorsRequest[`details_sales.${key}.quantidade`] ? errorsRequest[`details_sales.${key}.quantidade`] : `` }` }}<br>
                         </span> 
                     </div>
-                    <div >
+                    <div>
                       <div style="margin-top:30px;" @click="inc(detalheVenda)">
                         <b><i class="fa fa-sort-up"></i></b>
                       </div>
@@ -156,6 +160,7 @@
 import 'vuejs-noty-fa/dist/vuejs-noty-fa.css'
 import {mapState} from 'vuex'
 import axios from 'axios'
+import {API_BASE_URL} from '../../config/Api'
 import {VMoney} from 'v-money'
 import 'jspdf-autotable' 
 
@@ -201,18 +206,18 @@ export default {
     this.$store.dispatch('Product/getProducts')
   },
   methods:{
-  getProducts(product,key){
-    if(product) {
-      axios.get(`http://localhost:8000/api/product/${product}`).then(res => {
-        this.details_sales[key].product_id = res.data[0].id
-        this.details_sales[key].name = res.data[0].name
-        this.details_sales[key].id = res.data[0].id
-        this.details_sales[key].price = res.data[0].price
-        this.details_sales[key].estoque = res.data[0].estoque   
-        this.details_sales[key].subtotal = 0   
-      })
-    }
-  },
+    getProducts(product,key){
+      if(product) {
+        axios.get(`${API_BASE_URL}/product/${product}`).then(res => {
+          this.details_sales[key].product_id = res.data[0].id
+          this.details_sales[key].name = res.data[0].name
+          this.details_sales[key].id = res.data[0].id
+          this.details_sales[key].price = res.data[0].price
+          this.details_sales[key].estoque = res.data[0].estoque   
+          this.details_sales[key].subtotal = 0   
+        })
+      }
+    },
    formatarMoeda(moeda){
         moeda = parseFloat(moeda);
         moeda = moeda.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+,)/g, "$1.");
@@ -221,17 +226,9 @@ export default {
   onSubmit(){
     this.submitted = true;
     this.$validator.validate().then(res=>{
-        if(res) {
+      if(res) {
         this.loading = true
-        axios.post('http://localhost:8000/api/sales',{
-            client_id:this.client_id,
-            dataVenda:this.datavenda,
-            total:this.total,
-            details_sales:this.details_sales,
-            formapagamento:this.formapagamento
-            
-        }).then((res) => {
-          
+        axios.post(`${API_BASE_URL}/sales`,this.sales).then((res) => {
           let usuario = res.data.resultado.user_id
           let indexCliente = this.client_id - 1
           this.submitContaReceber(indexCliente)
@@ -242,16 +239,15 @@ export default {
           }else {
           return  this.$router.push('/vendas')
           }
-        
         })
         .catch(error => {
-       if (error.response.status === 422) {
-          this.errorsRequest = error.response.data.errors;
-        }
-       });
-        }else {
-    //         
-        }
+          if(error.response.status === 422) {
+            this.errorsRequest = error.response.data.errors;
+          }else {
+            this.$noty.info('houve um problema na edição')
+          }
+        });  
+      }
     })
   },
     inc(detalheVenda){
@@ -308,7 +304,7 @@ export default {
       this.formapagamento.parcelas = parcelas
     },
     submitContaReceber(indexCliente){
-      axios.post(`http://localhost:8000/api/billstoreceive`,{
+      axios.post(`${API_BASE_URL}/billstoreceive`,{
         descricao:this.clients[indexCliente].name,
         valor:this.total,
         situacao_id:1,

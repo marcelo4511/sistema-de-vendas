@@ -82,7 +82,7 @@
        <router-link tag="span" to="/sales">
          <li><i class="fa fa-shopping-cart m-2"></i>Vendas</li>
        </router-link>
-       <router-link tag="span" to="/sales">
+       <router-link tag="span" to="/compras">
          <li><i class="fa fa-shopping-basket m-2"></i>Compras</li>
        </router-link>
     </div>

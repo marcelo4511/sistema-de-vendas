@@ -8,7 +8,7 @@
         <p >Data da criação: {{u.user.created_at | formatDateTime}}</p>
       </div>
       <div class="col-12 d-flex justify-content-between"> 
-        <img class="img-thumbnail" width="400" height="auto" src=".././assets/logo.png" alt="Card image cap">
+        <img width="800" height="auto" src=".././assets/logo.png" alt="Card image cap">
         <div class="ml-5">
           <div class="form-row">
             <div class="form-group col-4">
@@ -79,6 +79,7 @@
 
 <script>
 import axios from 'axios'
+import {API_BASE_URL} from '../config/Api'
 export default {
 data(){
   return {
@@ -97,28 +98,24 @@ created(){
  methods:{
    getUsuario() {
 
-     axios.get(`http://localhost:8000/api/usuario`).then(res => {
+     axios.get(`${API_BASE_URL}/usuario`).then(res => {
        this.perfil = res.data
-       console.log(res.data)
      })
    },
    getAndamento(){
-     axios.get(`http://localhost:8000/api/salesemandamento`).then(res => {
+     axios.get(`${API_BASE_URL}/salesemandamento`).then(res => {
        this.andamento = res.data.length
-       console.log(this.andamento)
      })
    },
    getRealizadas(){
-     axios.get(`http://localhost:8000/api/saleusuario`).then(res => {
+     axios.get(`${API_BASE_URL}/saleusuario`).then(res => {
        this.realizadas = res.data.length
      //  console.log(this.concluido)
      })
    },
    getConcluidas(){
-     axios.get("http://localhost:8000/api/saleaprovadas").then(res => {
+     axios.get(`${API_BASE_URL}/saleaprovadas`).then(res => {
        this.concluidas = res.data.length
-
-       console.log(this.c)
      })
    }
  },

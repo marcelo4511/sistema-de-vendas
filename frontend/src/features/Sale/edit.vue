@@ -85,10 +85,10 @@
                       <money readonly disabled :value="detalheVenda.subtotal" v-bind="money" name="totalPrejuizo" class="form-control form-control-sm"></money>
                     </div>
                     <button class="btn btn-sm btn-danger mt-4 mb-4" style="height:40px;" :disabled ="sales.details_sales.length == 1" data-toggle="modal" :data-target="`#detalhe${detalheVenda.id}`"><i class="fa fa-trash"></i></button>
-                     <modal class="del" :title="`Deseja remover o produto ? `" :name="`detalhe${detalheVenda.id}` ">
+                     <modal class="del" :title="`Deseja remover o produto ? `" :compl="``"  :name="`detalhe${detalheVenda.id}` ">
                         <div class="modal-body text-left" >
                           <button class="btn btn-sm btn-primary mr-2" data-dismiss="modal"><i class="fas fa-times"></i> Cancelar</button>  
-                          <button class="btn btn-sm btn-danger" @click="deletaDetalheProduto(detalheVenda.id)" :disabled="loading">
+                          <button class="btn btn-sm btn-danger" @click="deletaDetalheProduto(detalheVenda.id,key)" :disabled="loading">
                             <i v-if="loading" class="spinner-border spinner-border-sm spinner" role="status" aria-hidden="true"></i>
                             <i v-else class="fa fa-trash"></i>
                             Deletar
@@ -218,20 +218,19 @@ export default {
     getVenda(id){
       axios.get(`${API_BASE_URL}/sales/${id}`).then((response) => {
         this.sales = response.data
-        console.log(response.data)
       })
     },
     getProducts(product,key){
       if(product) {
         axios.get(`${API_BASE_URL}/product/${product}`).then(res => {
-            this.sales.details_sales[key].product_id = res.data[0].id
-            this.sales.details_sales[key].name = res.data[0].name
-            this.sales.details_sales[key].id = res.data[0].id
-            this.sales.details_sales[key].price = res.data[0].price
-            this.sales.details_sales[key].quantidade = 0
-            this.sales.details_sales[key].products.estoque = res.data[0].estoque   
-            this.sales.details_sales[key].subtotal = 0   
-          })
+          this.sales.details_sales[key].product_id = res.data[0].id
+          this.sales.details_sales[key].name = res.data[0].name
+          this.sales.details_sales[key].id = res.data[0].id
+          this.sales.details_sales[key].price = res.data[0].price
+          this.sales.details_sales[key].quantidade = 0
+          this.sales.details_sales[key].products.estoque = res.data[0].estoque   
+          this.sales.details_sales[key].subtotal = 0   
+        })
       }
     },
     calculateEstoque(detalheVenda) {
@@ -250,8 +249,6 @@ export default {
       axios.put(`${API_BASE_URL}/sales/${this.$route.params.id}`,this.sales).then((res) => {
         console.log(this.sales)
         let usuario = res.data.resultado.user_id
-      //   let indexCliente = this.client_id - 1
-      //  this.submitContaReceber(indexCliente)
         this.$noty.success("Atualizado com sucesso!!")
         if(usuario === 1) {
           return this.$router.push('/sales')
@@ -270,18 +267,18 @@ export default {
       }
     })
   },
-    deletaDetalheProduto(detalheVenda){
+    deletaDetalheProduto(detalheVenda,key){
       if(detalheVenda){
         this.loading = true
         axios.delete(`${API_BASE_URL}/detalhesdelete/${detalheVenda}`).then(() => {
           this.$noty.success("Deletado com sucesso!!")
-          this.sales.details_sales.pop({product_id:'',price:'',quantidade:'',subtotal:''})
+          this.sales.details_sales.splice(key,1)
           this.loading = false
           $('.del').modal('hide');
         })
         }else {
         this.loading = true
-        this.sales.details_sales.pop({product_id:'',price:'',quantidade:'',subtotal:''})
+        this.sales.details_sales.splice(key,1)
         this.$noty.success("Deletado com sucesso!!")
         this.loading = false
         $('.del').modal('hide');
@@ -304,7 +301,7 @@ export default {
         detalheVenda.quantidade --
         detalheVenda.products.estoque ++
       }  
-       this.calculateLineTotal(detalheVenda)
+    this.calculateLineTotal(detalheVenda)
     },
     adiciona(){
       if(this.sales.details_sales.length <= 2) {

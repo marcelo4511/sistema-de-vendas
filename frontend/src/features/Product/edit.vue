@@ -5,7 +5,8 @@
   <nav aria-label="breadcrumb mb-4">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
-      <li class="breadcrumb-item active" aria-current="page">Produtos</li>
+      <li class="breadcrumb-item"><router-link to="/products">Produtos</router-link></li>
+      <li class="breadcrumb-item active" aria-current="page">Editar</li>
     </ol>
   </nav>
   <form @submit.prevent="onSubmit">
@@ -22,7 +23,7 @@
             <label class="col-form-label col-form-label-sm">Categorias</label>
             <select v-model="product.category_id" required class="form-control form-control-sm col-md-auto">
               <option  disabled selected value="">selecione</option>
-              <option  v-for="(category, key) in list" v-show="category.status == 'Ativo'" :key="key" :value="category.id">{{category.name}}</option>
+              <option  v-for="(category, key) in categories" v-show="category.status == 'Ativo'" :key="key" :value="category.id">{{category.name}}</option>
             </select>
           </div> 
         <div class="form-group col-md-4">
@@ -125,6 +126,7 @@ export default {
 
     created(){
         this.getProduct()
+        this.getCategorias()
         this.$store.dispatch('Category/setList')
     },
     methods:{
@@ -134,7 +136,13 @@ export default {
           axios.get(`${API_BASE_URL}/products/${this.$route.params.product}`)
           .then(res => {
             this.product = res.data
+            console.log(this.product)
           })
+        },
+        getCategorias(){
+            axios.get(`${API_BASE_URL}/get/categories`).then(res => {
+                this.categories = res.data
+            })
         },
         deleteFoto(id){
           this.loading = true
@@ -158,7 +166,6 @@ export default {
           reader.onload = (e) => {
             this.product.imagem = e.target.result
           }
-           console.log(reader)
          return reader.readAsDataURL(arquivo[0])
         },
         onSubmit(){
