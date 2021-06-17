@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
     Route::namespace('Api')->middleware('auth:sanctum')->group(function(){
 
         Route::middleware('isAdmin')->group(function() {
+            
             //produtos
             Route::get('/products','ProductController@index');
             Route::get('/products/{id}','ProductController@show');
@@ -74,6 +75,8 @@ use Illuminate\Support\Facades\Route;
             Route::put('/compras/{id}','CompraController@update');
             Route::delete('/compras/{id}','CompraController@destroy');
             Route::post('/comprasprodutos','CompraController@deleteProduct');
+            Route::post('get/productscompra','getController@productsCompra');
+            Route::get('get/productscompraname/{name}','getController@productName');
             
             //gráficos
             Route::post('bi/grafico/mensal','DashboardController@graficoMensal');

@@ -27,4 +27,21 @@ class getController extends Controller
                         'state','heigthboard','fone','celular','status' )
                         ->get();
     }
+
+    public function productsCompra(Request $request)
+    {
+        return Product::select('id','name','description','price','estoque','imagem','status','category_id')
+                        ->with('categories:id,name')
+                        ->when($request->name,function($query) use ($request) {
+                            $query->where('name','LIKE', '%'. $request->name . '%');
+                        })
+                        ->get();
+    }
+
+    public function productName($name){
+        return Product::select('id','name','description','price','estoque','imagem','status','category_id')
+                        ->with('categories:id,name')
+                        ->whereName($name)
+                        ->get(); 
+    }
 }

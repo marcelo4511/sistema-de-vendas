@@ -45,41 +45,54 @@
           <div class="card-body">
             <div class="table table-sm" > 
                 <div class="form-row d-flex justify-content-between" v-for="(detalheCompra,key) of compra.produtos" :key="key">
-                    <div class="col-4">
+                    <div class="col-3">
                       <label class="col-form-label col-form-label-sm "><strong>Produto</strong></label>
-                        <select class="form-control form-control-sm"  :name="`id_${key}`" data-vv-as="Produto" v-validate="'required'" :class="['form-control form-control-sm form-control form-control-sm-sm', {'is-invalid': errors.has(`id_${key}`)},`${errorsRequest[`details_sales.${key}.id`] ? `is-invalid` : ``}`]"  :disabled="disabled" required v-model="detalheCompra.id" >
-                          <option v-for="(product) in produtosList" :key="product.id"  v-show="product.status == 'Ativo'" :value="product.id">{{product.name}}</option>
-                        </select>
+                        <input autocomplete="off" class="form-control form-control-sm" type="search" :name="`id_${key}`" @input="getProdutos(detalheCompra.name,key)" data-vv-as="Produto" v-validate="'required'" :class="['form-control form-control-sm form-control form-control-sm-sm', {'is-invalid': errors.has(`id_${key}`)},`${errorsRequest[`details_sales.${key}.id`] ? `is-invalid` : ``}`]"  :disabled="disabled" required v-model="detalheCompra.name" >
+                        
+                        <ul class="list-group list-group-flush " v-show="detalheCompra.produtosList !== null && detalheCompra.name !== ''" style="list-style: none;cursor:pointer;margin-top:2px;overflow-y:scroll;height: auto; max-height: 150px;">
+                          <li v-for="(product) in detalheCompra.produtosList" :key="product.id" class="list-group-item border shadow-sm border-black" @click="clickName(product.name,key)" v-show="product.status == 'Ativo'" :value="product.id">{{product.name}}</li>
+                        </ul>
+                        <div class="progress mt-2" v-if="detalheCompra.carregamento">
+                          <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                            aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                          </div>
+                        </div>
                         <span v-show="errors.has(`id_${key}`)" class="invalid-feedback">{{ errors.first(`id_${key}`) }}</span>
                     </div>
-
+                  
+                    <div class="col-2">
+                      <label class="col-form-label col-form-label-sm"><strong>Categoria</strong></label>
+                      <select name="" id="" class=" form-control form-control-sm selectpicker" data-live-search="true">
+                        <option v-for="(fornecedor,indexFornecedor) in fornecedores" :key="indexFornecedor"  :value="fornecedor.id">{{fornecedor.name}}</option>
+                      </select>
+                    </div>
                     <div class="col-2">
                       <label class="col-form-label col-form-label-sm"><strong>Preço</strong></label>
                       <money v-model="detalheCompra.price" :name="`price_${key}`" data-vv-as="Preço" v-validate="'min_value:0.01'" 
                       :class="['form-control form-control-sm', {'is-invalid': errors.has(`price_${key}`)},`${errorsRequest[`details_sales.${key}.price`] ? `is-invalid` : ``}`]" 
-                      :value="detalheCompra.price"  v-bind="money" class="form-control form-control-sm"></money>
+                      :value="detalheCompra.price"  v-bind="money" class="form-control form-control-sm" @blur="calculateSubTotal(key)"></money>
                       <span v-show="errors.has(`price_${key}`)" class="invalid-feedback">{{ errors.first(`price_${key}`) }}</span>
                     </div>
 
                     <div class="col-2">
                       <label class="col-form-label col-form-label-sm"><strong>Estoque</strong></label>
-                      <input class="form-control form-control-sm" type="number" v-model="detalheCompra.estoque" required>
+                      <input class="form-control form-control-sm" @blur="calculateSubTotal(key),detalheCompra.estoquecount = detalheCompra.estoque" type="text" v-model="detalheCompra.estoque" required>
                     </div>
 
-                    <div>
-                      <div style="margin-top:30px;">
+                    <div class="col-0">
+                      <div style="margin-top:30px;cursor:pointer;" @click="incrementar(key)">
                         <b><i class="fa fa-sort-up"></i></b>
                       </div>
-                      <div style="margin-top:-15px;">
+                      <div style="margin-top:-15px;cursor:pointer;" @click="decrementar(key)">
                         <b><i class="fa fa-sort-down"></i></b>
                       </div>
                     </div>
 
-                    <div class="col-3">
+                    <div class="col-2">
                       <label class="col-form-label col-form-label-sm"><strong>Subtotal</strong></label>
-                      <money readonly disabled :value="detalheCompra.subtotal" v-bind="money" name="totalPrejuizo" class="form-control form-control-sm"></money>
+                      <money readonly disabled :value="detalheCompra.pivot.subtotal" v-bind="money" name="totalPrejuizo" class="form-control form-control-sm"></money>
                     </div>
-                    <button class="btn btn-sm btn-danger mt-4 mb-4" style="height:40px;" :disabled ="compra.produtos.length == 1" data-toggle="modal" :data-target="`#detalhe${detalheCompra.id}`"><i class="fa fa-trash"></i></button>
+                    <button class="btn btn-sm btn-danger " style="height:30px;margin-top:30px;" :disabled ="compra.produtos.length == 1" data-toggle="modal" :data-target="`#detalhe${detalheCompra.id}`"><i class="fa fa-trash"></i></button>
                      <modal class="del" :title="`Deseja remover o produto ? `" :compl="``"  :name="`detalhe${detalheCompra.id}` ">
                         <div class="modal-body text-left" >
                           <button class="btn btn-sm btn-primary mr-2" data-dismiss="modal"><i class="fas fa-times"></i> Cancelar</button>  
@@ -91,9 +104,12 @@
                         </div>
                     </modal>
                 </div>
+                
             </div>
-          
           </div>
+        </div>
+        <div class="col-12">
+          <span class="alert alert-primary text-black p-1">Total da Compra: <strong> R$ {{formatarMoeda(totalizar)}}</strong></span>
         </div>
       </div>
 
@@ -116,47 +132,73 @@ export default {
             disabled:false,
             loading:false,
             fornecedores:[],
-            produtosList:[],
             errorsRequest:[],
             compra:{
                 data_compra:null,
-                total:null,
+                total:0,
                 fornecedor_id:0,
                 produtos:[{
-                    id:'',name:'',price:'',estoque:'',subtotal:0,
+                    id:'',name:'',price:'',estoque:0,estoquecount:0,pivot:{subtotal:0},produtosList:[],carregamento: false
                 }],
             },
-             money: {
-                decimal: ',',
-                thousands: '.',
-                prefix: 'R$ ',
-                suffix: '',
-                precision: 2,
-                masked: false
+            money: {
+              decimal: ',',
+              thousands: '.',
+              prefix: 'R$ ',
+              suffix: '',
+              precision: 2,
+              masked: false
             }
         }
     },
     created(){
         this.getFornecedores()
-        this.getProdutos()
         this.getCompra(this.$route.params.id)
     },
     methods:{
         getCompra(id){
-            axios.get(`${API_BASE_URL}/compras/${id}`).then((response) => {
-                this.compra = response.data
-            })
-        },
-        getProdutos(){
-          axios.get(`${API_BASE_URL}/products`).then(res => {
-            this.produtosList = res.data
+          axios.get(`${API_BASE_URL}/compras/${id}`).then((response) => {
+            this.compra = response.data  
           })
         },
         getFornecedores(){
-            axios.get(`${API_BASE_URL}/fornecedores`).then(res => {
-                this.fornecedores = res.data
-            })
+          axios.get(`${API_BASE_URL}/fornecedores`).then(res => {
+              this.fornecedores = res.data
+          })
         },
+        getProdutos(nome,key){
+          this.compra.produtos[key].carregamento = true
+          axios.post(`${API_BASE_URL}/get/productscompra`,{name:nome}).then(res => {
+            this.compra.produtos[key].carregamento = false
+            this.compra.produtos[key].produtosList = res.data
+            if(nome == ''){
+              this.compra.produtos[key].carregamento = false
+              this.compra.produtos[key].produtosList = null 
+              this.compra.produtos[key].price = 0
+              this.compra.produtos[key].estoque = 0 
+              this.compra.produtos[key].estoquecount = 0 
+              this.compra.produtos[key].pivot.subtotal = 0 
+            }
+          })
+        },
+        clickName(name,key){
+          this.compra.produtos[key].nome = name
+          this.compra.produtos[key].produtosList = null
+          this.getProduto(this.compra.produtos[key].nome,key)
+        },
+        getProduto(product,key){
+          if(product){
+            axios.get(`${API_BASE_URL}/get/productscompraname/${product}`).then(res => {
+              this.compra.produtos[key].id = res.data[0].id
+              this.compra.produtos[key].name = res.data[0].name
+              this.compra.produtos[key].price = res.data[0].price
+              this.compra.produtos[key].estoque = res.data[0].estoque   
+              this.compra.produtos[key].estoquecount = res.data[0].estoque   
+              this.calculateSubTotal(key)
+            })
+          }
+        },
+        
         onSubmit(){
           this.$validator.validate().then(res=> {
               if(res) {
@@ -167,20 +209,20 @@ export default {
                       }else {
                           return  this.$router.push('/compras')
                       }
-                  })
+                  }).catch(error => {
+                    if (error.response.status === 422) {
+                      this.errorsRequest = error.response.data.errors;
+                    }else {
+                      this.$noty.info('houve um problema na edição')
+                    }
+                  });
                 }
             })
         },
         removeProduct(indexProduto){
-          if(indexProduto){
-            this.loading = true
-            let form = {
-              id:this.compra.produtos[indexProduto].id,
-              compra_id:this.compra.id
-            }
-            console.log(this.compra.id);
-            axios.post(`${API_BASE_URL}/comprasprodutos`,form).then((res) => {
-              console.log(res)
+          if(this.compra.produtos[indexProduto].id){
+              this.loading = true
+            axios.post(`${API_BASE_URL}/comprasprodutos`, {id: this.compra.produtos[indexProduto].id, compra_id: this.compra.id }).then(() => {
               this.$noty.success("Deletado com sucesso!!")
               this.compra.produtos.splice(indexProduto,1)
               this.loading = false
@@ -196,18 +238,43 @@ export default {
         },
         adiciona(){
             if(this.compra.produtos.length <= 2) {
-                this.compra.produtos.push({id:'',subtotal:'',name:'',price:'',estoque : ''})
+                this.compra.produtos.push({id:'',pivot:{subtotal:0},name:'',price:'',estoque : ''})
             }else {
                 return this.compra.produtos
-            }
+            } 
             this.$toasted.global.defaultSuccess()
         },
         remova(){
           if(this.compra.produtos.length > 1) {
-            this.compra.produtos.pop({id:'',price:'',subtotal:''})
+            this.compra.produtos.pop({id:'',price:'',pivot:{subtotal:''}})
             this.$toasted.global.defaultSuccess()
           }
-        }
-    }
+        },
+        calculateSubTotal(key){
+          this.compra.produtos[key].pivot.subtotal = this.compra.produtos[key].estoque * parseFloat(this.compra.produtos[key].price) || 0
+        },
+        formatarMoeda(moeda){
+          moeda = parseFloat(moeda);
+          moeda = moeda.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+,)/g, "$1.");
+          return moeda;
+        },
+        incrementar(key){
+          this.compra.produtos[key].estoque ++
+          this.calculateSubTotal(key)
+        },
+        decrementar(key){
+          while (this.compra.produtos[key].estoque > this.compra.produtos[key].estoquecount) {
+            return this.compra.produtos[key].estoque --
+          }
+          this.calculateSubTotal(key)
+        },
+    },
+  computed:{
+    totalizar() {
+      return  this.compra.produtos.reduce((total,detalheCompra) => {
+          return this.compra.total =  parseFloat(total) + parseFloat(detalheCompra.pivot.subtotal) || 0
+      },0)
+    },
+  },
 }
 </script>

@@ -246,24 +246,23 @@ export default {
     this.submitted = true;
     this.$validator.validate().then(res=>{
       if(res) {
-      axios.put(`${API_BASE_URL}/sales/${this.$route.params.id}`,this.sales).then((res) => {
-        console.log(this.sales)
-        let usuario = res.data.resultado.user_id
-        this.$noty.success("Atualizado com sucesso!!")
-        if(usuario === 1) {
-          return this.$router.push('/sales')
-        }else {
-          return  this.$router.push('/vendas')
-        }
-      
-      })
-      .catch(error => {
-      if (error.response.status === 422) {
-        this.errorsRequest = error.response.data.errors;
-      }else {
-        this.$noty.info('houve um problema na edição')
-      }
-      });
+        axios.put(`${API_BASE_URL}/sales/${this.$route.params.id}`,this.sales).then((res) => {
+          console.log(this.sales)
+          let usuario = res.data.resultado.user_id
+          this.$noty.success("Atualizado com sucesso!!")
+          if(usuario === 1) {
+            return this.$router.push('/sales')
+          }else {
+            return  this.$router.push('/vendas')
+          }
+        })
+        .catch(error => {
+          if (error.response.status === 422) {
+            this.errorsRequest = error.response.data.errors;
+          }else {
+            this.$noty.info('houve um problema na edição')
+          }
+        });
       }
     })
   },

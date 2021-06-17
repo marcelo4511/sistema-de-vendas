@@ -16,9 +16,9 @@ class CreateDetailsSalesTable extends Migration
         Schema::create('details_sales', function (Blueprint $table) {
 
             $table->increments('id');
-            $table->float('price');
+            $table->float('price',14,2);
             $table->float('quantidade');
-            $table->float('subtotal');
+            $table->float('subtotal',14,2);
 
             $table->unsignedInteger('product_id')->nullable();
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');

@@ -19,7 +19,7 @@ class Compra extends Model
 
     public function produtos()
     {
-        return $this->belongsToMany(Product::class,'compra_product');
+        return $this->belongsToMany(Product::class,'compra_product')->withPivot('subtotal');
     }
     public function situacao()
     {

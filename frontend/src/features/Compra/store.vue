@@ -56,7 +56,7 @@
 
                     <div class="col-2">
                       <label class="col-form-label col-form-label-sm"><strong>Preço</strong></label>
-                      <money v-model="detalheCompra.price" :name="`price_${key}`" data-vv-as="Preço" v-validate="'min_value:0.01'" 
+                      <money v-model="detalheCompra.price" :name="`price_${key}`" @blur="calculateSubTotal(key)"  data-vv-as="Preço" v-validate="'min_value:0.01'" 
                       :class="['form-control form-control-sm', {'is-invalid': errors.has(`price_${key}`)},`${errorsRequest[`details_sales.${key}.price`] ? `is-invalid` : ``}`]" 
                       :value="detalheCompra.price"  v-bind="money" class="form-control form-control-sm"></money>
                       <span v-show="errors.has(`price_${key}`)" class="invalid-feedback">{{ errors.first(`price_${key}`) }}</span>
@@ -64,7 +64,7 @@
 
                     <div class="col-2">
                       <label class="col-form-label col-form-label-sm"><strong>Estoque</strong></label>
-                      <input class="form-control form-control-sm" type="number" v-model="detalheCompra.estoque" required>
+                      <input class="form-control form-control-sm" type="number" @blur="calculateSubTotal(key)" v-model="detalheCompra.estoque" required>
                     </div>
 
                     <div>
@@ -82,7 +82,6 @@
                     </div>
                 </div>
             </div>
-          
           </div>
         </div>
       </div>
@@ -141,22 +140,24 @@ export default {
             this.$validator.validate().then(res=> {
                 if(res) {
                     axios.post(`${API_BASE_URL}/compras`,this.compra).then((res) => {
-                      console.log(res)
                         let usuario = res.data.resultado.user_id
                         if(usuario === 1) {
-                            return this.$router.push('/compras')
+                          return this.$router.push('/compras')
                         }else {
-                            return  this.$router.push('/compras')
+                          return  this.$router.push('/compras')
                         }
                     })
                 }
             })
         },
+        calculateSubTotal(key){
+          this.compra.products[key].subtotal = this.compra.products[key].estoque * parseFloat(this.compra.products[key].price) || 0
+        },
         adiciona(){
             if(this.compra.products.length <= 2) {
-                this.compra.products.push({id:'',subtotal:'',name:'',price:'',estoque : ''})
+              this.compra.products.push({id:'',subtotal:'',name:'',price:'',estoque : ''})
             }else {
-                return this.compra.products
+              return this.compra.products
             }
             this.$toasted.global.defaultSuccess()
         },

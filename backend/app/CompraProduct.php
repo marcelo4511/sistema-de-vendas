@@ -9,7 +9,8 @@ class CompraProduct extends Model
     protected $table = 'compra_product';
     protected $fillable = [
         'compra_id',
-        'produto_id'
+        'produto_id',
+        'subtotal'
     ];
 
 }

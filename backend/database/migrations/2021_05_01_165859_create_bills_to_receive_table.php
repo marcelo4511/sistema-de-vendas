@@ -18,13 +18,10 @@ class CreateBillsToReceiveTable extends Migration
             $table->string('descricao')->nullable();
             $table->date('dt_vencimento')->nullable(); 
             $table->decimal('valor',14,2); 
-            $table->string('comprovante')->nullable();
+            $table->longText('comprovante')->nullable();
 
             $table->unsignedInteger('situacao_id')->nullable();
             $table->foreign('situacao_id')->references('id')->on('situacao')->onDelete('cascade');
-            
-            //$table->integer('tipo_movimentacao_id')->unsigned()->nullable();
-            //$table->foreign('tipo_movimentacao_id')->references('id')->on('tipo_movimentacao')->onDelete('cascade')->nullable();
             
             $table->integer('user_id')->unsigned()->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->nullable();

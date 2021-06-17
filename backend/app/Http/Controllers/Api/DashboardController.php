@@ -197,7 +197,7 @@ class DashboardController extends Controller
                             $arr = $value->total;
                         }
 
-                      return $arr;
+                        return $arr;
 
     }
 }

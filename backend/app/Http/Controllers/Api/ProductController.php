@@ -15,12 +15,6 @@ use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
-    private $product;
-    public function __construct(Product $product)
-    {
-        $this->product = $product;
-    }
-
     public function index() 
     {
         $products = Product::with('categories')->get();
@@ -41,7 +35,7 @@ class ProductController extends Controller
     }
     public function show($id) 
     {
-        $product = $this->product->findOrFail($id);
+        $product = Product::findOrFail($id);
         return response()->json($product);
     }
 
@@ -74,7 +68,7 @@ class ProductController extends Controller
     {
         try{
             $data = $request->all();
-            $product = $this->product->find($id);
+            $product = Product::find($id);
             if($request->hasFile($product['imagem'])) {
                 $base64_image = $product['imagem']; 
                 $base = base64_decode($base64_image);  
@@ -96,7 +90,7 @@ class ProductController extends Controller
     public function delete($id)
     {
         try{
-            $product = $this->product->find($id);
+            $product = Product::find($id);
             $product->delete();
             return response()->json(['data' => ['msg' => 'Produto removido com sucesso'],'status' => true]);
         }catch(Exception $exception) {
@@ -108,7 +102,7 @@ class ProductController extends Controller
     public function deleteFoto($id)
     {
         try{
-            $product = $this->product->find($id);
+            $product = Product::find($id);
             if($product['imagem'] != null) {
                 $base64_image = $product['imagem']; 
                 $base64 = time().'.' . explode('/', explode(':', substr($base64_image, 0, strpos($base64_image, ';')))[1])[1];  

@@ -96,12 +96,10 @@ export default {
             total:0,
             count:0,
             money: {
-            decimal: ',',
-            thousands: '.',
-            prefix: 'R$ ',
-            precision: 2,
-            masked: false 
-        },
+              decimal: ',',
+              thousands: '.',
+              masked: false 
+          },
       };
     },
       directives: {money: VMoney},

@@ -28,11 +28,6 @@ class CompraController extends Controller
         }
     }
 
-    public function create()
-    {
-        //
-    }
-
     public function store(Request $request)
     {
         try{
@@ -54,7 +49,7 @@ class CompraController extends Controller
                         ]
                     );
                     $produto_id = $produto['id'];
-                    $compra_id->produtos()->attach([$produto_id]);
+                    $compra_id->produtos()->attach([$produto_id],['subtotal' => $produto['subtotal']]);
                 }
             }
             Log::info('Usuário: '. Auth::user()->name . ' | ' . __METHOD__ . ' | ' . json_encode($request->all()) . $request->ip());
@@ -86,7 +81,6 @@ class CompraController extends Controller
             $data = $request->all();
             $compra = Compra::find($id);
             $data['situacao_id'] = 1;
-            $data['total'] = 1;
             $data['user_id'] = Auth::user()->id;
             $compra->update($data);
             
@@ -101,7 +95,8 @@ class CompraController extends Controller
                         ]
                     );
                     $produto_id = $produto['id'];
-                    array_push($sync,['product_id' => $produto_id]);    
+                    $subtotal = $produto['pivot']['subtotal'];
+                    array_push($sync,['product_id' => $produto_id,'subtotal' => $subtotal]);    
                 }
                 $compra->produtos()->sync($sync);
             }
@@ -118,8 +113,10 @@ class CompraController extends Controller
         try{
             Compra::find($id)->delete();  
             return response()->json(['data' => ['msg' => 'Compra removida com sucesso'],'status' => 200]);
-        }catch(Exception $e) {
-            return response()->json(['error' => $e->getMessage()],400);
+        }catch(Exception $exception) {
+            $exception_message = !empty($exception->getMessage()) ? trim($exception->getMessage()) : 'App Error Exception';
+            Log::error($exception_message. " in file " .$exception->getFile(). " on line " .$exception->getLine());
+            return response()->json(['err' => $exception->getMessage(), 'status' => true]);
         }
     }
 

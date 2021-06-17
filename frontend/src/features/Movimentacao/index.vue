@@ -9,47 +9,47 @@
         </nav>
 
         <div class=" border border-black shadow p-3 bg-white rounded">
-            <div class="form-row">
-                <div class="col-12 d-flex justify-content-beetween mb-2">
-                    <div class="form-group col-4 col-md-3">
-                        <select name="tipo_movimentacao_id" id="tipo_movimentacao_id" class="form-control form-control-sm"  v-model="filtro.tipo_movimentacao_id" @change="filter">
-                            <option selected value="0">Todos</option>
-                            <option v-for="tipo in tipos" :value="tipo.id" :key="tipo.id">{{tipo.descricao}}</option>
-                        </select>
-                    </div>
-                    <div class="form-group col-md-2">
-                        <input class="form-control form-control-sm" type="date" v-model="filtro.de" @change="filter">
-                    </div>
-                    <div class="form-group col-md-2">
-                        <input class="form-control form-control-sm" type="date" v-model="filtro.ate" @change="filter">
-                    </div>
+            <div class="form-row d-flex justify-content-beetween">
+                <div class="form-group col-12 col-md-3">
+                    <select name="tipo_movimentacao_id" id="tipo_movimentacao_id" class="form-control form-control-sm"  v-model="filtro.tipo_movimentacao_id" @change="filter">
+                        <option selected value="0">Todos</option>
+                        <option v-for="tipo in tipos" :value="tipo.id" :key="tipo.id">{{tipo.descricao}}</option>
+                    </select>
+                </div>
+                <div class="form-group col-12 col-md-2">
+                    <input class="form-control form-control-sm" type="date" v-model="filtro.de" @change="filter">
+                </div>
+                <div class="form-group col-12 col-md-2">
+                    <input class="form-control form-control-sm" type="date" v-model="filtro.ate" @change="filter">
+                </div>
 
-                    <div class="form-group col-4 col-md-3">
-                        <select name="tipo_movimentacao_id" id="tipo_movimentacao_id" class="form-control form-control-sm"  v-model="filtro.mes" @change="filter">
-                            <option selected value="0">Todos</option>
-                            <option value="1">Janeiro</option>
-                            <option value="2">Fev</option>
-                            <option value="3">Março</option>
-                            <option value="4">Abril</option>
-                            <option value="5">Maio</option>
-                            <option value="6">Junho</option>
-                            <option value="7">Julho</option>
-                            <option value="8">Agosto</option>
-                            <option value="9">Setembro</option>
-                            <option value="10">Outubro</option>
-                            <option value="11">Novembro</option>
-                            <option value="12">Dezembro</option>
-                        </select>
-                    </div>
-                <input class="form-control form-control-sm col-md-2" type="search" name="nome" placeholder="Buscar" v-model="buscar">
+                <div class="form-group col-12 col-md-3">
+                    <select name="tipo_movimentacao_id" id="tipo_movimentacao_id" class="form-control form-control-sm"  v-model="filtro.mes" @change="filter">
+                        <option selected value="0">Todos</option>
+                        <option value="1">Janeiro</option>
+                        <option value="2">Fev</option>
+                        <option value="3">Março</option>
+                        <option value="4">Abril</option>
+                        <option value="5">Maio</option>
+                        <option value="6">Junho</option>
+                        <option value="7">Julho</option>
+                        <option value="8">Agosto</option>
+                        <option value="9">Setembro</option>
+                        <option value="10">Outubro</option>
+                        <option value="11">Novembro</option>
+                        <option value="12">Dezembro</option>
+                    </select>
+                </div>
+                <div class="form-group col-12 col-md-2">
+                    <input class="form-control form-control-sm" type="search" name="nome" placeholder="Buscar" v-model="buscar">
                 </div>
             </div>
-            <div class="col-12 d-flex justify-content-between" >
-                <span class="h6 alert alert-danger p-1"><strong> Contas a pagar : R$ {{formatarMoeda(totalizarpagar)}}</strong> </span>
-                <span class="h6 alert alert-success p-1"><strong> Contas a receber : R$ {{formatarMoeda(totalizarreceber)}}</strong> </span>
+            <div class="form-row d-flex justify-content-between m-1" >
+                <span class="h6 alert alert-danger p-1"><strong> Contas a pagar : R$ {{formatarMoeda(calculototalpagar)}}</strong> </span>
+                <span class="h6 alert alert-success p-1"><strong> Contas a receber : R$ {{formatarMoeda(calculototalreceber)}}</strong> </span>
             </div>
           
-            <div class="table table-responsive scroll" ref="scroll" style="overflow-y:auto;height:250px;margin-top:1vh;">
+            <div class="table table-responsive scroll" ref="scroll" style="overflow-y:auto;height:250px;margin-top:0.5vh;">
                 <table class="table table-hover table-bordered table-sm">
                     <thead class="thead-light text-center">
                         <tr>
@@ -73,9 +73,6 @@
                         <tr v-if="loading == false && movimentacoes.length == 0"><td colspan="7"  align="center" style="border:0;margim-bottom:2px;"><label class="col-form-label col-form-label-sm">Nenhum registro encontrado.</label></td></tr>
                     </tbody>
                 </table>
-                <div v-show="movimentacoes == 0">
-                    <div style="text-align:center;"><label class="col-form-label col-form-label-sm">Nenhum registro encontrado.</label> </div>
-                </div>
             </div>
         </div>
             
@@ -106,6 +103,7 @@ export default {
                 ate:null,
                 mes:moment().format('M')
             },
+            loading:true,
             movimentacoes:[],
             movimentos:[],
             movimentacoespagar:[],
@@ -130,6 +128,7 @@ export default {
         },
         filter(){
             axios.post(`${API_BASE_URL}/filtromovi`,this.filtro).then(res => {
+                this.loading = false
                 this.movimentacoes = res.data
             
                 this.movimentacoespagar = res.data
@@ -156,12 +155,12 @@ export default {
         },
     },
     computed:{
-        totalizarpagar(){
+        calculototalpagar(){
             return this.movimentacoespagar.reduce((acumulador,valor) => {
                 return this.totalApagar = parseFloat(acumulador) + parseFloat(valor)
             },0) 
         },
-        totalizarreceber(){
+        calculototalreceber(){
             return this.movimentacoesreceber.reduce((acumulador,valor) => {
                 return this.totalReceber = parseFloat(acumulador) + parseFloat(valor)
             },0) 

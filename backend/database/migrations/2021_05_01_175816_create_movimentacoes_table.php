@@ -18,7 +18,7 @@ class CreateMovimentacoesTable extends Migration
             $table->string('descricao')->nullable();
             $table->date('dt_vencimento')->nullable(); 
             $table->decimal('valor',14,2); 
-            $table->string('comprovante')->nullable();
+            $table->longText('comprovante')->nullable();
 
             $table->integer('tipo_movimentacao_id')->unsigned()->nullable();
             $table->foreign('tipo_movimentacao_id')->references('id')->on('tipo_movimentacao')->onDelete('cascade')->nullable();

@@ -46,7 +46,7 @@
                         <td class="align-middle" style="font-size: 1em; height:10px;">{{compra.user.tipo_usuario.descricao}}</td>
                         <td class="align-middle" style="font-size: 1em; height:10px;" width="20%">   
                             <div v-show="compra.situacao_id == 1">
-                                <button  class="btn btn-sm btn-success m-1" @click="aprovar(sale)"><i class="fa fa-check "></i></button>
+                                <!--<button  class="btn btn-sm btn-success m-1" @click="aprovar(sale)"><i class="fa fa-check "></i></button>-->
                                 <router-link :to="`/comprasedit/${compra.id}/edit`" class="btn btn-sm btn-warning m-1"><i class="fa fa-pen"></i></router-link>
                                 <button  class="btn btn-sm btn-danger" data-toggle="modal" :data-target="`#categoria${compra.id}`"><i class="fa fa-trash"></i></button> 
                                 <modal class="del" :title="`Deseja remover a Compra`" :compl="``" :name="`categoria${compra.id}` ">

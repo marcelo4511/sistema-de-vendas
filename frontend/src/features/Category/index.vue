@@ -22,15 +22,15 @@
             <table class="table table-hover table-bordered table-sm" > 
                 <thead class="thead-light text-center">
                    
-                        <th v-for="column in columns" :key="column" @click="sortByColumn(column)"
-                          scope="col" class="col-form-label col-form-label-sm">
-                          {{ column | columnHead }}
-                          <span v-if="column == sortedColumn">
-                            <i v-show="order == 'asc'" class="fa fa-arrow-up"></i>
-                            <i v-show="order == 'desc'" class="fa fa-arrow-down"></i>
-                          </span>
-                      </th>
-                      <th scope="col" class="col-form-label col-form-label-sm">Ações</th>
+                  <th v-for="column in columns" :key="column" @click="sortByColumn(column)"
+                    scope="col" class="col-form-label col-form-label-sm">
+                    {{ column | columnHead}}
+                    <span v-if="column == sort">
+                      <i v-show="order == 'asc'" class="fa fa-sort"></i>
+                      <i v-show="order == 'desc'" class="fa fa-arrow-down"></i>
+                    </span>
+                  </th>
+                  <th scope="col" class="col-form-label col-form-label-sm">Ações</th>
                     
                 </thead>
                 <tbody class="text-center">
@@ -83,7 +83,7 @@ export default {
       search:'',
       lastPage: 0,
       columns:['name','status'],
-      sortedColumn:'name',
+      sort:'name',
       order: 'asc',
     }
   },
@@ -91,35 +91,15 @@ export default {
     this.get()
     const listaCategorias = document.querySelector('#infinite-list');
     listaCategorias.addEventListener('scroll', () => {
-      if(listaCategorias.scrollTop + listaCategorias.clientHeight >= listaCategorias.scrollHeight) {
+      if(listaCategorias.scrollTop + listaCategorias.clientHeight >= listaCategorias.scrollHeight && this.page < this.totalPages) {
         this.getCategories();
       }
     });
   },
  methods:{
    ...mapActions('Category',['postList','setList','updateList','removeList']),
-        getCategories(){
-          this.loading = false;
-          setTimeout(() => {
-              axios.get(`${API_BASE_URL}/categories?page=${this.page+1}&search=${this.search}&name=${this.name}&status=${this.status}&column=${this.sortedColumn}&order=${this.order}`).then(res => {
-                const toFilter = [...this.categories, ...res.data.data]
-                const filtered = toFilter.reduce((items, current) => {
-                    const x = items.find(item => item.id === current.id);
-                    return !x ? items.concat([current]) : items
-                }, []);
-                this.categories = filtered
-                this.page = res.data.current_page
-              })
-            }, 1000);
-           this.loading = true
-        },
-        buscar(){
-          this.page = null,
-          this.categories = []
-          this.get()
-        },
         get(){
-          axios.get(`${API_BASE_URL}/categories?page=${this.page}&search=${this.search}&name=${this.name}&status=${this.status}&column=${this.sortedColumn}&order=${this.order}`).then(res => {
+          axios.get(`${API_BASE_URL}/categories?page=${this.page = 1}search=${this.search}&name=${this.name}&status=${this.status}&order=${this.order}&column=${this.sort}`).then(res => {
             document.getElementById('infinite-list').scrollTop = 0
             this.categories = res.data.data
             this.page = res.data.current_page
@@ -127,13 +107,38 @@ export default {
             this.loading = false
           })
         },
+        getCategories(){
+          this.loading = false;
+          setTimeout(() => {
+              axios.get(`${API_BASE_URL}/categories?page=${this.page+1}&search=${this.search}&name=${this.name}&status=${this.status}&order=${this.order}&column=${this.sort}`).then(res => {
+                const toFilter = [...this.categories, ...res.data.data]
+                const filtered = toFilter.reduce((items, current) => {
+                    const x = items.find(item => item.id === current.id);
+                    return !x ? items.concat([current]) : items
+                }, []);
+                this.categories = filtered
+                this.page = res.data.current_page
+
+                if(this.page == this.totalPages) {
+                  this.loading = false
+                }
+              })
+            }, 1000);
+           this.loading = true
+        },
+        buscar(){
+          this.page = 1,
+          this.categories = []
+          this.get()
+        },
+        
         sortByColumn(column) {
           if (column) {
-            this.sortedColumn = column
+            this.sort = column
             this.order = (this.order == 'asc') ? 'desc' : 'asc'
-            console.log(this.order)
+
           }else{
-            this.sortedColumn = column
+            this.sort = column
             this.order = 'asc'
           }
           this.page = null,
@@ -162,9 +167,6 @@ export default {
       columnHead(value) {
         if(value == 'name') {
           value = 'Nome'
-        }
-        if(value == ''){
-          value = 'Ações'
         }
         return value.split('_').join(' ')
       },

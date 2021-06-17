@@ -17,9 +17,9 @@ class CreateProductsTable extends Migration
             $table->increments('id');
             $table->string('name')->nullable();
             $table->string('description')->nullable();
-            $table->string('price')->nullable();
+            $table->float('price',14,2)->nullable();
             $table->string('estoque');
-            $table->string('imagem')->nullable();
+            $table->longText('imagem')->nullable();
             $table->enum('status',['Inativo','Ativo'])->default('Inativo');
 
             $table->bigInteger('category_id')->unsigned();
