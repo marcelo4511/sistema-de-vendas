@@ -21,7 +21,6 @@
         <div class="table-responsive scroll" id="infinite-list" style="overflow-y:auto;height:300px;margin-top:3vh;">
             <table class="table table-hover table-bordered table-sm" > 
                 <thead class="thead-light text-center">
-                   
                   <th v-for="column in columns" :key="column" @click="sortByColumn(column)"
                     scope="col" class="col-form-label col-form-label-sm">
                     {{ column | columnHead}}
@@ -31,7 +30,6 @@
                     </span>
                   </th>
                   <th scope="col" class="col-form-label col-form-label-sm">Ações</th>
-                    
                 </thead>
                 <tbody class="text-center">
                     <tr v-for="(category,indexCategoria) of categories" :key="category.id">
@@ -58,6 +56,13 @@
             </table> 
         </div>
     </div>  
+    <div class="row mt-2">
+      <div class="col-12 d-flex justify-content-between">
+        <p>Registros : {{registros.to}}</p>
+        <p>Pagina :{{registros.current_page}}/{{registros.last_page}}</p>
+      </div>
+      
+    </div>
   </div>
 </template>
 
@@ -76,6 +81,7 @@ export default {
       loading: true,
       loadingCreate:false,
       categories: [],
+      registros:[],
       totalPages:null,
       page: null,
       name:'',
@@ -102,6 +108,7 @@ export default {
           axios.get(`${API_BASE_URL}/categories?page=${this.page = 1}search=${this.search}&name=${this.name}&status=${this.status}&order=${this.order}&column=${this.sort}`).then(res => {
             document.getElementById('infinite-list').scrollTop = 0
             this.categories = res.data.data
+            this.registros = res.data
             this.page = res.data.current_page
             this.totalPages = res.data.last_page
             this.loading = false
@@ -118,7 +125,7 @@ export default {
                 }, []);
                 this.categories = filtered
                 this.page = res.data.current_page
-
+                this.registros = res.data
                 if(this.page == this.totalPages) {
                   this.loading = false
                 }

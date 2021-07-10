@@ -15,14 +15,14 @@
               <option selected disabled value="">selecione</option>
               <option v-for="(client,indexCliente) in clients" v-show="client.status == 'Ativo'" :key="indexCliente"  :value="client.id">{{client.name}}</option>
             </select>
-          <div v-show="submitted && errors.has('client_id')" class="invalid-feedback">{{ errors.first('client_id') }}</div>
+          <div v-show="errors.has('client_id')" class="invalid-feedback">{{ errors.first('client_id') }}</div>
           <div class="text-danger" v-if="errorsRequest.client_id">{{ errorsRequest.client_id[0] }}</div>
         </div>
         
         <div class="form-group col-md-6">
           <label  class="col-form-label col-form-label-sm">Data da Venda</label>
           <input type="date" name="datavenda" v-validate = "'required'" data-vv-as="Data Venda" required v-model="sales.dataVenda" class="form-control form-control-sm" :class="['form-control form-control-sm form-control form-control-sm-sm', {'is-invalid': errors.has('datavenda')},`${errorsRequest.dataVenda ? `is-invalid` : ``}`]" />
-          <div v-if="submitted && errors.has('datavenda')" class="invalid-feedback">{{ errors.first('datavenda') }}</div>
+          <div v-if="errors.has('datavenda')" class="invalid-feedback">{{ errors.first('datavenda') }}</div>
           <div class="text-danger" v-if="errorsRequest.dataVenda">{{ errorsRequest.dataVenda[0] }}</div>
         </div>
       </div>
@@ -182,7 +182,6 @@ export default {
     return {
       disabled:false,
       loading:false,
-      submitted: false,
       errorsRequest:[],
       client_id:'',
       datavenda:'',
@@ -243,7 +242,6 @@ export default {
       return moeda;
     },
  onSubmit(){
-    this.submitted = true;
     this.$validator.validate().then(res=>{
       if(res) {
         axios.put(`${API_BASE_URL}/sales/${this.$route.params.id}`,this.sales).then((res) => {

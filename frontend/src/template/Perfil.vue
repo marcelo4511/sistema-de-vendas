@@ -40,7 +40,7 @@
 
       </div>
    
-      <div class="form-row">
+     <!-- <div class="form-row">
         <h4 class="col-form-label col-form-label-sm font-weight-bold">Estatisticas :</h4>
       </div>
 
@@ -71,7 +71,7 @@
         <span class="alert alert-light mr-2"  style="color:black;"><b>Realizadas</b></span> 
         <span class="alert alert-light mr-2" style="color:red;"><b>Em andamento</b></span> 
         <span class="alert alert-light" style="color:green;"><b>Concluidas</b></span>
-      </div>
+      </div>-->
     </div>
    </div>
 </div>
@@ -97,7 +97,6 @@ created(){
 },
  methods:{
    getUsuario() {
-
      axios.get(`${API_BASE_URL}/usuario`).then(res => {
        this.perfil = res.data
      })
@@ -110,7 +109,6 @@ created(){
    getRealizadas(){
      axios.get(`${API_BASE_URL}/saleusuario`).then(res => {
        this.realizadas = res.data.length
-     //  console.log(this.concluido)
      })
    },
    getConcluidas(){

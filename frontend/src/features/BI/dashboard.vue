@@ -38,7 +38,7 @@
     </select>
   </div>
 
-  <div class="col-12 d-flex justify-content-between">
+ <!-- <div class="col-12 d-flex justify-content-between">
     <grafico-ano></grafico-ano> 
     <grafico-ano></grafico-ano> 
     <grafico-ano></grafico-ano> 
@@ -77,7 +77,7 @@
         <grafico-cliente-compra></grafico-cliente-compra>
       </div>
     </div>
-  </div>       
+  </div>       -->
 </div>
 
 </template>
@@ -88,17 +88,17 @@ import { mapGetters} from 'vuex'
 import axios from 'axios'
 import '../../config/filterData'
 import { } from "chartjs-plugin-datalabels";
-import GraficoQuantidadeProdutoVendidos from '../../BI/GraficoQuantidadeProdutoVendidos'
-import GraficoComissaoVendedor from '../../BI/GraficoComissaoVendedor.vue'
-import GraficoTotal from '../../BI/GraficoTotal.vue'
-import GraficoMes from '../../BI/GraficoMes.vue'
-import GraficoAno from '../../BI/GraficoAno.vue'
-import GraficoClienteCompra from '../../BI/GraficoClienteCompra'
+//import GraficoQuantidadeProdutoVendidos from '../../BI/GraficoQuantidadeProdutoVendidos'
+//import GraficoComissaoVendedor from '../../BI/GraficoComissaoVendedor.vue'
+//import GraficoTotal from '../../BI/GraficoTotal.vue'
+//import GraficoMes from '../../BI/GraficoMes.vue'
+//import GraficoAno from '../../BI/GraficoAno.vue'
+//import GraficoClienteCompra from '../../BI/GraficoClienteCompra'
 import moment from 'moment';
 export default {
     
 name: 'bi',
-  components: { GraficoQuantidadeProdutoVendidos,GraficoComissaoVendedor,GraficoClienteCompra, GraficoTotal, GraficoMes,GraficoAno },
+ // components: { GraficoQuantidadeProdutoVendidos,GraficoComissaoVendedor,GraficoClienteCompra, GraficoTotal, GraficoMes,GraficoAno },
     data() {
       return{
        selectedMonth:moment().month(),

@@ -11,18 +11,21 @@
       <div class="form-row">  
         <div class="form-group col-md-6">
           <label  class="col-form-label col-form-label-sm">Clientes</label>
-            <select class="form-control form-control-sm" required v-model="client_id" name="client_id" v-validate = "'required'" data-vv-as="Cliente" :class="['form-control form-control-sm form-control form-control-sm-sm', {'is-invalid': errors.has('client_id')},`${errorsRequest.client_id  ? `is-invalid` : ``}`]">
+            <select class="form-control form-control-sm" 
+            required v-model="sale.client_id" 
+            name="client_id" v-validate = "'required'" data-vv-as="Cliente" 
+            :class="['form-control form-control-sm form-control form-control-sm-sm', {'is-invalid': errors.has('client_id')},`${errorsRequest.client_id  ? `is-invalid` : ``}`]">
               <option selected disabled value="">selecione</option>
               <option v-for="(client,indexCliente) in clients" v-show="client.status == 'Ativo'" :key="indexCliente"  :value="client.id">{{client.name}}</option>
             </select>
-          <div v-show="submitted && errors.has('client_id')" class="invalid-feedback">{{ errors.first('client_id') }}</div>
+          <div v-show="errors.has('client_id')" class="invalid-feedback">{{ errors.first('client_id') }}</div>
           <div class="text-danger" v-if="errorsRequest.client_id">{{ errorsRequest.client_id[0] }}</div>
         </div>
         
         <div class="form-group col-md-6">
           <label  class="col-form-label col-form-label-sm">Data da Venda</label>
-          <input type="date" name="datavenda" v-validate = "'required'" data-vv-as="Data Venda" required v-model="datavenda" class="form-control form-control-sm" :class="['form-control form-control-sm form-control form-control-sm-sm', {'is-invalid': errors.has('datavenda')},`${errorsRequest.dataVenda ? `is-invalid` : ``}`]" />
-          <div v-if="submitted && errors.has('datavenda')" class="invalid-feedback">{{ errors.first('datavenda') }}</div>
+          <input type="date" name="dataVenda" v-validate = "'required'" data-vv-as="Data Venda" required v-model="sale.dataVenda" class="form-control form-control-sm" :class="['form-control form-control-sm form-control form-control-sm-sm', {'is-invalid': errors.has('dataVenda')},`${errorsRequest.dataVenda ? `is-invalid` : ``}`]" />
+          <div v-if="errors.has('dataVenda')" class="invalid-feedback">{{ errors.first('dataVenda') }}</div>
           <div class="text-danger" v-if="errorsRequest.dataVenda">{{ errorsRequest.dataVenda[0] }}</div>
         </div>
       </div>
@@ -41,7 +44,7 @@
         <div class="form-row">   
           <div class="card-body">
             <div class="table table-sm" > 
-                <div class="form-row d-flex justify-content-between" v-for="(detalheVenda,key) of details_sales" :key="key">
+                <div class="form-row d-flex justify-content-between" v-for="(detalheVenda,key) of sale.details_sales" :key="key">
                     <div class="col-2">
                       <label class="col-form-label col-form-label-sm "><strong>Produto</strong></label>
                         <select class="form-control form-control-sm"  :name="`product_id_${key}`" data-vv-as="Produto" v-validate="'required'" :class="['form-control form-control-sm form-control form-control-sm-sm', {'is-invalid': errors.has(`product_id_${key}`)},`${errorsRequest[`details_sales.${key}.product_id`] ? `is-invalid` : ``}`]"  :disabled="disabled" required v-model="detalheVenda.product_id" @change="getProducts(detalheVenda.product_id,key), calculateEstoque(detalheVenda)">
@@ -98,7 +101,7 @@
         </div>
       </div>
 
-      <div class="border border-black shadow mt-3 mb-3 bg-white rounded" v-if="total >  0">
+      <div class="border border-black shadow mt-3 mb-3 bg-white rounded" v-if="sale.total >  0">
         <div class="border border-black p-2" style="background-color:GhostWhite	">
           <span><strong>Pagamento</strong></span>
         </div>
@@ -108,7 +111,7 @@
             <div class="form-row">
               <div class="form-group m-2">
                 <label class="col-form-label col-form-label-sm">Forma de Pagamento</label>
-                <select type="text" class="form-control form-control-sm" required v-model="formapagamento.tipo_forma_pagamento" >
+                <select type="text" class="form-control form-control-sm" required v-model="sale.formapagamento.tipo_forma_pagamento" >
                   <option disabled selected value="null">Selecione</option>
                   <option value="0">Boleto bancário</option>
                   <option value="1">A vista</option>
@@ -119,7 +122,7 @@
 
               <div class="form-group m-2">
                 <label class="col-form-label col-form-label-sm">Parcelas</label>
-                <select type="text" class="form-control form-control-sm" v-model="formapagamento.parcelas" v-show="formapagamento.tipo_forma_pagamento == '2'">
+                <select type="text" class="form-control form-control-sm" v-model="sale.formapagamento.parcelas" v-show="sale.formapagamento.tipo_forma_pagamento == '2'">
                   <option selected :value="null">Selecione</option>
                   <option :value="1">1x</option>
                   <option :value="6">6x</option>
@@ -128,7 +131,7 @@
                   <option :value="24">24x</option>
                 </select>
 
-                <select type="text" class="form-control form-control-sm" v-model="formapagamento.parcelas" @change="valorCreditoFunction(formapagamento.parcelas)" disabled v-show="formapagamento.tipo_forma_pagamento !== '2'">
+                <select type="text" class="form-control form-control-sm" v-model="sale.formapagamento.parcelas" @change="valorCreditoFunction(sale.formapagamento.parcelas)" disabled v-show="sale.formapagamento.tipo_forma_pagamento !== '2'">
                   <option selected value="null">1x</option>
                   <option :value="1">6x</option>
                   <option :value="2">10x</option>
@@ -139,13 +142,13 @@
 
               <div class="form-group col-2 m-2">
                 <label class="col-form-label col-form-label-sm">Entrada</label>
-                <input type="text" class="form-control form-control-sm" v-show="formapagamento.tipo_forma_pagamento == '2'"  v-model="formapagamento.entrada" placeholder="0,00">
-                <input type="text" class="form-control form-control-sm" v-show="formapagamento.tipo_forma_pagamento !== '2'" disabled  v-model="formapagamento.entrada" placeholder="0,00">
+                <input type="text" class="form-control form-control-sm" v-show="sale.formapagamento.tipo_forma_pagamento == '2'"  v-model="sale.formapagamento.entrada" placeholder="0,00">
+                <input type="text" class="form-control form-control-sm" v-show="sale.formapagamento.tipo_forma_pagamento !== '2'" disabled  v-model="sale.formapagamento.entrada" placeholder="0,00">
               </div>
 
-              <div class="form-group m-2" v-show="formapagamento.parcelas">
+              <div class="form-group m-2" v-show="sale.formapagamento.parcelas">
                 <label class="col-form-label col-form-label-sm">Parcelas de :</label>
-                <p aria-disabled="disabled" v-show="formapagamento.tipo_forma_pagamento == '2' && formapagamento.parcelas != null" class="form-control form-control-sm col-form-label col-form-label-sm"><span>{{formapagamento.parcelas }} {{ 'x' }} {{parcelamento | money}}</span></p>
+                <p aria-disabled="disabled" v-show="sale.formapagamento.tipo_forma_pagamento == '2' && sale.formapagamento.parcelas != null" class="form-control form-control-sm col-form-label col-form-label-sm"><span>{{sale.formapagamento.parcelas }} {{ 'x' }} {{parcelamento | money}}</span></p>
               </div>
             </div>
           </div>
@@ -172,23 +175,24 @@ export default {
       loading:false,
       valorCreditoData:null,
       result: 0,
-      details_sales:[{
-        product_id:'',
-        quantidade:'',
-        subtotal:0,
-        price:'',
-        name:'',
-        estoque:''
-      }],
-      client_id:'',
-      datavenda:'',
-      total:0,
-      formapagamento:{
-        tipo_forma_pagamento:null,
-        parcelas:null,
-        entrada:null
+      sale:{
+        details_sales:[{
+          product_id:'',
+          quantidade:'',
+          subtotal:0,
+          price:'',
+          name:'',
+          estoque:''
+        }],
+        client_id:'',
+        dataVenda:'',
+        total:0,
+        formapagamento:{
+          tipo_forma_pagamento:null,
+          parcelas:null,
+          entrada:null
+        },
       },
-      submitted: false,
       errorsRequest:[],
        money: {
         decimal: ',',
@@ -209,12 +213,12 @@ export default {
     getProducts(product,key){
       if(product) {
         axios.get(`${API_BASE_URL}/product/${product}`).then(res => {
-          this.details_sales[key].product_id = res.data[0].id
-          this.details_sales[key].name = res.data[0].name
-          this.details_sales[key].id = res.data[0].id
-          this.details_sales[key].price = res.data[0].price
-          this.details_sales[key].estoque = res.data[0].estoque   
-          this.details_sales[key].subtotal = 0   
+          this.sale.details_sales[key].product_id = res.data[0].id
+          this.sale.details_sales[key].name = res.data[0].name
+          this.sale.details_sales[key].id = res.data[0].id
+          this.sale.details_sales[key].price = res.data[0].price
+          this.sale.details_sales[key].estoque = res.data[0].estoque   
+          this.sale.details_sales[key].subtotal = 0   
         })
       }
     },
@@ -224,13 +228,13 @@ export default {
         return moeda;
     },
   onSubmit(){
-    this.submitted = true;
     this.$validator.validate().then(res=>{
       if(res) {
         this.loading = true
-        axios.post(`${API_BASE_URL}/sales`,this.sales).then((res) => {
+        axios.post(`${API_BASE_URL}/sales`,this.sale).then((res) => {
+          console.log(this.sale)
           let usuario = res.data.resultado.user_id
-          let indexCliente = this.client_id - 1
+          let indexCliente = this.sale.client_id - 1
           this.submitContaReceber(indexCliente)
           this.$noty.success("Cadastrado com sucesso!!")
           this.loading = false
@@ -243,6 +247,7 @@ export default {
         .catch(error => {
           if(error.response.status === 422) {
             this.errorsRequest = error.response.data.errors;
+            console.log(this.errorsRequest)
           }else {
             this.$noty.info('houve um problema na edição')
           }
@@ -265,15 +270,15 @@ export default {
        this.calculateLineTotal(detalheVenda)
     },
     remova(){
-      if(this.details_sales.length > 1) {
-        this.details_sales.pop({product_id:'',price:'',quantidade:'',subtotal:''})
+      if(this.sale.details_sales.length > 1) {
+        this.sale.details_sales.pop({product_id:'',price:'',quantidade:'',subtotal:''})
         this.$toasted.global.defaultSuccess()
       }
     },
 
     adiciona(){
-      if(this.details_sales.length <= 2) {
-        this.details_sales.push({product_id:'',quantidade:'',subtotal:'',name:'',price:'',estoque:''})
+      if(this.sale.details_sales.length <= 2) {
+        this.sale.details_sales.push({product_id:'',quantidade:'',subtotal:'',name:'',price:'',estoque:''})
       }else {
         return this.details_sales
       }
@@ -301,15 +306,17 @@ export default {
       
     },
     valorCreditoFunction(parcelas){
-      this.formapagamento.parcelas = parcelas
+      this.sale.formapagamento.parcelas = parcelas
     },
     submitContaReceber(indexCliente){
       axios.post(`${API_BASE_URL}/billstoreceive`,{
         descricao:this.clients[indexCliente].name,
-        valor:this.total,
+        valor:this.sale.total,
         situacao_id:1,
-      }) .then(() => {
-
+      }) .then((res) => {
+        if(res.data.status){
+          this.$noty.success("o sistema gerou uma nova conta a receber!!")
+        }
       })
     }
   },
@@ -318,12 +325,12 @@ export default {
     ...mapState('Product',{products:state => state.products}),
 
     totalizar() {
-      return  this.details_sales.reduce((total,detalheVenda) => {
-          return this.total =  parseFloat(total) + parseFloat(detalheVenda.subtotal) || 0
+      return  this.sale.details_sales.reduce((total,detalheVenda) => {
+          return this.sale.total =  parseFloat(total) + parseFloat(detalheVenda.subtotal) || 0
       },0)
     },
     parcelamento(){
-      return this.total / this.formapagamento.parcelas || 0
+      return this.sale.total / this.sale.formapagamento.parcelas || 0
     },
   },
   filters:{

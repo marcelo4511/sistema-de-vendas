@@ -17,5 +17,6 @@ export default {
         grid-area: main;
         background-color: #fff;
         padding: 20px;
+        width: 100vw;
     }
 </style>

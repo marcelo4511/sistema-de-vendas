@@ -41,6 +41,7 @@ export default {
 
 
   #app {
+    overflow: hidden;
     display:grid;
     grid-template-rows: 50px 1fr 30px;
 		grid-template-columns: 200px 1fr;
@@ -49,9 +50,7 @@ export default {
     grid-template-areas: 
     "header header"
     "lado main"
-    "lado footer"
-    ;
-    
+    "lado footer"; 
   }
  #app.hide-menu {
 		grid-template-areas:
@@ -84,10 +83,11 @@ footer .footer {
 
 @media(max-width:576px){
   #app {
+    overflow: auto;
     grid-auto-rows: 50px 1fr;
     
     grid-template-columns:  1fr;
-    grid-template-areas: "header" "main" "footer";
+    grid-template-areas: "header" "main";
   }
   
 }

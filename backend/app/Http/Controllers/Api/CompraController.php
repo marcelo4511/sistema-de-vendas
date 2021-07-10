@@ -49,7 +49,7 @@ class CompraController extends Controller
                         ]
                     );
                     $produto_id = $produto['id'];
-                    $compra_id->produtos()->attach([$produto_id],['subtotal' => $produto['subtotal']]);
+                    $compra_id->produtos()->attach([$produto_id],['subtotal' => $produto['pivot']['subtotal']]);
                 }
             }
             Log::info('Usuário: '. Auth::user()->name . ' | ' . __METHOD__ . ' | ' . json_encode($request->all()) . $request->ip());

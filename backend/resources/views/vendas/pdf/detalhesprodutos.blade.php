@@ -65,27 +65,27 @@
         <tbody width="70%">
             @foreach($vendas['details_sales'] as $venda)
             <tr>
-                <td class="align-middle" width="10%">
+                <td style="text-align:center;" width="10%">
                     {{ $venda['products']->name }}
                 </td>
-                <td class="align-middle text-center" width="10%"><br />
-                    <img src="{{ $venda['products']['imagem'] ?? null}}" alt="photo" width="100" height="100"></img>
+                <td  style="text-align:center;" width="10%"><br />
+                    <img src="{{ $venda['products']['imagem'] ?? null}}" alt="photo" width="100" height="100">
                 </td>
-                <td class="align-middle" width="10%">
+                <td  style="text-align:center;" width="10%">
                    {{$venda->quantidade}}
                 </td>
             
-                <td class="align-middle" width="10%">
+                <td style="text-align:center;" width="10%">
                     R$ {{  number_format($venda['price'],2,',','.') }}
                 </td>
-                <td class="align-middle" width="10%">
+                <td  style="text-align:center;" width="10%">
                     R$ {{  number_format($venda['subtotal'],2,',','.') }}
                 </td>
             </tr>
             @endforeach
         </tbody>
     </table><br />
-
+    <hr/>
     <span style="font-family: Arial, Helvetica, sans-serif;"> Total dessa venda : </span> <b class="font-size: 10px;"> R$ {{  number_format($vendas['total'],2,',','.') }}</b>
 </body>
 

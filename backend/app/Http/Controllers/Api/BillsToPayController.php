@@ -78,11 +78,11 @@ class BillsToPayController extends Controller
                 Storage::disk('public')->put($base64, base64_decode($destinationPath));
             }
             $billstopay = BillsToPay::create($data);
-            return response()->json($billstopay);
+            return response()->json(['pagar' => $billstopay , 'status' => true]);
         }catch(Exception $exception) {
             $exception_message = !empty($exception->getMessage()) ? trim($exception->getMessage()) : 'App Error Exception';
             Log::error($exception_message. " in file " .$exception->getFile(). " on line " .$exception->getLine());
-            return response()->json(['err' => $exception->getMessage(), 'status' => true]);
+            return response()->json(['err' => $exception->getMessage(), 'status' => false]);
         }
     }
 
@@ -100,11 +100,11 @@ class BillsToPayController extends Controller
                Storage::disk('public')->put($base64, base64_decode($destinationPath));
             }
             $billstopay->update($data);
-            return response()->json($billstopay);
+            return response()->json(['pagar' => $billstopay,'status' => true]);
         }catch(Exception $exception) {
             $exception_message = !empty($exception->getMessage()) ? trim($exception->getMessage()) : 'App Error Exception';
             Log::error($exception_message. " in file " .$exception->getFile(). " on line " .$exception->getLine());
-            return response()->json(['err' => $exception->getMessage(), 'status' => true]);
+            return response()->json(['err' => $exception->getMessage(), 'status' => false]);
         }
     }
 

@@ -49,7 +49,7 @@
                 <span class="h6 alert alert-success p-1"><strong> Contas a receber : R$ {{formatarMoeda(calculototalreceber)}}</strong> </span>
             </div>
           
-            <div class="table table-responsive scroll" ref="scroll" style="overflow-y:auto;height:250px;margin-top:0.5vh;">
+            <div class="table table-responsive scroll" ref="scroll" style="overflow-y:auto;max-height:250px;margin-top:0.5vh;">
                 <table class="table table-hover table-bordered table-sm">
                     <thead class="thead-light text-center">
                         <tr>
@@ -74,11 +74,11 @@
                     </tbody>
                 </table>
             </div>
-        </div>
-            
-        <div class="mt-3">
-            <span v-if="saldo < 0" class="text-danger mt-3"><b> Saldo : R$ {{formatarMoeda(saldo)}} </b></span>
-            <span v-if="saldo >= 0" class="text-success mt-3"><b> Saldo : R$ {{formatarMoeda(saldo)}} </b></span>
+            <hr>
+            <div class="mt-3">
+                <span v-if="saldo < 0" class="text-danger mt-3"><b> Saldo : R$ {{formatarMoeda(saldo)}} </b></span>
+                <span v-if="saldo >= 0" class="text-success mt-3"><b> Saldo : R$ {{formatarMoeda(saldo)}} </b></span>
+            </div>
         </div>
     </div>
 </template>

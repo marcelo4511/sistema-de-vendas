@@ -10,20 +10,20 @@
     
     <div class=" border border-black shadow p-3 mb-1 bg-white rounded" >
         <div class="form-row d-flex justify-content-between">
-            <router-link to="/compras/store" tag="span"><button class="btn btn-sm btn-primary col-12"><i class="fa fa-plus"></i> Cadastrar</button></router-link>
-            <div class="col-md-4 ">
+            <router-link to="/compras/store" tag="span"><button class="btn btn-sm btn-primary col-12 mb-1"><i class="fa fa-plus"></i> Cadastrar</button></router-link>
+            <div class="col-md-4 mb-1">
                 <select name="" id="" class="form-control form-control-sm">
                     <option selected disabled value="">selecione</option>
                     <option v-for="(client,indexClient) in clientes" :value="client.id" :key="indexClient">{{client.name}}</option>
                 </select>
             </div>
-            <div class="col-md-2 ">
+            <div class="col-md-2 mb-1">
                 <input type="date" class="form-control form-control-sm ">
             </div>
-            <div class="col-md-2">
+            <div class="col-md-2 mb-1">
                 <input type="date" class="form-control form-control-sm ">
             </div>
-            <input class="form-control form-control-sm col-md-2" type="search" name="nome" placeholder="Buscar" v-model="search">
+            <input class="form-control form-control-sm col-md-2 mb-1" type="search" name="nome" placeholder="Buscar" v-model="search">
         </div>
         <div class="table-responsive scroll" ref="scroll" style="overflow-y:auto;height:300px;margin-top:3vh;">
             <table class="table table-hover table-bordered table-sm">
@@ -173,7 +173,7 @@ export default {
     },
     computed:{
         reais:function(){
-            return this.total.toFixed(2).replace('.',',')
+            return this.sale.total.toFixed(2).replace('.',',')
         },
     }    
 }

@@ -58,7 +58,7 @@ class SaleController extends Controller
         }
     }
 
-    public function store(SaleRequest $request)
+    public function store(Request $request)
     {
         
         try{
@@ -93,7 +93,7 @@ class SaleController extends Controller
                 ]);
             }
 
-         //   $this->sendMail($venda->id);
+            $this->sendMail($venda->id);
             Log::info('Usuário: '. Auth::user()->name . ' | ' . __METHOD__ . ' | ' . json_encode($request->all()) . $request->ip());
             return response()->json(['success' => 'OK','resultado' => $data],200);
         }catch(Exception $exception){
@@ -151,7 +151,7 @@ class SaleController extends Controller
                     'entrada' => $data['forma_pagamento']['entrada']
                 ]);
             }
-           // $this->sendMail($venda->id);
+            $this->sendMail($venda->id);
             Log::info('Usuário: '. Auth::user()->name . ' | ' . __METHOD__ . ' | ' . json_encode($request->except('imagem')) . $request->ip());
             return response()->json(['success' => 'OK','resultado' => $data],200);
         }catch(Exception $exception){
@@ -174,12 +174,13 @@ class SaleController extends Controller
     public function sendMail($id){
         $venda = Sale::with('clients','details_sales','details_sales.products')->find($id);
         $assunto = Carbon::parse($venda['dataVenda'])->format('d/m/Y');
+      
         $total = number_format($venda['total'],2,',','.');
         $emails = [];
         array_push($emails,'marcelowert@gmail.com');
         $pdf = $this->relatoriopdfDetails($id);
         try {
-            Mail::send('teste.clientMail', $venda->toArray(),function ($message) use($total,$assunto,$emails,$pdf) {
+            Mail::send('vendas.email.clientMail', $venda->toArray(),function ($message) use($total,$assunto,$emails,$pdf) {
                 $message->to($emails)->subject('Compra concluida! ' . ' Data da compra ' .$assunto .' total  R$'.$total);
                 $message->attachData($pdf, $assunto . '.pdf'); 
             });

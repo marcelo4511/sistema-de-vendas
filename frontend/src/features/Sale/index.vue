@@ -122,8 +122,7 @@ export default {
         
         exportPdf(){
        
-            axios.get("${API_BASE_URL}/sales")
-            .then(function(res){
+            axios.get("${API_BASE_URL}/sales").then(function(res){
             console.log(res.data)
             })
 

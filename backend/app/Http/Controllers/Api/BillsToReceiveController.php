@@ -26,29 +26,34 @@ class BillsToReceiveController extends Controller
 
     public function show($id) 
     {
-        $client = BillsToReceive::find($id);
+        $client = BillsToReceive::findOrFail($id);
         return response()->json($client);
     }
 
     public function store(Request $request)
     {
-        $data = $request->all();
-        $data['user_id'] = Auth::user()->id;
-        $data['situacao_id'] = 1;
-        if(isset($data['valor'])) {
-            $data['valor'] = str_replace(',', '.',$data['valor']);
-            $data['valor'] = preg_replace('/[^\d\.]/', '', $data['valor']);
+        try {
+
+            $data = $request->all();
+            $data['user_id'] = Auth::user()->id;
+            $data['situacao_id'] = 1;
+            if(isset($data['valor'])) {
+                $data['valor'] = str_replace(',', '.',$data['valor']);
+                $data['valor'] = preg_replace('/[^\d\.]/', '', $data['valor']);
+            }
+            $receber = BillsToReceive::create($data);
+            return response()->json(['receber' => $receber, 'status' => true]);
+        }catch(Exception $e) {
+            return response()->json(['error' => $e->getMessage(),'status' => false]);
         }
-        $client = BillsToReceive::create($data);
-        return response()->json($client);
     }
 
     public function update(Request $request,$id) 
     {
         $data = $request->all();
-        $client = BillsToReceive::find($id);
-        $client->update($data);
-        return response()->json($client);
+        $receber = BillsToReceive::find($id);
+        $receber->update($data);
+        return response()->json($receber);
     }
 
     public function destroy($id)

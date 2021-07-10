@@ -50,7 +50,7 @@
                         <input autocomplete="off" class="form-control form-control-sm" type="search" :name="`id_${key}`" @input="getProdutos(detalheCompra.name,key)" data-vv-as="Produto" v-validate="'required'" :class="['form-control form-control-sm form-control form-control-sm-sm', {'is-invalid': errors.has(`id_${key}`)},`${errorsRequest[`details_sales.${key}.id`] ? `is-invalid` : ``}`]"  :disabled="disabled" required v-model="detalheCompra.name" >
                         
                         <ul class="list-group list-group-flush " v-show="detalheCompra.produtosList !== null && detalheCompra.name !== ''" style="list-style: none;cursor:pointer;margin-top:2px;overflow-y:scroll;height: auto; max-height: 150px;">
-                          <li v-for="(product) in detalheCompra.produtosList" :key="product.id" class="list-group-item border shadow-sm border-black" @click="clickName(product.name,key)" v-show="product.status == 'Ativo'" :value="product.id">{{product.name}}</li>
+                          <li id="autocompletar" v-for="(product) in detalheCompra.produtosList" :key="product.id" class=" list-group-item border shadow-sm border-black" @click="clickName(product.name,key)" v-show="product.status == 'Ativo'" :value="product.id">{{product.name}}</li>
                         </ul>
                         <div class="progress mt-2" v-if="detalheCompra.carregamento">
                           <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
@@ -278,3 +278,15 @@ export default {
   },
 }
 </script>
+
+<style>
+ #autocompletar{
+  color:blueviolet;
+  font-weight: bold;
+}
+#autocompletar:hover{
+  background-color: blueviolet;
+  color: aliceblue;
+}
+
+</style>

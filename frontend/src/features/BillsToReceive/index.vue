@@ -30,7 +30,8 @@
                     <td v-if="provider.dt_vencimento">{{provider.dt_vencimento | momentDate}}</td>
                     <td v-else><b class="text-danger">Prencha a data</b> </td>
                     <td>{{provider.user.name}}</td>
-                     <td><button class="btn btn-sm btn-primary"><i class="fa fa-camera"></i></button></td>
+                    <td v-if="provider.comprovante"><button class="btn btn-sm btn-primary"><i class="fa fa-camera"></i></button></td>
+                    <td v-else>N/I</td>
                    <td>{{provider.situacao.descricao}}</td>
 
                     <td class="align-middle" width="20%">   

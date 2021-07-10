@@ -43,7 +43,7 @@
             <tr>
                 <th  scope="col">Data da venda </th>
                 <th  scope="col">Nome do Cliente </th>
-                <th scope="col" >Total da venda</th>
+                <th  scope="col" >Total da venda</th>
             </tr>
 
             
